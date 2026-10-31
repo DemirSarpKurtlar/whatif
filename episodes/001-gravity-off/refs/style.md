@@ -1,0 +1,6 @@
+# Style notes (ref: Higgsfield "Park Skyline")
+Palette: grass #43622F #4B6D2E #6A7E53, sky #5D799C #7391B5 #ADC6E2, skyline grey-blue #517078 #50614C. Late scenes: dusk/red glow, space black #05060A, Earth blues/greens with white clouds.
+Type: hook title = big serif (Playfair/Times-like) white, centered upper third, soft shadow. HUD top-left at y~60: red dot + tiny small-caps category (white 70%), tiny caps label, BIG serif value (~70px @1080), tiny caps subline. HUD top-right: tiny caps ELAPSED + serif value, second stat below. Captions: italic serif white, 2 lines centered at ~y 0.68, on a soft dark horizontal band (gradient), whole phrase at once with fade.
+3D: low-poly realistic, matte, soft daylight from upper-left, blue sky gradient, skyline boxes with window grids, round blob trees, small capsule people w/ colourful shirts, grass ground with noise; mild haze to sky. Lens ~35-50mm, eye-level camera ~1.6 m, slow forward drift. Later: Earth globe from space with clouds, moon.
+Cuts: hard cuts/dissolves every 4-6 s, camera always moving. End card: black, serif question, tiny caps disclaimer, CTA "WHERE WOULD YOU BE STANDING?", handle.
+Audio: voice + low ambience bed (wind/park), SFX on beats.

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "ffmpeg": {
+      "type": "stdio",
+      "command": "ffmpeg-mcp-server",
+      "args": [],
+      "env": {}
+    }
+  }
+}
