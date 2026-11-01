@@ -27,6 +27,8 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - İzleyici ortalama 16-25 sn izliyor → hedef 30-40 sn kesin. İlk saniyede aksiyon, yavaş açılış yok.
 - Paylaşım/kaydetme 0 → caption'da "📤 Send this to a friend…" satırı + ilk yorumda "Save this for Part 2" zorunlu.
 - Gönderiler arası en az 3 saat.
+- 📦 Stok kuralı: `posts/media.json`'da yüklü ama paylaşılmamış en az 3 video her zaman hazır olmalı. Altına düşerse yeni üretim her şeyin önüne geçer.
+- Seslendirme (Chatterbox) render ile aynı anda çok yavaş: `bash scripts/pause_render.sh` → TTS → `rm engine/PAUSED; bash scripts/resume.sh`.
 
 ## 1. Araştırma ve senaryo
 - WebSearch ile 4-6 sayısal gerçek bul; `episodes/<..>/sources.md` dosyasına kaynak linkleriyle yaz.
