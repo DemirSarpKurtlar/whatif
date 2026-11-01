@@ -178,7 +178,23 @@ window.frame = (T) => {
   const lt = t - sc.a, dur = sc.b - sc.a;
   const endAt = S.endCard ? S.endCard.at : 1e9;
   // --- 3D layer with crossfade from the previous scene and gentle push-in
-  if (sc.glsl && t < endAt + 0.5) {
+  // --- cold-open hook: while the title is up, show the most dramatic scene (auto: the scene at ~55% of the video)
+  let HOOK = null;
+  if (S.title && S.hook !== false && t < S.title.end) {
+    let hi = S.hook && S.hook.scene !== undefined ? S.hook.scene : -1;
+    if (hi < 0) { const target = 0.55 * (S.endCard ? S.endCard.at : S.END); hi = S.scenes.findIndex((s) => target >= s.a && target < s.b); }
+    const hs = S.scenes[hi];
+    if (hs && hs.glsl && hi > 0) {
+      const ht = hs.a + (S.hook && S.hook.at !== undefined ? S.hook.at : 0.45 * (hs.b - hs.a)) + t;
+      HOOK = { sc: hs, t: Math.min(ht, hs.b - 0.01) };
+    }
+  }
+  if (HOOK) {
+    const k = clamp01(t / 0.6);
+    drawScene(HOOK.sc, HOOK.t, 1, 1.14 - 0.1 * EASE["ease-out"](k));
+    const fadeOut = clamp01((S.title.end - t) / 0.35);
+    if (fadeOut < 1 && sc.glsl) drawScene(sc, t, 1 - fadeOut, 1.0);
+  } else if (sc.glsl && t < endAt + 0.5) {
     const xf = sc.cut ? 0 : (sc.xf ?? S.xf ?? 0.35);
     const prev = si > 0 ? S.scenes[si - 1] : null;
     const zoomOf = (s, tt) => 1.0 + 0.035 * clamp01((tt - s.a) / Math.max(0.5, s.b - s.a));

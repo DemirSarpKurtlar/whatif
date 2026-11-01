@@ -74,6 +74,27 @@ def posted_titles():
             print(first)
 
 
+def insights():
+    """Per-post performance table (views, reach, likes, comments, shares, saves, avg watch time) as JSON lines."""
+    uid = os.environ["IG_USER_ID"].strip()
+    d = call("GET", f"{uid}/media", fields="caption,permalink,timestamp,media_type", limit="50")
+    sets = ["views,reach,likes,comments,shares,saved,ig_reels_avg_watch_time",
+            "reach,likes,comments,shares,saved", "reach,likes,comments"]
+    for m in d.get("data", []):
+        row = {"title": (m.get("caption") or "").split("\n")[0][:70], "permalink": m.get("permalink"), "time": m.get("timestamp")}
+        for metrics in sets:
+            try:
+                params = {"metric": metrics, "access_token": TOKEN}
+                url = f"{BASE}/{m['id']}/insights?" + urllib.parse.urlencode(params)
+                with urllib.request.urlopen(url, timeout=60) as r:
+                    for it in json.loads(r.read()).get("data", []):
+                        row[it["name"]] = it["values"][0]["value"] if it.get("values") else it.get("total_value", {}).get("value")
+                break
+            except urllib.error.HTTPError:
+                continue
+        print(json.dumps(row, ensure_ascii=False))
+
+
 def check():
     uid = os.environ["IG_USER_ID"].strip()
     print("host:", HOST, "| token prefix:", TOKEN[:4] + "…", "| token length:", len(TOKEN))
@@ -134,6 +155,7 @@ if __name__ == "__main__":
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--posted-titles", action="store_true")
+    ap.add_argument("--insights", action="store_true")
     a = ap.parse_args()
     if a.check:
         check()
@@ -141,6 +163,8 @@ if __name__ == "__main__":
         refresh()
     elif a.posted_titles:
         posted_titles()
+    elif a.insights:
+        insights()
     else:
         cap = open(a.caption_file, encoding="utf-8").read().strip()
         publish(a.video_url, cap, a.thumb_ms, a.video_file, a.first_comment, a.cover_url)

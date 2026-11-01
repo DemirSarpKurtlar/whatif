@@ -11,9 +11,21 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - Ortam: Higgsfield MCP (sandbox_exec, media_upload), ffmpeg, Kokoro TTS (`/opt/tts`, yoksa
   `pip install kokoro-onnx soundfile` + model dosyaları, bkz. `scripts/setup.sh`).
 
+## 🔥 Viral kuralları (2026-11 güncellemesi, sadece Instagram)
+- **Uzunluk 30-40 sn** → senaryo **85-105 kelime**. İlk cümle = başlık sorusu, son cümle = izleyiciye soru.
+- **Aksiyonla açılış:** motor, başlık ekrandayken otomatik olarak videonun ~%55'indeki dramatik sahneyi gösterir
+  (`spec.hook = {scene, at}` ile elle seçilebilir, `hook: false` ile kapatılır). İlk 0.5 sn'de hareket şart.
+- Her 2-4 sn'de yeni görsel bilgi (sayı/HUD değişimi, kesme, flaş). Ölü an yok.
+- Konu seçmeden önce `python3 scripts/ig_publish.py --insights` çıktısına bak (yeni oturumlarda token ortamda var):
+  izlenme ve ortalama izlenme süresi en yüksek konunun **"Part 2"**'sini sıraya al (ör. "What if gravity switched off for 1 minute?").
+- Zayıf (ortalamanın yarısından az izlenme) konu tipini 2 hafta tekrar etme.
+- Ses: ElevenLabs Holden (kredi varsa) → yoksa Chatterbox (`scripts/tts_chatterbox.py`, ücretsiz). Kokoro kullanma.
+- Yayın: zamanlanmış görevler günde 4 kez (`02:51, 11:51, 16:51, 20:21` İstanbul) `scripts/post_next.sh` çalıştırır;
+  yeni bölüm `posts/schedule.txt`'e eklenmeli ve videosu + kapağı `posts/media.json`'a (Higgsfield URL) girmeli.
+
 ## 1. Araştırma ve senaryo
 - WebSearch ile 4-6 sayısal gerçek bul; `episodes/<..>/sources.md` dosyasına kaynak linkleriyle yaz.
-- Senaryo ~150 kelime (≈55-60 sn). Yapı: kanca sorusu (0-3 sn) → normal an → olay → 3-5 tırmanan vuruş
+- Senaryo 85-105 kelime (≈30-40 sn). Yapı: kanca sorusu (0-3 sn) → normal an → olay → 3-5 tırmanan vuruş
   (her biri tek sayı + tek görsel) → çözülme → sürpriz son bilgi → izleyiciye soru.
 - Sayıları kelimeyle yaz ("thirteen hundred"), tek tırnak etiketleri: `[pause]`, `[leaning in]`.
 - `script.txt` olarak kaydet.
