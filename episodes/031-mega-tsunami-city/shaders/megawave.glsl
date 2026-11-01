@@ -4,7 +4,7 @@
 //         level (sea level m; negative = drawback, seabed exposed), wh (wave height m), wz (crest z m, negative = offshore),
 //         fish (0..1 stranded fish), dark (0..1 storm light), boat (0/1 stranded boat), spray (0..1 mist over the crest)
 float gT = 0.0;
-const vec3 TW = vec3(-95.0, 0.0, -112.0);   // the 30-storey tower (90 m) on the headland
+const vec3 TW = vec3(-95.0, 0.0, -76.0);   // the 30-storey tower (90 m) on the headland
 float bend(float x){ return 1.4*max(0.0, -x - 25.0) - 0.25*max(0.0, x - 60.0); }
 float groundH(vec2 xz){
   float z = xz.y + bend(xz.x);
