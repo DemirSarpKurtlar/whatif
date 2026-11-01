@@ -28,10 +28,14 @@ import urllib.parse
 import urllib.request
 
 TOKEN = os.environ.get("IG_ACCESS_TOKEN", "").strip().strip('"').strip("'").strip()
-# Instagram-Login tokens (IGAA...) only work on graph.instagram.com; Facebook-Login tokens (EAA...) on graph.facebook.com.
-HOST = os.environ.get("IG_API_HOST", "").strip() or ("graph.instagram.com" if TOKEN.startswith("IG") else "graph.facebook.com")
-if TOKEN.startswith("IG") and HOST == "graph.facebook.com":
+# The token type decides the host (it overrides IG_API_HOST):
+#   Instagram-Login tokens (IGAA...) -> graph.instagram.com ; Facebook-Login tokens (EAA...) -> graph.facebook.com
+if TOKEN.startswith("IG"):
     HOST = "graph.instagram.com"
+elif TOKEN.startswith("EA"):
+    HOST = "graph.facebook.com"
+else:
+    HOST = os.environ.get("IG_API_HOST", "").strip() or "graph.facebook.com"
 VER = os.environ.get("IG_API_VERSION", "v21.0")
 BASE = f"https://{HOST}/{VER}"
 
