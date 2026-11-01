@@ -30,6 +30,19 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - 📦 Stok kuralı: `posts/media.json`'da yüklü ama paylaşılmamış en az 3 video her zaman hazır olmalı. Altına düşerse yeni üretim her şeyin önüne geçer.
 - Seslendirme (Chatterbox) render ile aynı anda çok yavaş: `bash scripts/pause_render.sh` → TTS → `rm engine/PAUSED; bash scripts/resume.sh`.
 
+## 🧟 Zombi Salgını (interaktif seri) — sabit stil
+- Stil HER bölümde aynı: düz 2D vektör, lacivert gece, kalın Inter Display yazılar, kırmızı/krem dev sayılar
+  (Higgsfield "Night Flat" görsel dili; referansın öğeleri/karakterleri KULLANILMAZ). Motor: `style: "flat"`, sahneler `draw:` (JS, engine/draw/flatlib.js).
+- Kanon ve bölüm tablosu: `series/zombie/story.md`. Her bölüm 28-35 sn, sonunda A/B seçimi (endCard.choices) + "COMMENT A OR B".
+- Bölüm klasöründe: `choices.json` (A/B metin + anahtar kelimeler), `first_comment.txt` (oylama yorumu).
+- Paylaşımdan ~24 saat sonra: `python3 scripts/count_votes.py <bölüm>` → çoğunluk kazanır (beraberlikte daha dramatik seçenek).
+  Kazananı story.md'ye yaz, bir sonraki bölümü o seçimle üret ve sıraya koy. `whatif-zombie-votes` görevi her gün 19:37'de oyları raporlar.
+- Instagram API Reels'e anket çıkartması ekleyemiyor; oylama yorumlarla yapılıyor.
+
+## 🎨 Diğer (yan) videolar
+- Higgsfield Content Factory stil kataloğundaki (get_preset_instructions /content-factory) stillerden konuya en uygun olanı seç
+  (ör. Toy Planet, Pixel Night, Ink & Gold, Blueprint Line...). Görsel dili uyarla, referans videoların içeriğini/karakterlerini kopyalama.
+
 ## 🤝 Pluginler (sahibin isteği)
 - **Ruflo Ai Team** plugini (beceriler, komutlar, ajanlar) oturumda yüklüyse iş bölme, takip ve hafıza için her turda kullan.
 - **RuFlo Federation** araçlarını (mcp__RuFlo_Federation__*) KULLANMA: herkese açık bir ağ, proje bilgisi oraya gitmemeli.
