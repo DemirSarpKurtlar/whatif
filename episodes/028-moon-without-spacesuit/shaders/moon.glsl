@@ -7,7 +7,7 @@
 // u_lander 0..1 lander in the background, u_earth Earth size boost, u_eaz/u_eel Earth azimuth/elevation offsets (rad)
 float gSw = 0.0, gArms = 0.0, gFall = 0.0, gMan = 1.0, gLand = 0.0;
 const vec3 LPOS = vec3(-4.6, 0.0, -6.5);
-vec3 sunDir(){ return normalize(vec3(-0.75, 0.42, 0.62)); }
+vec3 sunDir(){ return normalize(vec3(-0.75, 0.32, 0.62)); }
 vec3 gE = vec3(0.0, 0.3, -1.0);
 vec3 earthDir(){ return gE; }
 
@@ -123,7 +123,7 @@ vec3 skyCol(vec3 rd, out float temp){
       vec3 ec = base*(0.03 + 1.6*lit);
       ec += vec3(0.3,0.55,1.0)*pow(1.0-nl.z, 3.0)*0.6*lit;
       col = mix(col, ec, smoothstep(1.0, 0.96, r2));
-      temp = 0.45;
+      temp = 0.2;
     }
   }
   return col;
@@ -241,10 +241,10 @@ vec4 pixel(vec2 uv){
     if (u_boil > 0.001) for (int i=0;i<16;i++){
       float fi = float(i);
       float ph = fract(u_time*2.3 + fi/16.0);
-      vec3 o = (vec3(hash2(vec2(fi,5.0)), hash2(vec2(fi,6.0)), hash2(vec2(fi,7.0)))-0.5)*vec3(0.05,0.03,0.02);
-      vec3 c = mouth + o + vec3(o.x*ph*3.0, 0.02*ph, 0.02+0.14*ph);
+      vec3 o = (vec3(hash2(vec2(fi,5.0)), hash2(vec2(fi,6.0)), hash2(vec2(fi,7.0)))-0.5)*vec3(0.07,0.035,0.02);
+      vec3 c = mouth + o + vec3(o.x*ph*4.0, 0.05*ph, 0.02+0.2*ph);
       float r = 0.005 + 0.012*ph;
-      a += puff(ro, rd, c, r, t)*u_boil*(1.0-ph)*0.8;
+      a += puff(ro, rd, c, r, t)*u_boil*(1.0-ph)*0.6;
     }
     if (u_steam > 0.001) for (int i=0;i<14;i++){
       float fi = float(i);
