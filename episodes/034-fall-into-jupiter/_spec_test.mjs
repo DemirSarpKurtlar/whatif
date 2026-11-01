@@ -1,7 +1,7 @@
 import { JP } from "./_jbase_tmp.mjs";
 export default { END: 9, captions: [], scenes: [
- { a: 0, b: 1, glsl: "jupiter", p: { ...JP, space: 1, pd: 3.2, look: 0.15, orb: 0.3, md: 3, gauge: 0 } },
- { a: 1, b: 2, glsl: "jupiter", p: { ...JP, depth: -60, burn: 1, look: 0.3, orb: 1.3, md: 5.5, sink: 12 } },
+ { a: 0, b: 1, glsl: "jupiter", p: { ...JP, space: 1, pd: 2.6, pdy: 0.25, look: 0.25, orb: 1.3, md: 9, ty: 0.6, lens: 1.4 } },
+ { a: 1, b: 2, glsl: "jupiter", p: { ...JP, depth: -60, burn: 1, look: 0.28, lens: 1.0, orb: 1.3, md: 5.5, sink: 12 } },
  { a: 2, b: 3, glsl: "jupiter", p: { ...JP, depth: 6, look: 0.95, orb: 1.3, md: 5.5, gauge: 1 } },
  { a: 3, b: 4, glsl: "jupiter", p: { ...JP, depth: 25, look: 0.7, orb: 1.4, md: 5.5, gauge: 1 } },
  { a: 4, b: 5, glsl: "jupiter", p: { ...JP, depth: 50, bolt: 1, zap: 1, zx: -1.5, look: 0.15, orb: 1.2, md: 5.5, gauge: 1 } },

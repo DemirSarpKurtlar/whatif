@@ -30,7 +30,7 @@ vec2 people(vec3 p){
   vec2 res = vec2(bnd, 0.0);
   float hh = hash2(cid);
   vec2 cc = cid*2.6+1.3;
-  bool nearTree = length(cc - LT.xz) < 3.6 || (u_you > 0.5 && abs(cc.x - HP.x) < 2.7 && cc.z > -10.0);
+  bool nearTree = length(cc - LT.xz) < 3.6 || (abs(cc.x - HP.x) < 2.7 && cc.y > -10.0);
   if (hh > 0.72 && !nearTree && abs(cid.x) < 6.0 && cid.y > -8.0 && cid.y < -1.0) {
     vec2 j = (vec2(hash2(cid+7.1), hash2(cid+3.3))-0.5)*1.0;
     vec3 q = vec3(mod(p.x,cs.x)-1.3-j.x, p.y, mod(p.z,cs.y)-1.3-j.y);
@@ -178,8 +178,9 @@ vec2 segGlow(vec3 ro, vec3 rd, vec3 a, vec3 b, float hitT, float wk){
 vec3 boltPt(vec3 T, vec3 P, float f, float k, float seed, float sl){
   vec3 b = mix(T, P, f);
   float envB = clamp((1.0-f)*4.0, 0.0, 1.0);
+  float envM = clamp((1.0-f)*12.0, 0.0, 1.0);
   float envF = clamp((1.0-f)*60.0, 0.0, 1.0);
-  float big = 5.0*(noise2(vec2(f*4.0, seed*7.3))-0.5)*envB + 1.5*sl*(hash2(vec2(k, seed))-0.5)*envF;
+  float big = 5.0*(noise2(vec2(f*4.0, seed*7.3))-0.5)*envB + 1.6*(noise2(vec2(f*30.0, seed*2.9))-0.5)*envM + 1.5*sl*(hash2(vec2(k, seed))-0.5)*envF;
   float big2 = 5.0*(noise2(vec2(f*4.0+9.0, seed*3.1))-0.5)*envB + 1.0*sl*(hash2(vec2(k+5.0, seed))-0.5)*envF;
   return b + vec3(big, 0.0, big2);
 }
@@ -188,19 +189,19 @@ vec2 lightning(vec3 ro, vec3 rd, float hitT){
   if (u_bolt > 0.001) {
     vec3 P = vec3(u_bx, u_by, u_bz);
     float sd = floor(u_seed+0.5);
-    vec3 T = P + vec3(-6.0+12.0*hash2(vec2(sd,1.0)), 60.0, -6.0);
+    vec3 T = P + vec3(-3.0+6.0*hash2(vec2(sd,1.0)), 60.0, -6.0);
     vec3 prev = T;
     vec3 b0 = T, b1 = T, b2 = T;
-    for (int k=1;k<=22;k++){
-      float u = float(k)/22.0;
+    for (int k=1;k<=34;k++){
+      float u = float(k)/34.0;
       float f = 1.0 - pow(1.0-u, 2.2);
-      float sl = 60.0*(2.2/22.0)*pow(1.0-u+0.03, 1.2);
-      vec3 c = (k==22) ? P : boltPt(T, P, f, float(k), sd, sl);
+      float sl = 60.0*(2.2/34.0)*pow(1.0-u+0.02, 1.2);
+      vec3 c = (k==34) ? P : boltPt(T, P, f, float(k), sd, sl);
       vec2 s = segGlow(ro, rd, prev, c, hitT, 1.0);
       g.x = max(g.x, s.x); g.y += s.y*0.35;
-      if (k==5) b0 = c;
-      if (k==10) b1 = c;
-      if (k==15) b2 = c;
+      if (k==8) b0 = c;
+      if (k==16) b1 = c;
+      if (k==24) b2 = c;
       prev = c;
     }
     // branches

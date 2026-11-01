@@ -84,8 +84,8 @@ vec3 atmoBg(vec3 rd, float d){
   float s = sunAt(d);
   vec3 up = deckCol(d - 12.0, 0.2)*s*1.1 + glowAt(d);
   vec3 dn = deckCol(d + 15.0, 0.5)*sunAt(d + 25.0)*0.6 + glowAt(d + 30.0);
-  if (d < 0.0) { up = mix(vec3(0.004, 0.006, 0.02), vec3(0.55, 0.5, 0.45), exp(-max(rd.y, 0.0)*14.0)*0.75); }
-  return mix(dn, up, smoothstep(-0.6, 0.6, rd.y));
+  if (d < 0.0) { up = mix(vec3(0.004, 0.006, 0.02), vec3(0.55, 0.5, 0.45), exp(-max(rd.y, 0.0)*30.0)*0.8); }
+  return mix(dn, up, d < 0.0 ? smoothstep(-0.04, 0.03, rd.y) : smoothstep(-0.6, 0.6, rd.y));
 }
 vec3 atmosphere(vec3 rd, float d, out float hitT){
   hitT = 1e9;
@@ -94,12 +94,13 @@ vec3 atmosphere(vec3 rd, float d, out float hitT){
   const float S = 4.0;                                            // deck spacing (km)
   float k0 = rd.y < 0.0 ? ceil((d + 0.001)/S) : floor((d - 0.001)/S);
   float dir = rd.y < 0.0 ? 1.0 : -1.0;
+  if (rd.y < 0.0) k0 = max(k0, 0.0);
   // composite back to front: farthest first
   for (int j = 7; j >= 0; j--) {
     float dk = (k0 + dir*float(j))*S;
     if (dk < -0.001) continue;                                    // nothing above the cloud tops
     float t = (-dk - ro.y)/rd.y;
-    if (t <= 0.0 || t > 260.0) continue;
+    if (t <= 0.0 || t > (d < 0.0 ? 3000.0 : 260.0)) continue;
     vec2 xz = ro.xz + rd.xz*t + vec2(dk*7.3, dk*3.1);
     float lay = fbm2(xz*0.11 + vec2(gT*0.02, 0.0)) + 0.35*fbm2(xz*0.6);
     float cov = mix(0.62, 0.42, smoothstep(30.0, 60.0, dk));     // water clouds are thicker / towering
@@ -107,6 +108,7 @@ vec3 atmosphere(vec3 rd, float d, out float hitT){
     if (dk < 0.5) a = 1.0;                                        // top deck is solid from above
     float band = bandAt(xz);
     vec3 c = deckCol(dk, band)*(0.35 + 0.95*smoothstep(0.3, 1.0, lay));
+    if (dk < 0.5) c = deckCol(0.0, band)*(0.8 + 0.35*smoothstep(0.4, 1.0, lay));
     float lit = sunAt(dk)*(0.75 + 0.25*lay);
     vec3 cc = c*lit + glowAt(dk)*(0.6 + lay);
     // lightning inside the water-cloud level
@@ -116,7 +118,7 @@ vec3 atmosphere(vec3 rd, float d, out float hitT){
       float f = boltCell(gi + dk);
       cc += vec3(0.75, 0.85, 1.0)*f*u_bolt*wz*3.5*exp(-dot(gf, gf)*9.0);
     }
-    float fog = exp(-t/70.0);
+    float fog = exp(-t/(d < 0.0 ? 1500.0 : 70.0));
     col = mix(col, cc, a*fog);
   }
   return col;
@@ -137,13 +139,13 @@ vec3 zapBolt(vec3 rd, float d, vec3 fwd, vec3 rgt){
   vec3 P = ro + rd*tr;
   float y = P.y - B.y;
   float jx = (noise2(vec2(y*0.6, 3.0)) - 0.5)*2.6 + (noise2(vec2(y*3.1, 7.0)) - 0.5)*0.7;
-  vec3 Q = B + vec3(jx, y, 0.0);
+  vec3 Q = B + rgt*jx;
   float dist = length((P - Q).xz);
   float env = smoothstep(9.0, 3.0, abs(y));
   col += vec3(0.8, 0.88, 1.0)*(0.004/(dist*dist + 0.0012) + 0.5*exp(-dist*1.2))*env*u_zap;
   // branch
   float y2 = y - 1.0; float bx = jx + max(0.0, -y2)*0.7 + (noise2(vec2(y*4.3, 1.0)) - 0.5)*0.5;
-  float d2 = length(vec2(P.x - (B.x + bx), P.z - B.z));
+  float d2 = length((P - B - rgt*bx).xz);
   col += vec3(0.7, 0.8, 1.0)*0.0015/(d2*d2 + 0.001)*step(y2, 0.0)*smoothstep(-5.0, -1.5, y2)*u_zap;
   return col;
 }
@@ -208,7 +210,7 @@ vec3 space(vec3 rd, vec3 fwd, vec3 upv, out float hitT){
   vec2 sc = floor(sq); vec2 sf = fract(sq) - 0.5; float hs = hash2(sc);
   vec3 col = vec3(0.004, 0.005, 0.012) + (hs > 0.985 ? smoothstep(0.25, 0.0, length(sf))*(0.3 + 0.7*hash2(sc + 3.0)) : 0.0)*vec3(0.9, 0.95, 1.0);
   vec3 C = fwd*u_pd - upv*u_pdy*u_pd;
-  vec3 L = normalize(vec3(-0.9, 0.35, 0.55));
+  vec3 L = normalize(-fwd*0.55 - cross(fwd, upv)*0.75 + upv*0.35);
   // planet frame: tilt slightly
   mat2 tl = rot(0.05);
   float b = dot(C, rd); float c2 = dot(C, C) - 1.0; float disc = b*b - c2;
@@ -334,7 +336,7 @@ vec4 pixel(vec2 uv){
     float up = 0.5 + 0.5*n.y;
     vec3 c = alb*(envUp*up*1.2 + envDn*(1.0 - up)*0.9 + 0.012);
     // sun key from space
-    if (u_space > 0.5) { vec3 L = normalize(vec3(-0.9, 0.35, 0.55)); c = alb*(max(dot(n, L), 0.0)*1.6 + 0.04 + 0.15*(1.0 - up)*vec3(0.9, 0.6, 0.4)); }
+    if (u_space > 0.5) { vec3 L = normalize(-fwd*0.55 - rgt*0.75 + upv*0.35); c = alb*(max(dot(n, L), 0.0)*1.6 + 0.04 + 0.15*(1.0 - up)*vec3(0.9, 0.6, 0.4)); }
     // entry plasma heats the underside
     c += alb*vec3(1.0, 0.5, 0.18)*u_burn*(1.0 - up)*2.5;
     // lightning flash light
@@ -366,16 +368,16 @@ vec4 pixel(vec2 uv){
       // paraboloid shell opening upward, apex 0.5 m below you
       float yy = P.y + 0.55;
       float rr = length(P.xz*vec2(1.0, 0.8));
-      float shell = abs(rr - sqrt(max(yy, 0.0))*0.75) ;
-      float e = exp(-shell*9.0)*step(0.0, yy)*exp(-yy*0.55)*smoothstep(2.5, 1.2, rr);
-      float flick = 0.6 + 0.4*noise2(vec2(atan(P.z, P.x)*4.0, P.y*3.0 - gT*14.0));
+      float shell = abs(rr - sqrt(max(yy, 0.0))*0.6) ;
+      float e = exp(-shell*14.0)*step(0.0, yy)*exp(-yy*0.9)*smoothstep(2.0, 1.0, rr);
+      float flick = 0.25 + 1.5*pow(noise2(vec2(atan(P.z, P.x)*9.0/6.2832*6.0, P.y*1.5 - gT*12.0)), 2.0);
       acc += e*flick;
     }
     acc *= min(tmax, 12.0)/20.0;
-    col += vec3(1.0, 0.42, 0.12)*acc*u_burn*1.1 + vec3(1.0, 0.8, 0.5)*acc*acc*u_burn*0.25;
+    col += vec3(1.0, 0.4, 0.1)*acc*u_burn*1.6 + vec3(1.0, 0.8, 0.5)*acc*acc*u_burn*0.4;
     // hot glare under the body
     vec3 wl = vec3(0.0, -0.45, 0.1) - ro; float tl = dot(wl, rd);
-    if (tl > 0.0) { float dd = length(wl - rd*tl); col += vec3(1.0, 0.6, 0.3)*u_burn*(0.002/(dd*dd + 0.002) + 0.12*exp(-dd*2.5)); }
+    if (tl > 0.0) { float dd = length(wl - rd*tl); col += vec3(1.0, 0.6, 0.3)*u_burn*(0.002/(dd*dd + 0.002) + 0.05*exp(-dd*4.0)); }
   }
 
   // ---- rising cloud particles (ice crystals / droplets / sparks)
