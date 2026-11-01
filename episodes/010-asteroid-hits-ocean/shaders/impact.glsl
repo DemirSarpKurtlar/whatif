@@ -22,7 +22,7 @@ vec2 map(vec3 p){
   float y = clamp(p.y, 0.0, H);
   float rad = 3.0 + 2.5*smoothstep(0.0, H, y) + 9.0*smoothstep(H*0.72, H, y)*u_col;
   float d = length(vec3(p.x, p.y - y, p.z)) - rad;
-  d += 1.4*(n3(p*0.18 + vec3(0.0, -gT*0.25, 0.0)) - 0.5) + 0.6*(n3(p*0.5) - 0.5);
+  if (d < 4.0) d += 1.6*(n3(p*0.22 + vec3(0.0, -gT*0.25, 0.0)) - 0.5);
   return vec2(d*0.7, 1.0);
 }
 vec4 pixel(vec2 uv){
@@ -40,18 +40,18 @@ vec4 pixel(vec2 uv){
   vec3 L = normalize(vec3(-0.5, 0.8, 0.4));
   // heightfield search
   float t = 0.5, hit = -1.0;
-  for (int i = 0; i < 110; i++) {
+  for (int i = 0; i < 72; i++) {
     vec3 q = ro + rd*t;
     if (q.y < max(waterH(q.xz), floorH(q.xz))) { hit = t; break; }
-    t += 0.25 + t*0.03;
+    t += 0.4 + t*0.045;
     if (t > 420.0) break;
   }
   if (hit > 0.0) {
-    float a = hit - (0.25 + hit*0.03), b = hit;
+    float a = hit - (0.4 + hit*0.045), b = hit;
     for (int i = 0; i < 7; i++) { float m = 0.5*(a+b); vec3 q = ro + rd*m; if (q.y < max(waterH(q.xz), floorH(q.xz))) b = m; else a = m; }
     hit = b;
   }
-  vec3 cm = march(ro, rd, hit > 0.0 ? hit : 400.0, 0.0);
+  vec3 cm = march(ro, rd, min(hit > 0.0 ? hit : 400.0, 260.0), 0.0);
   vec3 hazeD = hor;
   if (cm.x > 0.0) {
     vec3 pos = ro + rd*cm.x; vec3 n = calcNormal(pos);

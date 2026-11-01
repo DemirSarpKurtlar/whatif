@@ -44,9 +44,9 @@ vec2 map(vec3 p){
 }
 float groundH(vec2 xz){ return 0.9 + 0.055*(xz.y - 8.0) + 0.05*noise2(xz*0.3); }
 float seaH(vec2 xz){
-  float zc = mix(-140.0, 4.0, u_surge);
+  float zc = mix(-140.0 - 760.0*u_big, 4.0, u_surge);
   float A = (17.0+70.0*u_big)*smoothstep(0.0, 0.3, u_surge);
-  float dz = xz.y - zc; float crest = A*exp(-pow(dz/(dz < 0.0 ? 13.0 : 7.0), 2.0));
+  float dz = xz.y - zc; float crest = A*exp(-pow(dz/((dz < 0.0 ? 13.0 : 7.0)*(1.0 + 3.0*u_big)), 2.0));
   float behind = 0.0;
   return u_level + crest + behind + 0.08*sin(xz.y*0.9 + gT*1.6) + 0.05*sin(xz.x*0.7 + gT*1.1);
 }
@@ -121,12 +121,12 @@ vec4 pixel(vec2 uv){
   vec3 col = skyN(rd);
   // ground / sea: linear search along the ray
   float t = 0.2, hit = -1.0, kind = 0.0;
-  for (int i = 0; i < 90; i++) {
+  for (int i = 0; i < 110; i++) {
     vec3 q = ro + rd*t;
     float g = groundH(q.xz), s = seaH(q.xz);
     if (q.y < max(g, s)) { hit = t; kind = s > g ? 1.0 : 0.0; break; }
     t += 0.15 + t*0.045;
-    if (t > 260.0) break;
+    if (t > 900.0) break;
   }
   if (hit > 0.0) { // refine
     float a = hit - (0.15 + hit*0.045), b = hit;

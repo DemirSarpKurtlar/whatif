@@ -103,11 +103,11 @@ vec2 grills(vec3 p){
     r = opU(r, vec2(min(box,legs), 10.0));
     float f = u_fire*(0.7+0.3*hash2(vec2(float(i),3.0)));
     if (f > 0.02) {
-      float h = 0.25 + 2.2*f;
-      vec3 fq = q - vec3(0.0, 0.9 + h*0.45, 0.0);
+      float h = 0.2 + 1.3*f;
+      vec3 fq = q - vec3(0.0, 0.88 + h*0.5, 0.0);
       float wob = 0.12*f*sin(gT*9.0+float(i)*2.0 + fq.y*4.0);
       fq.x += wob;
-      float fl = sdEllipsoid(fq, vec3(0.32+0.55*f, h*0.55, 0.26+0.45*f));
+      float fl = sdEllipsoid(fq, vec3(0.22+0.38*f, h*0.55, 0.18+0.3*f));
       fl += 0.12*(noise2(vec2(fq.x*4.0, fq.y*3.0 - gT*6.0)) - 0.5);
       r = opU(r, vec2(fl*0.7, 11.0));
     }
@@ -116,7 +116,7 @@ vec2 grills(vec3 p){
 }
 vec2 dragonfly(vec3 p){
   if (u_fly <= 0.0) return vec2(1e9, 0.0);
-  vec3 c = vec3(-7.0 + 14.0*u_fly, 2.4 + 0.35*sin(u_fly*9.0), -4.0);
+  vec3 c = vec3(-1.7 + 2.4*u_fly, 1.95 + 0.2*sin(u_fly*9.0), -1.2);
   vec3 q = p - c;
   float bb = length(q) - 1.4;
   if (bb > 0.3) return vec2(bb, 0.0);
@@ -226,11 +226,11 @@ vec4 pixel(vec2 uv){
     float gl = (id > 7.5 && id < 8.5) || id > 11.5 ? 0.9 : 0.05;
     if (id > 10.5 && id < 11.5) {
       // flame: emissive, hotter at the base
-      float hgt = clamp((pos.y - 0.85)/(0.3 + 2.2*u_fire), 0.0, 1.0);
+      float hgt = clamp((pos.y - 0.85)/(0.25 + 1.3*u_fire), 0.0, 1.0);
       vec3 fc = mix(vec3(1.0,0.95,0.6), vec3(1.0,0.45,0.08), smoothstep(0.1,0.6,hgt));
       fc = mix(fc, vec3(0.75,0.12,0.03), smoothstep(0.6,1.0,hgt));
       float fl = 0.85 + 0.15*noise2(vec2(pos.x*6.0, pos.y*5.0 - gT*10.0));
-      col = fc*fl*2.2;
+      col = fc*fl*1.25;
     } else {
       col = shade(pos, n, rd, alb, L, key, skyF, bnc, gl);
       if (id > 7.5 && id < 8.5) col += lin(vec3(0.85,0.92,1.0))*0.25*pow(clamp(1.0+dot(n,rd),0.0,1.0),2.0);
@@ -284,11 +284,11 @@ vec4 pixel(vec2 uv){
   // glow halos around flames
   if (u_fire > 0.0) {
     for (int i=0;i<4;i++){
-      vec3 c = gpos(i) + vec3(0.0, 1.0 + 1.0*u_fire, 0.0);
+      vec3 c = gpos(i) + vec3(0.0, 1.0 + 0.6*u_fire, 0.0);
       vec3 w = c - ro; float tt = max(dot(w, rd), 0.0);
       if (m.x > 0.0 && tt > m.x + 0.5) continue;
       float d = length(ro + rd*tt - c);
-      col += vec3(1.0,0.45,0.1)*exp(-d*d/(0.35+1.4*u_fire))*0.55*u_fire;
+      col += vec3(1.0,0.45,0.1)*exp(-d*d/(0.25+0.9*u_fire))*0.35*u_fire;
     }
   }
   // sparks / embers rising (screen space)

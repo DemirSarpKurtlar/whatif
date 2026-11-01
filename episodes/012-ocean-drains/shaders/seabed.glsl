@@ -70,10 +70,10 @@ vec4 pixel(vec2 uv){
   ro.y = H(ro.xz) + u_camh;
   vec3 fwd = normalize(vec3(sin(u_yaw), u_tilt, -cos(u_yaw)));
   vec3 rd = camRay(p, ro, ro + fwd, 1.1);
-  vec3 L = normalize(vec3(-0.5, mix(0.55, 0.18, u_dusk), -0.6));
+  vec3 L = normalize(vec3(-0.45, mix(0.6, 0.22, u_dusk), 0.55));
   vec3 sky = skyC(rd);
   sky += vec3(1.0,0.8,0.55)*pow(max(dot(rd,L),0.0), 300.0)*1.5 + vec3(1.0,0.75,0.5)*pow(max(dot(rd,L),0.0), 8.0)*0.18;
-  vec3 m = march(ro, rd, 900.0, 0.0);
+  vec3 m = march(ro, rd, 520.0, 0.0);
   vec3 col = sky;
   vec3 hazeC = lin(mix(vec3(0.82,0.86,0.9), vec3(0.95,0.72,0.55), u_dusk));
   if (m.x > 0.0) {
@@ -81,7 +81,7 @@ vec4 pixel(vec2 uv){
     vec3 n = calcNormal(pos);
     vec3 alb;
     if (m.y < 0.5) {
-      float depthFromPlain = clamp(-pos.y/300.0, 0.0, 1.0);
+      float depthFromPlain = clamp(-pos.y/700.0, 0.0, 1.0);
       vec3 mudA = mix(vec3(122.0,100.0,74.0), vec3(96.0,80.0,62.0), noise2(pos.xz*0.3))/255.0;
       vec3 rock = mix(vec3(70.0,64.0,62.0), vec3(40.0,38.0,42.0), noise2(pos.xz*0.7 + pos.y*0.2))/255.0;
       float steep = smoothstep(0.75, 0.45, n.y);
@@ -91,7 +91,15 @@ vec4 pixel(vec2 uv){
       float crack = smoothstep(0.035, 0.0, abs(fract(cn*2.5) - 0.5) - 0.46);
       alb *= 1.0 - 0.45*crack*(1.0-u_mud)*smoothstep(30.0, 4.0, m.x)*(1.0-steep);
       alb = lin(alb);
-      col = shade(pos, n, rd, alb, L, mix(vec3(1.2,1.12,1.0), vec3(1.3,0.9,0.65), u_dusk), lin(vec3(0.55,0.62,0.75))*0.5, lin(vec3(0.45,0.4,0.33))*0.4, 0.05 + 0.55*u_mud);
+      vec3 keyC = mix(vec3(1.25,1.15,1.0), vec3(1.35,0.92,0.66), u_dusk);
+      float dif = clamp((dot(n,L)+0.2)/1.2, 0.0, 1.0);
+      float deep = clamp(-pos.y/700.0, 0.0, 1.0);
+      alb *= 0.82 + 0.18*sin(pos.y*0.11 + noise2(pos.xz*0.05)*2.0)*steep;
+      dif *= 1.0 - 0.85*deep;
+      vec3 hv = normalize(L - rd);
+      float sp = pow(clamp(dot(n,hv),0.0,1.0), 60.0)*u_mud*0.8;
+      col = alb*(keyC*dif + lin(vec3(0.55,0.62,0.75))*(0.45+0.2*n.y)*(1.0-0.75*deep)) + keyC*sp;
+      col = mix(col, lin(vec3(0.05,0.07,0.12)), deep*0.6);
       // stranded fish glints
       if (u_fish > 0.0 && m.x < 35.0) {
         vec2 fc = pos.xz*1.3; vec2 fi = floor(fc); vec2 ff = fract(fc) - 0.5;
@@ -99,15 +107,16 @@ vec4 pixel(vec2 uv){
         if (hf > 0.86) {
           vec2 o = ff - (vec2(hash2(fi+3.0), hash2(fi+7.0)) - 0.5)*0.5;
           o = rot(hf*6.28)*o;
-          float fish = smoothstep(0.0, -0.02, length(o*vec2(1.0, 2.6)) - 0.12);
+          float fish = smoothstep(0.0, -0.015, length(o*vec2(1.0, 2.8)) - 0.08)*smoothstep(2.0, 5.0, m.x);
           float glint = 0.6 + 0.4*sin(gT*7.0 + hf*40.0);
-          col = mix(col, lin(vec3(0.82,0.86,0.9))*(0.8+1.6*glint), fish*u_fish);
+          col = mix(col, lin(mix(vec3(0.55,0.6,0.66), vec3(0.9,0.93,0.96), o.y*4.0+0.5))*(0.7+0.9*glint), fish*u_fish);
         }
       }
     } else {
       vec3 q = pos;
       alb = lin(mix(vec3(52.0,30.0,22.0), vec3(110.0,58.0,34.0), noise2(q.xz*2.0 + q.y))/255.0);
-      col = shade(pos, n, rd, alb, L, vec3(1.15,1.05,0.95), lin(vec3(0.55,0.62,0.75))*0.5, lin(vec3(0.4,0.35,0.3))*0.4, 0.2);
+      float dif = clamp((dot(n,L)+0.2)/1.2, 0.0, 1.0);
+      col = alb*(vec3(1.15,1.05,0.95)*dif + lin(vec3(0.55,0.62,0.75))*0.45);
     }
     col = grade(col, hazeC, m.x, 60.0, 0.22, 0.03);
     col = mix(col, pow(hazeC, vec3(0.4545)), smoothstep(250.0, 850.0, m.x));
