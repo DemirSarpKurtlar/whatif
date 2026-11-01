@@ -27,13 +27,17 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-HOST = os.environ.get("IG_API_HOST", "graph.facebook.com")
+TOKEN = os.environ.get("IG_ACCESS_TOKEN", "").strip().strip('"').strip("'").strip()
+# Instagram-Login tokens (IGAA...) only work on graph.instagram.com; Facebook-Login tokens (EAA...) on graph.facebook.com.
+HOST = os.environ.get("IG_API_HOST", "").strip() or ("graph.instagram.com" if TOKEN.startswith("IG") else "graph.facebook.com")
+if TOKEN.startswith("IG") and HOST == "graph.facebook.com":
+    HOST = "graph.instagram.com"
 VER = os.environ.get("IG_API_VERSION", "v21.0")
 BASE = f"https://{HOST}/{VER}"
 
 
 def call(method, path, **params):
-    params["access_token"] = os.environ["IG_ACCESS_TOKEN"]
+    params["access_token"] = TOKEN
     data = urllib.parse.urlencode(params).encode()
     url = f"{BASE}/{path}"
     if method == "GET":
@@ -50,14 +54,15 @@ def call(method, path, **params):
 
 def refresh():
     """Extend a long-lived Instagram-Login token by another 60 days (prints the new token's expiry, not the token)."""
-    q = urllib.parse.urlencode({"grant_type": "ig_refresh_token", "access_token": os.environ["IG_ACCESS_TOKEN"]})
+    q = urllib.parse.urlencode({"grant_type": "ig_refresh_token", "access_token": TOKEN})
     with urllib.request.urlopen(f"https://graph.instagram.com/refresh_access_token?{q}", timeout=60) as r:
         d = json.loads(r.read())
     print(json.dumps({"expires_in_days": round(d.get("expires_in", 0) / 86400, 1)}))
 
 
 def check():
-    uid = os.environ["IG_USER_ID"]
+    uid = os.environ["IG_USER_ID"].strip()
+    print("host:", HOST, "| token prefix:", TOKEN[:4] + "…", "| token length:", len(TOKEN))
     me = call("GET", uid, fields="username,media_count")
     lim = call("GET", f"{uid}/content_publishing_limit", fields="config,quota_usage")
     print(json.dumps({"account": me, "publishing_limit": lim}, indent=1))
@@ -66,13 +71,13 @@ def check():
 def upload_file(path, cid_uri):
     size = os.path.getsize(path)
     req = urllib.request.Request(cid_uri, data=open(path, "rb").read(), method="POST", headers={
-        "Authorization": "OAuth " + os.environ["IG_ACCESS_TOKEN"], "offset": "0", "file_size": str(size)})
+        "Authorization": "OAuth " + TOKEN, "offset": "0", "file_size": str(size)})
     with urllib.request.urlopen(req, timeout=600) as r:
         return json.loads(r.read())
 
 
 def publish(video_url, caption, thumb_ms, video_file=None, first_comment=None, cover_url=None):
-    uid = os.environ["IG_USER_ID"]
+    uid = os.environ["IG_USER_ID"].strip()
     params = dict(media_type="REELS", caption=caption, share_to_feed="true", thumb_offset=str(thumb_ms))
     if cover_url:
         params["cover_url"] = cover_url
