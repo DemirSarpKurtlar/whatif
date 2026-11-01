@@ -5,7 +5,7 @@ const LL = { cx: 0, cy: 0, cz: 0, yaw: 0, pitch: 0, roll: 0, lens: 1.2, shake: 0
   man: 0, fx: 0, fy: 0, fz: 0, pose: 0, froll: 0, ftilt: 0, fyaw: 0,
   crust: 0.8, glow: 1, so2: 0, co2: 0, steam: 0.25, heat: 0, therm: 0, sink: 0, cell: 0, ledge: 0 };
 // standing on a rock outcrop at the rim, seen from behind and above
-const LEDGE = { ...LL, man: 1, fx: 0, fy: 240, fz: 163, ledge: 1, follow: 1, cx: 0.4, cy: 4.0, cz: 5.0, pitch: -0.9 };
+const LEDGE = { ...LL, man: 1, fx: 0, fy: 240, fz: 166, ledge: 1, follow: 1, cx: 0.6, cy: 9.0, cz: 9.0, pitch: -0.98 };
 // resting on the crust, face up (camera follows the figure)
 const LIE = { ...LL, man: 1, fx: 0, fy: 0.2, fz: 0, pose: 0.35, ftilt: 1.57, sink: 0.12, crust: 0.95, cell: 2.2, follow: 1, steam: 0 };
 export default {
@@ -15,7 +15,7 @@ export default {
   cover: 4.2,
   scenes: [
     // 0 cold open (mostly behind the hook): at the edge of the crater
-    { a: 0, b: 2.95, glsl: "lavalake", p: { ...LEDGE, cy: [4.6, 3.8], cz: [6.0, 4.6], pitch: [-0.85, -0.95] } },
+    { a: 0, b: 2.95, glsl: "lavalake", p: { ...LEDGE, cy: [10.0, 8.5], cz: [10.0, 8.2] } },
     // 1 the fall
     { a: 2.95, b: 4.75, glsl: "lavalake", p: { ...LL, man: 1, follow: 1, fy: [[0, 205], [1.8, 9, "ease-in"]], pose: 1, ftilt: 1.45, froll: [0, 0.7], cy: 4.5, cz: 2.5, pitch: -1.2, lens: 0.75, shake: [0.05, 0.4] },
       hud: { at: 0.1, cat: "FORGET THE MOVIES", label: "YOU WOULD", value: "Not sink", sub: "LAVA IS NOT WATER", vcol: "#FFB36B" } },
@@ -28,7 +28,7 @@ export default {
     // 4 pull up: the crater air is the real danger
     { a: 10.5, b: 11.95, glsl: "lavalake", p: { ...LIE, cx: [2.5, 20], cy: [6, 55], cz: [1, 30], yaw: [-1.19, -0.59], pitch: [-1.15, -0.99], so2: [0, 0.35], steam: [0.3, 1.0] } },
     // 5 sulfur dioxide
-    { a: 11.95, b: 13.9, glsl: "lavalake", p: { ...LL, cx: 60, cy: [130, 112], cz: 80, yaw: [-0.8, -0.7], pitch: -0.55, so2: 0.6, steam: 0.8 },
+    { a: 11.95, b: 13.9, glsl: "lavalake", p: { ...LL, cx: 60, cy: [130, 112], cz: 80, yaw: [-0.8, -0.7], pitch: -0.55, so2: 0.42, steam: 0.7 },
       hud: { cat: "GAS #1", label: "SULFUR DIOXIDE", value: "SO₂", sub: "BURNS YOUR EYES, THROAT AND LUNGS", dot: "#F2C14E", vcol: "#FFE07A" } },
     // 6 carbon dioxide pools low
     { a: 13.9, b: 15.55, glsl: "lavalake", p: { ...LL, cy: [90, 62], cz: [92, 72], pitch: [-0.62, -0.55], co2: [0, 1] },
@@ -49,7 +49,7 @@ export default {
     { a: 26.15, b: 28.45, glsl: "lavalake", p: { ...LL, cy: [470, 400], cz: 0.1, pitch: -1.5, crust: 0.97, roll: [0, 0.25], steam: 0.15 },
       hud: { cat: "ERTA ALE · ETHIOPIA", label: "LAKE COVERED BY CRUST", value: "> 90 %", sub: "GLOWING CRACKS BETWEEN THE PLATES", dot: "#F2C14E" } },
     // 12 outro (behind the end card)
-    { a: 28.45, b: 32.4, glsl: "lavalake", p: { ...LEDGE, cy: [4.2, 3.6], cz: [5.2, 4.4] } },
+    { a: 28.45, b: 32.4, glsl: "lavalake", p: { ...LEDGE, cy: [9.5, 8.5], cz: [9.5, 8.5] } },
   ],
   captions: [
     [2.14, 2.9, "Forget the movies."], [3.04, 4.6, "You wouldn't sink."],
@@ -63,7 +63,7 @@ export default {
     [22.9, 26.1, "At Nyiragongo, the lava lake sits hundreds of metres below the rim."],
     [26.32, 28.3, "At Erta Ale, most of the lake is crust."],
   ],
-  bigs: [{ at: 20.62, dur: 1.0, text: "80×", size: 300 }],
+  bigs: [{ at: 20.62, dur: 1.0, text: "80×", size: 300, y: 420 }],
   flashes: [{ at: 8.1, dur: 0.3, color: "#FFB36B" }, { at: 19.85, dur: 0.25 }],
   endCard: { at: 28.45, title: "What if you fell into an active volcano?", small: ["LAVA DENSITY: DEGASSED BASALT · HEAT: BLACK-BODY AT 1,100 °C", "STYLIZED CRATER · CO₂ IS INVISIBLE IN REALITY"], cta: "WOULD YOU LOOK OVER THE EDGE?" },
 };

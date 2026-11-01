@@ -28,9 +28,10 @@ float terr(vec3 p){
   float top = DEP - max(0.0, r - 178.0)*0.24 + 2.5*n3(p*0.04);
   float d = max(wallR(p) - r, p.y - top)*0.62;
   if (u_ledge > 0.5) {   // rock outcrop the figure stands on (top surface at the figure's feet)
-    vec3 lq = p - vec3(u_fx, u_fy - 1.25 - 1.6, u_fz + 7.0);
-    lq.y += 0.02*lq.z*lq.z*0.1;
-    d = min(d, (sdRoundBox(lq, vec3(1.4 + 0.08*lq.z, 1.6, 8.0), 0.5) + 0.7*n3(p*0.6) + 0.25*n3(p*2.1) - 0.45)*0.7);
+    vec3 lq = p - vec3(u_fx, u_fy - 1.25 - 2.5, u_fz + 5.5);
+    lq.x += 0.6*sin(lq.z*0.35);
+    float wdt = 1.3 + 0.12*(lq.z + 6.0) + 1.2*smoothstep(-1.0, -2.5, lq.y);
+    d = min(d, (sdRoundBox(lq, vec3(wdt, 2.5, 6.5), 0.6) + 0.9*n3(p*0.5) + 0.35*n3(p*1.7) + 0.12*n3(p*5.0) - 0.6)*0.6);
   }
   return d;
 }
@@ -251,7 +252,7 @@ vec4 pixel(vec2 uv){
   col = pow(max(col, 0.0), vec3(0.4545));
   // --- thermal camera
   if (u_therm > 0.0) {
-    vec3 th = iron(pow(max(T + 20.0, 0.0)/1160.0, 0.55));
+    vec3 th = iron(pow(max(T + 20.0, 0.0)/1160.0, 0.85));
     th += 0.06*(hash2(uv*u_resolution*0.5 + floor(u_time*12.0)) - 0.5);
     col = mix(col, th, u_therm);
   }

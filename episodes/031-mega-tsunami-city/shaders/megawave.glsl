@@ -35,10 +35,12 @@ vec2 map(vec3 p){
   vec3 q = p - TW;
   float tw = sdRoundBox(q - vec3(0.0, 44.0, 0.0), vec3(13.0, 46.0, 11.0), 0.3);
   tw = min(tw, sdRoundBox(q - vec3(0.0, 92.5, 0.0), vec3(8.0, 2.5, 6.0), 0.2));
-  tw = min(tw, sdCapsule(q, vec3(3.0, 94.0, 0.0), vec3(3.0, 104.0, 0.0), 0.35));
+  tw = min(tw, sdCapsule(q, vec3(6.0, 94.0, 7.0), vec3(6.0, 104.0, 7.0), 0.35));
   r = opU(r, vec2(tw, 2.0));
   // headland city blocks along the bent shoreline
-  if (p.x < -40.0 && p.x > -900.0 && p.y < 70.0) {
+  float bb = max(max(p.x + 30.0, -900.0 - p.x), p.y - 70.0);
+  if (bb > 2.0) r = opU(r, vec2(bb, 0.0));
+  else {
     float cs = 38.0;
     float cx = floor(p.x/cs);
     for (int k = 0; k < 2; k++) {
@@ -175,12 +177,16 @@ vec4 pixel(vec2 uv){
       c += key*pow(max(dot(rf, L), 0.0), 80.0)*1.2;
       // the wall: dark green-blue face, glassy translucent near the crest, foam streaks
       float face = smoothstep(0.06, 0.2, hrel)*step(0.5, u_wh);
-      vec3 fcol = mix(vec3(0.03, 0.17, 0.2), vec3(0.12, 0.42, 0.42), smoothstep(0.35, 0.9, hrel));
+      vec3 fcol = mix(vec3(0.02, 0.1, 0.13), vec3(0.06, 0.26, 0.29), smoothstep(0.1, 0.5, hrel));
+      fcol = mix(fcol, vec3(0.16, 0.5, 0.48), smoothstep(0.55, 0.9, hrel)*0.85);
+      fcol *= 0.9 + 0.2*noise2(vec2(pos.x*0.04, pos.y*0.3 - gT*0.8));
       float streak = smoothstep(0.55, 0.9, noise2(vec2(pos.x*0.11, pos.y*0.025 - gT*0.35)))*smoothstep(0.15, 0.6, hrel);
       vec3 fc2 = lin(fcol)*(0.55 + 0.6*clamp(dot(n, L), 0.0, 1.0)) + lin(skyM(rf))*fres*0.4;
       fc2 = mix(fc2, lin(vec3(0.8, 0.86, 0.88))*(key*0.5 + skyF), streak*0.5);
       c = mix(c, fc2, face);
-      float foam = smoothstep(0.84, 0.96, hrel + 0.07*noise2(vec2(pos.x*0.12, pos.y*0.1 + gT*1.5)))*step(0.5, u_wh);
+      float fn = noise2(vec2(pos.x*0.07, pos.y*0.04 + gT*1.2))*0.6 + noise2(vec2(pos.x*0.25, pos.y*0.15 + gT*2.0))*0.4;
+      float foam = smoothstep(0.86, 0.95, hrel + 0.16*(fn - 0.5))*step(0.5, u_wh);
+      foam += smoothstep(0.62, 0.8, fn)*smoothstep(0.55, 0.85, hrel)*0.6*step(0.5, u_wh);
       // churning foot where the wall meets the drawn-down water / ground
       float foot = smoothstep(0.12, 0.0, hrel)*smoothstep(0.02, 0.2, rel)*step(0.5, u_wh)*(0.5 + 0.5*noise2(pos.xz*0.3 + gT*2.0));
       float shore = smoothstep(0.3, 0.0, abs(pos.y - groundH(pos.xz)))*0.55;

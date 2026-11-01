@@ -149,7 +149,8 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
     alb = mix(alb, vec3(0.97,0.98,1.0), cl*0.9);
     if (u_snow > 0.0) {
       vec2 gs = pos.xz*140.0;                      // ~7 m tree cells
-      float patch = smoothstep(0.28, 0.38, fbm3(vec3(pos.xz*1.6, 3.0)));
+      float big2 = smoothstep(0.36, 0.56, fbm3(vec3(pos.xz*0.12, 8.0)));
+      float patch = smoothstep(0.28, 0.38, fbm3(vec3(pos.xz*1.6, 3.0)) + 0.25*(big2 - 0.5));
       float hgt = fbm3(vec3(pos.xz*1.3, 6.0));
       float hgx = fbm3(vec3((pos.xz+vec2(0.03,0.0))*1.3, 6.0));
       float hgz = fbm3(vec3((pos.xz+vec2(0.0,0.03))*1.3, 6.0));
@@ -158,7 +159,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
       float tr = 0.0, shd = 0.0, tv = 1.0;
       for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
         vec2 cid = cid0 + vec2(float(i), float(j));
-        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/140.0*1.6, 3.0)) + 0.17);
+        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/140.0*1.6, 3.0)) + 0.17 + 0.25*(big2 - 0.5));
         if (on < 0.5) continue;
         vec2 tc = gs - cid - 0.5 - (vec2(hash2(cid), hash2(cid+7.3)) - 0.5)*0.7;
         float tsz = 0.3 + 0.22*hash2(cid+4.4);
@@ -173,10 +174,12 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
       float px = t*0.0008*140.0;                   // tree cells per pixel
       float far = smoothstep(0.12, 0.45, px);
       tr = mix(tr, patch*0.6, far); shd = mix(shd, patch*0.2, far);
-      vec3 snowc = vec3(0.97,0.98,1.0)*hs*(1.0 - 0.4*shd) + vec3(-0.08,-0.03,0.04)*shd;
+      vec3 snowc = vec3(0.86,0.89,0.94)*hs*(1.0 - 0.4*shd) + vec3(-0.08,-0.03,0.04)*shd;
       vec3 tree = vec3(0.08,0.17,0.11)*(0.75+0.5*hs)*tv;
       vec3 sAlb = mix(snowc, tree, tr);
       sAlb = mix(sAlb, vec3(0.45,0.5,0.55)*hs, smoothstep(0.72, 0.8, hgt)*0.5); // rocky ridges
+      float road = smoothstep(0.012, 0.0, abs(n3(vec3(pos.xz*0.35, 21.0)) - 0.5)) * (1.0 - patch);
+      sAlb = mix(sAlb, vec3(0.42,0.42,0.44), road*0.6);
       alb = mix(alb, sAlb, u_snow);
     }
     float dif = clamp(dot(n, L)*0.6 + 0.55, 0.0, 1.0);
@@ -361,6 +364,9 @@ vec4 pixel(vec2 uv){
     float vis = smoothstep(edge, edge - 0.32, r);
     col *= vis*(1.0 - 0.25*u_blk);
     col = mix(col, vec3(0.0), smoothstep(0.85, 1.0, u_blk));
+  }
+  if (u_dim > 0.0) {
+    col *= 1.0 - u_dim*(0.42*smoothstep(0.22, 0.46, p0.y) + 0.3*exp(-pow((p0.y + 0.2)/0.1, 2.0)));
   }
   // frost on the edges (cold)
   if (u_frost > 0.0) {
