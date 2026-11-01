@@ -3,7 +3,7 @@
 // u_dist (camera distance), u_orb (camera azimuth, rad), u_sink (marine-snow rise speed, m/s), u_lamp (0..1 head lamp),
 // u_aim (lamp yaw, rad), u_wreck (0..1 Titanic bow beside you), u_floor (0..1 seabed rises under your feet),
 // u_shrimp (0..1 amphipods crawling on the seabed), u_press (0..1 pressure squeeze), u_gauge (0..1 depth gauge),
-// u_ty (look-at height offset), u_tx (look-at sideways offset; + puts the diver left of centre)
+// u_ty (look-at height offset), u_tz (look-at z offset), u_tx (look-at sideways offset; + puts the diver left of centre)
 float gT = 0.0;
 vec3 LP; vec3 LD; float AMB; vec3 HUE;
 
@@ -40,8 +40,8 @@ float sdBow(vec3 q){
   return min(min(hull, rails), min(mast, min(winch, house)));
 }
 vec3 bowLocal(vec3 p){
-  vec3 w = p - vec3(0.9, -1.45, -2.6);
-  vec3 dd = normalize(vec3(-0.6, 0.0, 1.0)); vec3 ss = vec3(-dd.z, 0.0, dd.x);
+  vec3 w = p - vec3(1.6, -2.4, -4.0);
+  vec3 dd = normalize(vec3(-0.55, 0.0, 1.0)); vec3 ss = vec3(-dd.z, 0.0, dd.x);
   vec3 q = vec3(dot(w, dd), w.y, dot(w, ss));
   q.xy = rot(-0.04)*q.xy;
   return q;
@@ -75,7 +75,7 @@ vec4 pixel(vec2 uv){
   AMB = exp(-d/140.0);
   HUE = lin(waterHue(d));
   float dist = u_dist > 0.0 ? u_dist : 5.5;
-  vec3 ta0 = vec3(0.0, 0.05 + u_ty, 0.0);
+  vec3 ta0 = vec3(0.0, 0.05 + u_ty, u_tz);
   vec3 ro = ta0 + vec3(sin(u_orb)*cos(u_look)*dist, -sin(u_look)*dist, cos(u_orb)*cos(u_look)*dist);
   vec3 side = normalize(cross(normalize(ta0 - ro), vec3(0.0,1.0,0.0)));
   vec3 ta = ta0 + side*u_tx;
@@ -140,11 +140,11 @@ vec4 pixel(vec2 uv){
     }
     // amphipods crawling toward the light
     if (u_shrimp > 0.0) {
-      for (int k = 0; k < 2; k++) {
-        float sc = k == 0 ? 2.2 : 3.1;
+      for (int k = 0; k < 1; k++) {
+        float sc = 2.6;
         vec2 g = fz*sc + vec2(float(k)*7.3, 0.0);
         vec2 gi = floor(g); float hs = hash2(gi + 3.1);
-        if (hs > 0.42) {
+        if (hs > 0.62) {
           vec2 c = gi + 0.5 + (vec2(hash2(gi + 1.7), hash2(gi + 9.2)) - 0.5)*0.5;
           vec2 tow = normalize(-c/sc + vec2(0.0001));
           float ph = gT*0.35 + hs*10.0;
@@ -191,8 +191,8 @@ vec4 pixel(vec2 uv){
       if (length(pos - vec3(0.0,0.66,0.15)) < 0.06) alb = lin(vec3(0.85,0.85,0.8));
     } else {
       vec3 q = bowLocal(pos);
-      float rust = noise2(vec2(q.x*0.9, q.y*3.5)) * 0.6 + noise2(vec2(q.x*7.0, q.y*0.6))*0.4;
-      alb = lin(mix(vec3(0.16,0.07,0.04), vec3(0.42,0.2,0.09), rust));
+      float rust = noise2(vec2(q.x*1.7, q.y*2.0 + q.z)) * 0.6 + noise2(vec2(q.x*9.0, q.y*9.0))*0.4;
+      alb = lin(mix(vec3(0.13,0.07,0.05), vec3(0.4,0.19,0.09), rust));
       alb *= 0.7 + 0.6*smoothstep(0.55, 0.85, noise2(vec2(q.x*14.0, q.y*1.2 + q.z)));  // rusticles
       if (q.y > -0.05 && abs(q.z) < 1.8) alb *= 0.8;
     }
@@ -251,7 +251,7 @@ vec4 pixel(vec2 uv){
     if (d > 600.0 && h > 0.965) {
       float fl = pow(0.5 + 0.5*sin(gT*2.2 + h*90.0), 6.0);
       vec3 bc = mix(lin(vec3(0.2,0.9,1.0)), lin(vec3(0.3,1.0,0.6)), hash2(gi + 0.7));
-      col += bc*(1.0 - smoothstep(0.0, r*1.6, length(o)))*fl*0.9*smoothstep(600.0, 1100.0, d);
+      col += bc*(1.0 - smoothstep(0.0, r*1.2, length(o*vec2(1.0, min(streak, 3.0)))))*fl*0.9*smoothstep(600.0, 1100.0, d);
     }
   }
 
