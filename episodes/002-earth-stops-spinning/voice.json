@@ -1,8 +1,1 @@
-{
- "engine": "elevenlabs eleven_v4",
- "voice": "Oliver - Warm British Narrator",
- "voice_id": "lo1O1Dz1Tu4FWVEPaxuT",
- "flow_id": "z1g7EtBNZ76utXrOZph5",
- "generation_id": "lr7AE2CeLafdZztRAI6r",
- "text": "[calm, intriguing documentary narrator, steady energy] What if Earth stopped spinning for one second? It's a calm morning in a city. You can't feel it, but you're moving east at almost thirteen hundred kilometres an hour, along with the street, the air and the ocean. [pause] Then the planet stops. The ground freezes in place. You don't. Everything that isn't bolted down keeps flying east, faster than the speed of sound. In that single second, you travel three hundred and fifty metres. Buildings are anchored at the bottom, but their top floors keep moving. The air keeps moving too: a wind three times stronger than the fastest gust ever recorded. [building tension] The oceans slam into every coastline. Then, one second later, the spin returns. [pause] Strangely, everything still flying east now matches the ground again. But the damage is done. Where would you want to be standing?"
-}
+{"engine":"higgsfield elevenlabs_v4","voice":"Holden","voice_id":"3c9d6053-6334-592c-8997-4e325286af3f","stability":0.45}
