@@ -11,6 +11,9 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - Ortam: Higgsfield MCP (sandbox_exec, media_upload), ffmpeg, Kokoro TTS (`/opt/tts`, yoksa
   `pip install kokoro-onnx soundfile` + model dosyaları, bkz. `scripts/setup.sh`).
 
+## ⚡ Çalışma kuralı
+- ⚡ **HER ZAMAN PARALEL VE HIZLI ÇALIŞ** (sahibin kalıcı kuralı): birden fazla bölümü aynı anda alt ajanlara ver, bekleme sürelerini başka işle doldur.
+
 ## 🔥 Viral kuralları (2026-11 güncellemesi, sadece Instagram)
 - **Uzunluk 30-40 sn** → senaryo **85-105 kelime**. İlk cümle = başlık sorusu, son cümle = izleyiciye soru.
 - **Aksiyonla açılış:** motor, başlık ekrandayken otomatik olarak videonun ~%55'indeki dramatik sahneyi gösterir
