@@ -16,6 +16,7 @@
 026-mariana-trench
 030-fall-into-volcano
 029-fall-from-plane
+028-moon-without-spacesuit
 009-no-friction
 010-asteroid-hits-ocean
 018-rain-for-a-year

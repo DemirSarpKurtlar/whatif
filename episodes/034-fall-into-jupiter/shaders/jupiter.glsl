@@ -32,10 +32,10 @@ float sdYou(vec3 p){
   float head = sdSphere(p - vec3(0.0, 0.04, 0.44), 0.15);
   float up = sdCapsule(a, vec3(0.2, 0.02, 0.22), vec3(0.5, 0.1 + fl, 0.28), 0.065);
   float fo = sdCapsule(a, vec3(0.5, 0.1 + fl, 0.28), vec3(0.64, 0.16 + fl, 0.54), 0.055);
-  float hand = sdSphere(a - vec3(0.66, 0.17 + fl, 0.6), 0.06);
+  float hand = sdSphere(a - vec3(0.655, 0.165 + fl, 0.6), 0.068);
   float th = sdCapsule(a, vec3(0.1, 0.0, -0.26), vec3(0.2, 0.06, -0.68), 0.085);
-  float sh = sdCapsule(a, vec3(0.2, 0.06, -0.68), vec3(0.24, 0.3 - fl, -0.95), 0.07);
-  float boot = sdRoundBox(a - vec3(0.245, 0.36 - fl, -1.0), vec3(0.06, 0.1, 0.05), 0.03);
+  float sh = sdCapsule(a, vec3(0.2, 0.06, -0.68), vec3(0.25, 0.2 - fl, -1.02), 0.068);
+  float boot = sdCapsule(a, vec3(0.25, 0.2 - fl, -1.04), vec3(0.25, 0.1 - fl, -1.1), 0.07);
   return min(min(min(torso, pack), min(head, hand)), min(min(up, fo), min(min(th, sh), boot)));
 }
 float sdProbe(vec3 q){
@@ -46,10 +46,10 @@ float sdProbe(vec3 q){
   float ant = sdCapsule(q, vec3(0.0, 0.42, 0.0), vec3(0.0, 0.62, 0.0), 0.02);
   float body = min(min(drum, top*0.7), ant);
   if (u_chute > 0.01) {
-    vec3 c = q - vec3(0.0, 4.8, 0.0);
-    float canopy = max(abs(length(c*vec3(1.0, 1.6, 1.0)) - 1.3) - 0.03, -c.y);
+    vec3 c = q - vec3(0.0, 3.0, 0.0);
+    float canopy = max(abs(length(c*vec3(1.0, 1.6, 1.0)) - 1.25) - 0.03, -c.y);
     vec3 r = vec3(abs(q.x), q.y, abs(q.z));
-    float lines = sdCapsule(r, vec3(0.0, 0.62, 0.0), vec3(0.9, 4.8, 0.9), 0.012);
+    float lines = sdCapsule(r, vec3(0.0, 0.62, 0.0), vec3(0.85, 3.0, 0.85), 0.012);
     body = min(body, min(canopy*0.6, lines));
   }
   return body;
@@ -75,7 +75,7 @@ vec3 deckCol(float d, float band){
   return c;
 }
 // sunlight left at depth d, plus a faint thermal floor
-float sunAt(float d){ return exp(-max(d, 0.0)/26.0); }
+float sunAt(float d){ return exp(-max(d, 0.0)/22.0); }
 vec3 glowAt(float d){ return vec3(1.0, 0.35, 0.12)*0.05*smoothstep(60.0, 160.0, d); }
 float bandAt(vec2 xz){ float z = xz.y*0.012 + 0.6*fbm2(xz*0.004 + 3.0); return smoothstep(0.25, 0.75, 0.5 + 0.5*sin(z*6.2832)); }
 float boltCell(vec2 id){ float h = hash2(id); float ph = fract(gT*0.37 + h*13.0); return step(0.86, h)*pow(max(0.0, 1.0 - ph*9.0), 2.0)*step(0.5, fract(ph*61.0 + h)); }
@@ -122,10 +122,11 @@ vec3 atmosphere(vec3 rd, float d, out float hitT){
   return col;
 }
 // a big nearby bolt: zig-zag vertical line at a fixed spot in the water-cloud layer
-vec3 zapBolt(vec3 rd, float d){
+vec3 zapBolt(vec3 rd, float d, vec3 fwd, vec3 rgt){
   if (u_zap <= 0.0) return vec3(0.0);
   vec3 ro = vec3(0.0, -d, 0.0);
-  vec3 B = vec3(9.0, -d - 2.0, -20.0);
+  vec3 fh = normalize(vec3(fwd.x, 0.0, fwd.z) + vec3(1e-4));
+  vec3 B = vec3(0.0, -d - 4.0, 0.0) + fh*22.0 + rgt*u_zx;
   vec3 col = vec3(0.0);
   // closest approach of the ray to the vertical line through B
   vec3 w = ro - B; vec3 u = vec3(0.0, 1.0, 0.0);
@@ -243,7 +244,7 @@ vec3 space(vec3 rd, vec3 fwd, vec3 upv, out float hitT){
           col = mix(col, vec3(1.0, 0.95, 0.6), smoothstep(0.018, 0.010, ds)*u_cut);
           col += vec3(1.0, 0.85, 0.4)*exp(-ds*40.0)*0.6*u_cut;
           // faint layer rings
-          col *= 0.92 + 0.08*sin(r*120.0);
+          col *= 0.97 + 0.03*sin(r*90.0);
           col = pow(col, vec3(1.0));
           col = lin(col);
           hitT = tt;
@@ -294,7 +295,7 @@ vec4 pixel(vec2 uv){
   if (u_space > 0.5) col = space(rd, fwd, upv, bgT);
   else {
     col = atmosphere(rd, d, bgT);
-    col += zapBolt(rd, d);
+    col += zapBolt(rd, d, fwd, rgt);
     if (fl > 0.0) col = mix(col, lin(fluid(rd)), fl);
   }
   // environment light for the figure
@@ -319,8 +320,8 @@ vec4 pixel(vec2 uv){
       }
       if (pos.y > 0.11 && abs(pos.z + 0.02) < 0.22 && abs(pos.x) < 0.16) alb = lin(vec3(0.25, 0.27, 0.3)); // backpack
       if (abs(pos.z - 0.1) < 0.025 && pos.y < 0.0) alb = lin(vec3(0.85, 0.35, 0.12));
-      if (abs(pos.x) > 0.58) alb = lin(vec3(0.2, 0.2, 0.22));               // gloves
-      if (pos.z < -0.93) alb = lin(vec3(0.2, 0.2, 0.22));                   // boots
+      if (abs(pos.x) > 0.6 && pos.z > 0.52) alb = lin(vec3(0.2, 0.2, 0.22)); // gloves
+      if (pos.z < -1.02) alb = lin(vec3(0.2, 0.2, 0.22));                   // boots
     } else {
       vec3 q = pos - PROBE;
       alb = lin(vec3(0.62, 0.55, 0.42));                                    // probe shell
@@ -334,7 +335,7 @@ vec4 pixel(vec2 uv){
     // sun key from space
     if (u_space > 0.5) { vec3 L = normalize(vec3(-0.9, 0.35, 0.55)); c = alb*(max(dot(n, L), 0.0)*1.6 + 0.04 + 0.15*(1.0 - up)*vec3(0.9, 0.6, 0.4)); }
     // entry plasma heats the underside
-    c += alb*vec3(1.0, 0.55, 0.2)*u_burn*(1.0 - up)*4.0;
+    c += alb*vec3(1.0, 0.5, 0.18)*u_burn*(1.0 - up)*2.5;
     // lightning flash light
     c += alb*vec3(0.75, 0.85, 1.0)*zapL*(0.4 + 0.6*max(dot(n, normalize(vec3(0.6, 0.0, -1.0))), 0.0))*2.0;
     float rim = pow(clamp(1.0 + dot(n, rd), 0.0, 1.0), 3.0);
@@ -370,10 +371,10 @@ vec4 pixel(vec2 uv){
       acc += e*flick;
     }
     acc *= min(tmax, 12.0)/20.0;
-    col += vec3(1.0, 0.5, 0.18)*acc*u_burn*1.6 + vec3(1.0, 0.85, 0.6)*acc*acc*u_burn*0.6;
+    col += vec3(1.0, 0.42, 0.12)*acc*u_burn*1.1 + vec3(1.0, 0.8, 0.5)*acc*acc*u_burn*0.25;
     // hot glare under the body
     vec3 wl = vec3(0.0, -0.45, 0.1) - ro; float tl = dot(wl, rd);
-    if (tl > 0.0) { float dd = length(wl - rd*tl); col += vec3(1.0, 0.7, 0.4)*u_burn*(0.004/(dd*dd + 0.002) + 0.25*exp(-dd*2.5)); }
+    if (tl > 0.0) { float dd = length(wl - rd*tl); col += vec3(1.0, 0.6, 0.3)*u_burn*(0.002/(dd*dd + 0.002) + 0.12*exp(-dd*2.5)); }
   }
 
   // ---- rising cloud particles (ice crystals / droplets / sparks)
