@@ -8,3 +8,5 @@ if [ ! -f engine/PAUSED ] && ! ps -eo args | grep -q "^bash engine/queue.sh"; th
   setsid nohup nice -n 19 bash engine/queue.sh > /tmp/queue.out 2>&1 < /dev/null 9>&- &
   echo "whatif: render queue (re)started"
 fi
+# keep the watchdog running too
+pgrep -f scripts/render_watchdog.sh >/dev/null || (setsid nohup bash scripts/render_watchdog.sh > /tmp/watchdog.out 2>&1 < /dev/null 9>&- &)
