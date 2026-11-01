@@ -10,13 +10,19 @@ vec3 LP; vec3 LD; float AMB; vec3 HUE;
 float sdDiver(vec3 p){
   p.xy = rot(0.06*sin(gT*0.7))*p.xy;
   vec3 ll = vec3(abs(p.x), p.y, p.z);
-  float legs = sdCapsule(ll, vec3(0.11,-0.15,0.0), vec3(0.14 + 0.03*sin(gT*0.9), -0.86, 0.05), 0.078);
-  float fins = sdRoundBox(ll - vec3(0.15,-0.97,0.13), vec3(0.07,0.015,0.17), 0.02);
-  float body = sdCapsule(p, vec3(0.0,-0.15,0.0), vec3(0.0,0.36,0.0), 0.175);
-  float arms = sdCapsule(ll, vec3(0.2,0.36,0.0), vec3(0.4,0.66 + 0.05*sin(gT*1.1),0.08), 0.062);
-  float head = sdSphere(p - vec3(0.0,0.6,0.02), 0.135);
-  float tank = sdCapsule(p, vec3(0.0,-0.05,-0.21), vec3(0.0,0.36,-0.21), 0.1);
-  return min(min(min(legs, fins), min(body, arms)), min(head, tank));
+  float sw = 0.04*sin(gT*0.9);
+  float thigh = sdCapsule(ll, vec3(0.1,-0.17,0.0), vec3(0.13,-0.52,0.09 + sw), 0.088);
+  float shin = sdCapsule(ll, vec3(0.13,-0.52,0.09 + sw), vec3(0.14,-0.85,-0.03), 0.07);
+  float fins = sdRoundBox(ll - vec3(0.15,-0.98,-0.05), vec3(0.07,0.13,0.008), 0.012);
+  float torso = sdRoundBox(p - vec3(0.0,0.1,0.0), vec3(0.12,0.22,0.06), 0.085);
+  float upper = sdCapsule(ll, vec3(0.19,0.36,0.0), vec3(0.31,0.56,0.06), 0.062);
+  float fore = sdCapsule(ll, vec3(0.31,0.56,0.06), vec3(0.35,0.8 + 0.03*sin(gT*1.1),0.1), 0.052);
+  float hand = sdSphere(ll - vec3(0.355,0.85,0.1), 0.05);
+  float head = sdSphere(p - vec3(0.0,0.58,0.02), 0.13);
+  float lamp = sdCylinder((p - vec3(0.0,0.66,0.13)).xzy, 0.035, 0.04);
+  float tank = sdCapsule(p, vec3(0.0,-0.05,-0.2), vec3(0.0,0.38,-0.2), 0.1);
+  float arms = min(min(upper, fore), hand);
+  return min(min(min(min(thigh, shin), fins), min(torso, arms)), min(min(head, lamp), tank));
 }
 // Titanic-like bow. Local: stem tip at origin pointing +x, deck at y = 0, keel at y = -3.6.
 float sdBow(vec3 q){
@@ -34,8 +40,8 @@ float sdBow(vec3 q){
   return min(min(hull, rails), min(mast, min(winch, house)));
 }
 vec3 bowLocal(vec3 p){
-  vec3 w = p - vec3(2.3, -1.25, -4.2);
-  vec3 dd = normalize(vec3(-1.0, 0.0, 0.75)); vec3 ss = vec3(-dd.z, 0.0, dd.x);
+  vec3 w = p - vec3(0.9, -1.45, -2.6);
+  vec3 dd = normalize(vec3(-0.6, 0.0, 1.0)); vec3 ss = vec3(-dd.z, 0.0, dd.x);
   vec3 q = vec3(dot(w, dd), w.y, dot(w, ss));
   q.xy = rot(-0.04)*q.xy;
   return q;
@@ -83,7 +89,7 @@ vec4 pixel(vec2 uv){
   float lamp = u_lamp;
 
   // ---- geometry
-  float FY = mix(-40.0, -1.02, u_floor);
+  float FY = mix(-40.0, -1.1, u_floor);
   vec3 m = march(ro, rd, 60.0, 0.0);
   float tHit = m.x > 0.0 ? m.x : 1e9;
   float tf = rd.y < 0.0 && u_floor > 0.01 ? (FY - ro.y)/rd.y : 1e9;
@@ -181,7 +187,8 @@ vec4 pixel(vec2 uv){
       if (hd < 0.15) alb = lin(vec3(0.08,0.09,0.11));
       if (hd < 0.15 && pos.z > 0.08 && pos.y > 0.56) alb = lin(vec3(0.25,0.45,0.55));
       if (tk < 0.115 && pos.y > -0.08 && pos.y < 0.48) alb = lin(vec3(0.75,0.78,0.82));
-      if (pos.y < -0.9) alb = lin(vec3(0.95,0.8,0.12));
+      if (pos.y < -0.84) alb = lin(vec3(0.95,0.8,0.12));
+      if (length(pos - vec3(0.0,0.66,0.15)) < 0.06) alb = lin(vec3(0.85,0.85,0.8));
     } else {
       vec3 q = bowLocal(pos);
       float rust = noise2(vec2(q.x*0.9, q.y*3.5)) * 0.6 + noise2(vec2(q.x*7.0, q.y*0.6))*0.4;
@@ -196,7 +203,7 @@ vec4 pixel(vec2 uv){
     float up = 0.5 + 0.5*n.y;
     vec3 c = alb*(HUE*AMB*(0.25 + 1.4*up) + lampC*lamp*spot*dif*10.0/(1.0 + ld*ld*0.18));
     // self-glow from the lamp spill so the diver never vanishes
-    if (m.y < 2.0) c += alb*lampC*lamp*0.05 + alb*HUE*0.02;
+    if (m.y < 2.0) c += alb*lampC*lamp*0.018 + alb*HUE*0.02 + lampC*lamp*0.05*pow(clamp(1.0 + dot(n, rd), 0.0, 1.0), 2.5);
     else c += lin(vec3(0.16,0.2,0.24))*(0.35 + 0.65*up)*0.22 + alb*0.6;   // ghostly fill on the wreck
     float rim = pow(clamp(1.0 + dot(n, rd), 0.0, 1.0), 3.0);
     c += rim*HUE*(AMB*0.6 + 0.02);

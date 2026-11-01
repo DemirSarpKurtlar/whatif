@@ -21,7 +21,7 @@ export default {
     { a: 4.45, b: 6.1, glsl: "stratos", p: { ...ST, pitch: [0.0, -0.08], roll: [0.05, 0.0], fish: 0.8 },
       hud: { cat: "39 KM UP", label: "THE SKY", value: "Black", sub: "99% OF THE AIR IS BELOW YOU", dot: "#5CB8F0" } },
     // 3 the Earth curves
-    { a: 6.1, b: 8.4, glsl: "stratos", p: { ...ST, pitch: [-0.24, -0.3], roll: [0.0, -0.04], fish: [1.3, 1.7], alt: [39, 38.5] },
+    { a: 6.1, b: 8.4, glsl: "stratos", p: { ...ST, rad: 110, pitch: [-0.5, -0.6], roll: [0.0, -0.04], fish: [1.2, 1.5], alt: [39, 38.5] },
       hud: { cat: "BELOW YOU", label: "THE HORIZON", value: "Curved", sub: "YOU SEE 700 KM IN EVERY DIRECTION" } },
     // 4 silent fall
     { a: 8.4, b: 11.5, glsl: "stratos", p: { ...FALL, alt: [38.5, 36.5], froll: [0.0, 0.9], md: [8.5, 11], streak: 0.05 },
