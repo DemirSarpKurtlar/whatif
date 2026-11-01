@@ -16,7 +16,7 @@ const specPath = resolve(args[0]);
 const opt = (k, d) => { const i = args.indexOf("--" + k); return i >= 0 ? args[i + 1] : d; };
 const spec = (await import(pathToFileURL(specPath).href)).default;
 const fps = +opt("fps", 30);
-const [glW, glH] = opt("gl", "720x1280").split("x").map(Number);
+const [glW, glH] = opt("gl", "810x1440").split("x").map(Number);
 const lib = readFileSync(join(ENGINE, "shaders/lib.glsl"), "utf8");
 const shaders = {};
 for (const s of spec.scenes) {
@@ -25,13 +25,16 @@ for (const s of spec.scenes) {
   const f = existsSync(local) ? local : join(ENGINE, "shaders", s.glsl + ".glsl");
   shaders[s.glsl] = lib + "\n" + readFileSync(f, "utf8");
 }
-const payload = { ...spec, glW, glH, shaders };
+const wordsFile = join(dirname(specPath), "words.json");
+const words = existsSync(wordsFile) ? JSON.parse(readFileSync(wordsFile, "utf8")) : [];
+const payload = { ...spec, glW, glH, shaders, words };
+const PAGE = opt("page", process.env.WHATIF_PAGE || "page.html");
 
 async function openPage() {
   const browser = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
   const page = await browser.newPage({ viewport: { width: 400, height: 400 } });
   page.on("pageerror", (e) => console.error("pageerror", e.message));
-  await page.goto(pathToFileURL(join(ENGINE, "page.html")).href);
+  await page.goto(pathToFileURL(join(ENGINE, PAGE)).href);
   const r = await page.evaluate((p) => window.setup(p), payload);
   return { browser, page, renderer: r };
 }

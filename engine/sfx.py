@@ -20,7 +20,7 @@ ep = sys.argv[1]
 C = json.load(open(os.path.join(ep, "sfx.json")))
 END = C["END"]; N = int(SR * END)
 rng = np.random.default_rng(7)
-mus = np.zeros(N); fx = np.zeros(N)
+mus = np.zeros(N); fx = np.zeros(N); fxL = np.zeros(N); fxR = np.zeros(N)
 T = lambda t: int(t * SR)
 db = lambda d: 10 ** (d / 20)
 def env(n, a=0.01, r=0.3):
@@ -56,15 +56,33 @@ if C.get("tension"):
     mus += d * mask(C["tension"], 1.5) * (0.85 + 0.15 * np.sin(2 * np.pi * 0.5 * t))
 note = lambda m: 440 * 2 ** ((m - 69) / 12)
 pad = C.get("pad", "minor")
+PROG = {"minor": [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]],
+        "major": [[48, 52, 55], [55, 59, 62], [57, 60, 64], [53, 57, 60]],
+        "epic":  [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]],
+        "dark":  [[45, 48, 52], [41, 45, 48], [43, 46, 50], [40, 44, 47]]}
 if pad != "none":
-    chords = [[57, 60, 64, 69], [53, 57, 60, 65], [48, 55, 60, 64], [55, 59, 62, 67]] if pad == "minor" else \
-             [[48, 52, 55, 60], [55, 59, 62, 67], [57, 60, 64, 69], [53, 57, 60, 65]]
-    k = 0; st = 0.0
+    chords = PROG.get(pad, PROG["minor"]); k = 0; st = 0.0
     while st < END:
-        ln = min(9.5, END - st); n, x0 = tt(ln); x = np.zeros(n)
+        ln = min(9.0, END - st); n, x0 = tt(ln); x = np.zeros(n)
         for m in chords[k % 4]:
-            f = note(m); x += np.sin(2 * np.pi * f * x0) + 0.25 * np.sin(2 * np.pi * 2 * f * x0 + 0.3) + 0.12 * np.sin(2 * np.pi * 3 * f * x0)
-        add(mus, st, lp(x, 1800) * env(n, 2.0, 2.5), db(-34)); st += 8.0; k += 1
+            f = note(m)
+            for det in (-0.12, 0.0, 0.11):
+                ph = 2 * np.pi * f * (1 + det / 100) * x0
+                x += (2 * ((ph / (2 * np.pi)) % 1.0) - 1) * 0.33
+        sweep = 700 + 900 * (0.5 + 0.5 * np.sin(2 * np.pi * x0 / 9.0 - 1.5))
+        xs = np.zeros(n); seg = T(0.05)
+        for s0 in range(0, n, seg):
+            xs[s0:s0+seg] = lp(x[max(0, s0-seg*6):s0+seg], float(np.mean(sweep[s0:s0+seg])))[-len(xs[s0:s0+seg]):]
+        sub = np.sin(2 * np.pi * note(chords[k % 4][0] - 24) * x0) * 0.9
+        add(mus, st, (xs * 0.55 + sub * 0.35) * env(n, 1.8, 2.2), db(-31)); st += 8.0; k += 1
+# rhythmic pulse (retention driver): soft muted ticks + kick on beats
+for a, b in C.get("pulse", C.get("tension", [])):
+    bpm = C.get("bpm", 100); beat = 60.0 / bpm; s0 = a; i = 0
+    while s0 < b:
+        n, x0 = tt(0.12); add(fx, s0, hp(white(n), 6000) * np.exp(-x0 * 60), db(-34 if i % 2 else -30))
+        if i % 4 == 0:
+            n, x0 = tt(0.35); add(mus, s0, np.sin(2 * np.pi * (50 + 60 * np.exp(-x0 * 30)) * x0) * np.exp(-x0 * 9), db(-22))
+        s0 += beat / 2; i += 1
 for a, b in C.get("arp", []):
     s = a; i = 0
     seq = [69, 72, 76, 81, 76, 72] if pad != "major" else [72, 76, 79, 84, 79, 76]
@@ -78,7 +96,9 @@ def whoosh(t0, d=0.9, g=-20, f0=300, f1=3000):
         fc = f0 + (f1 - f0) * (s / n)
         blk = bp(x[max(0, s - seg * 4): s + seg], max(60, fc * 0.6), min(20000, fc * 1.4))
         out[s: s + seg] = blk[-len(out[s: s + seg]):]
-    add(fx, t0, out * np.sin(np.pi * x0 / d) ** 2, db(g))
+    sig = out * np.sin(np.pi * x0 / d) ** 2 * db(g)
+    pan = np.linspace(-0.8, 0.8, n) if rng.random() > 0.5 else np.linspace(0.8, -0.8, n)
+    add(fxL, t0, sig * np.sqrt(0.5 * (1 - pan))); add(fxR, t0, sig * np.sqrt(0.5 * (1 + pan)))
 def E_whoosh(e): whoosh(e["t"], e.get("d", 0.9), e.get("g", -20), e.get("f0", 300), e.get("f1", 3000))
 def E_whoosh_down(e): whoosh(e["t"], e.get("d", 0.6), e.get("g", -18), 3000, 250)
 def E_powerdown(e):
@@ -156,9 +176,14 @@ for e in C.get("events", []):
     fn = G.get("E_" + e["k"])
     if fn is None: print("unknown event", e["k"]); continue
     fn(e)
-out = mus + fx
-st = np.stack([out, np.roll(out, int(0.012 * SR))], 1)
+def reverb(x, secs=2.2, wet=0.22, seed=3):
+    r2 = np.random.default_rng(seed); n = T(secs); ir = r2.standard_normal(n) * np.exp(-np.arange(n) / SR * 3.2)
+    ir = lp(ir, 5000); ir /= np.sqrt(np.sum(ir ** 2)) + 1e-9
+    return ss.fftconvolve(x, ir)[:len(x)] * wet
+L = mus + fx + fxL; R = mus + fx + fxR
+L = L + reverb(fx + fxL + mus * 0.5, seed=3); R = np.roll(R, int(0.008 * SR)) + reverb(fx + fxR + mus * 0.5, seed=5)
+st = np.stack([L, R], 1)
 pk = np.max(np.abs(st))
 if pk > 0.95: st *= 0.95 / pk
 wf.write(os.path.join(ep, "bed.wav"), SR, (st * 32767).astype(np.int16))
-print("bed.wav ok, peak", round(float(pk), 3))
+print("bed.wav ok (v2), peak", round(float(pk), 3))

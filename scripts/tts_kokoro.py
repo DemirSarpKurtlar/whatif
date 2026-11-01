@@ -4,7 +4,7 @@ Bracketed delivery tags like [pause] are stripped; '[pause]' becomes a short sil
 import re, sys, numpy as np, soundfile as sf
 from kokoro_onnx import Kokoro
 src, out = sys.argv[1], sys.argv[2]
-voice = sys.argv[3] if len(sys.argv) > 3 else "am_michael"
+voice = sys.argv[3] if len(sys.argv) > 3 else "bm_george"
 speed = float(sys.argv[4]) if len(sys.argv) > 4 else 1.0
 text = open(src, encoding="utf-8").read()
 k = Kokoro("/opt/tts/kokoro-v1.0.onnx", "/opt/tts/voices-v1.0.bin")
