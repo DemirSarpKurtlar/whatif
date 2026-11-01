@@ -26,12 +26,21 @@ for (const s of spec.scenes) {
   shaders[s.glsl] = lib + "\n" + readFileSync(f, "utf8");
 }
 const EPD = dirname(specPath);
+// 2D vector scenes: episodes/<ep>/draw/<name>.js (or engine/draw/<name>.js), with engine/draw/flatlib.js prepended
+const draws = {};
+const flatlib = existsSync(join(ENGINE, "draw/flatlib.js")) ? readFileSync(join(ENGINE, "draw/flatlib.js"), "utf8") : "";
+for (const s of spec.scenes) {
+  if (!s.draw || draws[s.draw]) continue;
+  const local = join(dirname(specPath), "draw", s.draw + ".js");
+  const f = existsSync(local) ? local : join(ENGINE, "draw", s.draw + ".js");
+  draws[s.draw] = flatlib + "\n" + readFileSync(f, "utf8");
+}
 const warpFile = join(EPD, "warp.json");
 const warp = existsSync(warpFile) ? JSON.parse(readFileSync(warpFile, "utf8")) : null;
 // captions live in the spec's (old) timeline, so highlight with the old word times when warped
 const wordsFile = join(EPD, warp && existsSync(join(EPD, "words_old.json")) ? "words_old.json" : "words.json");
 const words = existsSync(wordsFile) ? JSON.parse(readFileSync(wordsFile, "utf8")) : [];
-const payload = { ...spec, glW, glH, shaders, words, warp, clean: process.env.WHATIF_CLEAN === "1" };
+const payload = { ...spec, glW, glH, shaders, draws, words, warp, clean: process.env.WHATIF_CLEAN === "1" };
 const PAGE = opt("page", process.env.WHATIF_PAGE || "page.html");
 
 async function openPage() {
@@ -66,7 +75,7 @@ const workers = +opt("workers", 2);
 // A fingerprint of the inputs invalidates old chunks when the spec, shaders, page or timing change.
 const { createHash } = await import("node:crypto");
 const CH = +opt("chunk", 90);
-const fp = createHash("sha1").update(JSON.stringify({ spec, shaders, warp, glW, glH, fps, page: readFileSync(join(ENGINE, PAGE), "utf8") })).digest("hex").slice(0, 12);
+const fp = createHash("sha1").update(JSON.stringify({ spec, shaders, draws, warp, glW, glH, fps, page: readFileSync(join(ENGINE, PAGE), "utf8") })).digest("hex").slice(0, 12);
 const tmp = out + ".parts";
 if (!existsSync(join(tmp, "FP")) || readFileSync(join(tmp, "FP"), "utf8") !== fp) { rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true }); writeFileSync(join(tmp, "FP"), fp); }
 const chunks = []; for (let a = 0; a < N; a += CH) chunks.push([a, Math.min(N, a + CH)]);

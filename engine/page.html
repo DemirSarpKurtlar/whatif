@@ -4,6 +4,8 @@
 @font-face { font-family: "LSerif"; src: url("LiberationSerif-Regular.ttf"); }
 @font-face { font-family: "LSerif"; font-style: italic; src: url("LiberationSerif-Italic.ttf"); }
 @font-face { font-family: "LSans"; font-weight: 700; src: url("LiberationSans-Bold.ttf"); }
+@font-face { font-family: "LHeavy"; src: url("InterDisplay-Black.otf"); }
+@font-face { font-family: "LBold"; src: url("InterDisplay-ExtraBold.otf"); }
 html,body{margin:0;background:#000}
 </style></head>
 <body>
@@ -12,7 +14,9 @@ html,body{margin:0;background:#000}
 <script>
 // v2 overlay engine: crossfades, word-highlight captions, animated HUD/title, grain + vignette, subtle camera breathing.
 const W = 1080, H = 1920;
-let SPEC, gl, glc, out, ctx, progs = {}, quad, grainC, vign, CAPW = [];
+let SPEC, gl, glc, out, ctx, progs = {}, quad, grainC, vign, CAPW = [], DRAWS = {}, dcv, dctx;
+const vis = (s) => !!(s && (s.glsl || s.draw));
+const FLAT = () => SPEC && SPEC.style === "flat";
 
 const EASE = {
   "linear": (x) => x,
@@ -78,6 +82,8 @@ window.setup = async (spec) => {
     progs[name] = compile(name, src, params);
   }
   out = document.getElementById("out"); out.width = W; out.height = H; ctx = out.getContext("2d");
+  dcv = document.createElement("canvas"); dcv.width = W; dcv.height = H; dctx = dcv.getContext("2d");
+  for (const [name, src] of Object.entries(spec.draws || {})) DRAWS[name] = new Function("ctx", "W", "H", "t", "lt", "p", "E", src);
   // grain tile + vignette
   grainC = document.createElement("canvas"); grainC.width = 512; grainC.height = 512;
   const g = grainC.getContext("2d"), id = g.createImageData(512, 512);
@@ -86,7 +92,7 @@ window.setup = async (spec) => {
   vign = ctx.createRadialGradient(W / 2, H * 0.48, H * 0.32, W / 2, H * 0.5, H * 0.78);
   vign.addColorStop(0, "rgba(0,0,0,0)"); vign.addColorStop(1, "rgba(0,0,0,0.42)");
   CAPW = buildCaptionWords(spec);
-  await document.fonts.load('96px LSerif'); await document.fonts.load('italic 58px LSerif'); await document.fonts.load('700 24px LSans');
+  await document.fonts.load('96px LSerif'); await document.fonts.load('italic 58px LSerif'); await document.fonts.load('700 24px LSans'); await document.fonts.load('60px LHeavy'); await document.fonts.load('60px LBold');
   return (gl.getParameter(gl.RENDERER) || "webgl") + " v2";
 };
 
@@ -151,9 +157,115 @@ function caption(C, t, a) {
   });
   ctx.globalAlpha = 1;
 }
+
+// ---------- flat 2D style overlays (style: "flat") ----------
+function pill(text, x, y, bg, fg, size = 26, align = "left") {
+  ctx.font = `${size}px LHeavy`; const w = ctx.measureText(text).width + size * 0.9, h = size * 1.45;
+  const x0 = align === "center" ? x - w / 2 : align === "right" ? x - w : x;
+  ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(x0, y, w, h, h / 2); ctx.fill();
+  ctx.fillStyle = fg; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(text, x0 + w / 2, y + h / 2 + 1);
+  return w;
+}
+function ftxt(s, x, y, size, color, align = "center", font = "LHeavy") {
+  ctx.font = `${size}px ${font}`; ctx.textAlign = align; ctx.textBaseline = "alphabetic";
+  ctx.lineJoin = "round"; ctx.lineWidth = size * 0.16; ctx.strokeStyle = "rgba(10,12,40,0.55)"; ctx.strokeText(s, x, y);
+  ctx.fillStyle = color; ctx.fillText(s, x, y);
+}
+function flatCaption(C, t, a) {
+  ctx.globalAlpha = a;
+  const size = 62, font = `${size}px LHeavy`; ctx.font = font; const sp = ctx.measureText(" ").width;
+  const lines = wrapToks(C.toks, font, 920);
+  const pop0 = 1 - EASE["ease-out"](clamp01((t - C.a) / 0.22));
+  const y0 = (SPEC.capY || 1400) - (lines.length - 1) * 38 + pop0 * 16;
+  const hot = (SPEC.hot || []).map((w) => w.toLowerCase());
+  lines.forEach((idx, li) => {
+    const widths = idx.map((i) => ctx.measureText(C.toks[i]).width);
+    let x = W / 2 - (widths.reduce((s2, w) => s2 + w, 0) + sp * (idx.length - 1)) / 2;
+    idx.forEach((i, j) => {
+      const tok = C.toks[i], ts = C.times[i]; const cur = t >= ts && (i === C.toks.length - 1 || t < C.times[i + 1]);
+      const bare = tok.toLowerCase().replace(/[^a-z0-9%,.:]/g, "");
+      const isNum = /\d/.test(tok), isHot = hot.includes(bare.replace(/[.,:]$/, ""));
+      const col = isNum ? "#FF4D5E" : isHot ? "#FFD23F" : cur ? "#FFE58A" : "#FFFFFF";
+      const pop = cur ? 1 + 0.07 * Math.max(0, 1 - (t - ts) / 0.16) : 1;
+      ctx.save(); ctx.translate(x + widths[j] / 2, y0 + li * 76); ctx.scale(pop, pop);
+      ftxt(tok, 0, 0, size, col); ctx.restore();
+      x += widths[j] + sp;
+    });
+  });
+  ctx.globalAlpha = 1;
+}
+function flatTitle(S, t) {
+  const a = Math.min(1, (S.title.end - t) / 0.25);
+  const size = 76, font = `${size}px LHeavy`; const toks = S.title.text.split(" "); const lines = wrapToks(toks, font, 940);
+  ctx.font = font; const sp = ctx.measureText(" ").width; let k = 0;
+  const hot = (S.title.hot || []).map((w) => w.toLowerCase());
+  const y0 = (S.title.y || 1330) - (lines.length - 1) * 44;
+  if (S.title.tag) { ctx.globalAlpha = a; pill(S.title.tag, W / 2, y0 - 150, "#FF3B4E", "#FFFFFF", 30, "center"); }
+  lines.forEach((idx, li) => {
+    ctx.font = font; const widths = idx.map((i) => ctx.measureText(toks[i]).width);
+    let x = W / 2 - (widths.reduce((s2, w) => s2 + w, 0) + sp * (idx.length - 1)) / 2;
+    idx.forEach((i, j) => {
+      const e = EASE["back"](clamp01((t - 0.05 - k * 0.06) / 0.32)); k++;
+      ctx.globalAlpha = a * clamp01(e);
+      const bare = toks[i].toLowerCase().replace(/[^a-z0-9]/g, "");
+      ftxt(toks[i], x + widths[j] / 2, y0 + li * 88 + (1 - e) * 26, size, hot.includes(bare) ? "#FFD23F" : "#FFFFFF");
+      x += widths[j] + sp;
+    });
+  });
+  ctx.globalAlpha = 1;
+}
+function flatBig(B, t) {
+  const lt2 = t - B.at; const a = alphaFade(lt2, B.dur, 0.06, 0.2); if (a <= 0) return;
+  const s = 0.6 + 0.4 * EASE["back"](clamp01(lt2 / 0.28));
+  ctx.save(); ctx.globalAlpha = a; ctx.translate(B.x || W / 2, B.y || 560); ctx.scale(s, s);
+  ftxt(B.text, 0, 0, B.size || 220, B.color || "#F7E8C6", B.align || "center");
+  if (B.tag) pill(B.tag, B.align === "left" ? 8 : 0, 26, B.tagBg || "#FFFFFF", B.tagFg || "#151A45", 30, B.align === "left" ? "left" : "center");
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+function flatHud(h, lt, a) {
+  const k = EASE["ease-out"](clamp01(lt / 0.4)); ctx.globalAlpha = a;
+  pill(h.cat, 64 - (1 - k) * 30, 110, h.dot || "#FF3B4E", "#FFFFFF", 28);
+  if (h.value) { ctx.globalAlpha = a * k; ftxt(h.value, 64, 250 + (1 - k) * 24, 92, h.vcol || "#FFFFFF", "left"); }
+  if (h.sub) { ctx.globalAlpha = a * k; ftxt(h.sub, 66, 304, 30, "rgba(255,255,255,0.85)", "left", "LBold"); }
+  ctx.globalAlpha = 1;
+}
+function flatEnd(E, t) {
+  const le = t - E.at; const a = Math.min(1, le / 0.35); ctx.globalAlpha = a;
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#10143A"); g.addColorStop(1, "#1E2463");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 90; i++) { const x = (i * 397) % W, y = (i * 733) % H, r = 1 + (i % 3); ctx.fillStyle = `rgba(255,255,255,${0.25 + 0.5 * ((i * 7) % 10) / 10})`; ctx.fillRect(x, y, r, r); }
+  if (E.series) pill(E.series, W / 2, 330, "#FF3B4E", "#FFFFFF", 32, "center");
+  ftxt(E.title, W / 2, 520, 78, "#FFFFFF");
+  const ch = E.choices || [];
+  ch.forEach((c, i) => {
+    const e = EASE["back"](clamp01((le - 0.25 - i * 0.18) / 0.4)); const y = 640 + i * 300;
+    ctx.save(); ctx.globalAlpha = a * clamp01(e); ctx.translate(W / 2, y + 120); ctx.scale(0.85 + 0.15 * e, 0.85 + 0.15 * e);
+    ctx.fillStyle = i === 0 ? "#FF3B4E" : "#2EC4B6"; ctx.beginPath(); ctx.roundRect(-440, -120, 880, 240, 44); ctx.fill();
+    ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.beginPath(); ctx.roundRect(-440, 92, 880, 28, [0, 0, 44, 44]); ctx.fill();
+    ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc(-330, 0, 70, 0, Math.PI * 2); ctx.fill();
+    ctx.font = "96px LHeavy"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = i === 0 ? "#FF3B4E" : "#2EC4B6"; ctx.fillText(c.k, -330, 6);
+    const words = c.text.split(" "); const lines = []; let cur = ""; ctx.font = "54px LHeavy";
+    for (const w of words) { const tryS = cur ? cur + " " + w : w; if (ctx.measureText(tryS).width > 560 && cur) { lines.push(cur); cur = w; } else cur = tryS; }
+    if (cur) lines.push(cur);
+    ctx.fillStyle = "#FFFFFF"; ctx.textAlign = "left";
+    lines.forEach((l, li) => ctx.fillText(l, -220, (li - (lines.length - 1) / 2) * 62 + 4));
+    ctx.restore();
+  });
+  const pulse = 1 + 0.04 * Math.sin(le * 6);
+  ctx.globalAlpha = a; ctx.save(); ctx.translate(W / 2, 1340); ctx.scale(pulse, pulse);
+  ftxt(E.cta || "COMMENT A OR B", 0, 0, 74, "#FFD23F"); ctx.restore();
+  if (E.small) E.small.forEach((l, i) => ftxt(l, W / 2, 1420 + i * 48, 32, "rgba(255,255,255,0.8)", "center", "LBold"));
+  ctx.globalAlpha = 1;
+}
 function fmtNum(v, dec) { return v.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
 function drawScene(sc, t, alpha, zoom) {
   const lt = t - sc.a, dur = sc.b - sc.a;
+  if (sc.draw) {
+    const pv = {}; for (const k in sc.p) pv[k] = valAt(sc.p[k], Math.min(lt, dur), dur);
+    dctx.save(); dctx.clearRect(0, 0, W, H); DRAWS[sc.draw](dctx, W, H, t, lt, pv, EASE); dctx.restore();
+    ctx.save(); ctx.globalAlpha = alpha; const z = zoom, w = W * z, h = H * z; ctx.drawImage(dcv, (W - w) / 2, (H - h) / 2, w, h); ctx.restore();
+    return;
+  }
   const P = progs[sc.glsl]; gl.viewport(0, 0, glc.width, glc.height); gl.useProgram(P.pr);
   gl.uniform2f(P.loc.res, glc.width, glc.height); gl.uniform1f(P.loc.time, t);
   for (const k of P.params) { const v = sc.p[k]; if (v !== undefined && P.loc[k]) gl.uniform1f(P.loc[k], valAt(v, Math.min(lt, dur), dur)); else if (P.loc[k]) gl.uniform1f(P.loc[k], 0); }
@@ -184,7 +296,7 @@ window.frame = (T) => {
     let hi = S.hook && S.hook.scene !== undefined ? S.hook.scene : -1;
     if (hi < 0) { const target = 0.55 * (S.endCard ? S.endCard.at : S.END); hi = S.scenes.findIndex((s) => target >= s.a && target < s.b); }
     const hs = S.scenes[hi];
-    if (hs && hs.glsl && hi > 0) {
+    if (hs && vis(hs) && hi > 0) {
       const ht = hs.a + (S.hook && S.hook.at !== undefined ? S.hook.at : 0.45 * (hs.b - hs.a)) + t;
       HOOK = { sc: hs, t: Math.min(ht, hs.b - 0.01) };
     }
@@ -193,22 +305,22 @@ window.frame = (T) => {
     const k = clamp01(t / 0.6);
     drawScene(HOOK.sc, HOOK.t, 1, 1.14 - 0.1 * EASE["ease-out"](k));
     const fadeOut = clamp01((S.title.end - t) / 0.35);
-    if (fadeOut < 1 && sc.glsl) drawScene(sc, t, 1 - fadeOut, 1.0);
-  } else if (sc.glsl && t < endAt + 0.5) {
+    if (fadeOut < 1 && vis(sc)) drawScene(sc, t, 1 - fadeOut, 1.0);
+  } else if (vis(sc) && t < endAt + 0.5) {
     const xf = sc.cut ? 0 : (sc.xf ?? S.xf ?? 0.35);
     const prev = si > 0 ? S.scenes[si - 1] : null;
     const zoomOf = (s, tt) => 1.0 + 0.035 * clamp01((tt - s.a) / Math.max(0.5, s.b - s.a));
-    if (prev && prev.glsl && xf > 0 && lt < xf) {
+    if (prev && vis(prev) && xf > 0 && lt < xf) {
       drawScene(prev, t, 1, zoomOf(prev, t));
       drawScene(sc, t, EASE["ease-in-out"](lt / xf), zoomOf(sc, t));
     } else drawScene(sc, t, 1, zoomOf(sc, t));
   }
   // --- vignette
-  ctx.fillStyle = vign; ctx.fillRect(0, 0, W, H);
+  if (!FLAT()) { ctx.fillStyle = vign; ctx.fillRect(0, 0, W, H); }
   if (S.clean) return;
   // --- HUD
   const showEl = S.elapsed && t >= S.elapsed.start && t < S.elapsed.end;
-  if (sc.hud || showEl) shadeTop(1);
+  if ((sc.hud || showEl) && !FLAT()) shadeTop(1);
   if (sc.hud) {
     const h = sc.hud, at = h.at || 0;
     const a = alphaFade(lt - at, dur - at, 0.25, 0.2);
@@ -216,10 +328,10 @@ window.frame = (T) => {
       let hv = h;
       if (h.counter) { const c = h.counter; const x = clamp01((lt - c.at) / c.dur); const e = EASE[c.easing || "ease-in"](x);
         hv = { ...h, value: (c.prefix || "") + fmtNum(c.from + (c.to - c.from) * e, c.dec || 0) + (c.suffix || "") }; }
-      hud(hv, lt - at, a);
+      FLAT() ? flatHud(hv, lt - at, a) : hud(hv, lt - at, a);
     }
   }
-  for (const h of S.huds || []) { const a = alphaFade(t - h.at, h.dur, 0.25, 0.2); if (a > 0) hud(h, t - h.at, a); }
+  for (const h of S.huds || []) { const a = alphaFade(t - h.at, h.dur, 0.25, 0.2); if (a > 0) (FLAT() ? flatHud : hud)(h, t - h.at, a); }
   if (showEl) {
     const E = S.elapsed; let v = 0; const P = E.points;
     if (t <= P[0][0]) v = P[0][1]; else { v = P[P.length - 1][1]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, x0] = P[i - 1], [b0, y0] = P[i]; v = x0 + (y0 - x0) * (t - a0) / (b0 - a0); break; } }
@@ -235,7 +347,8 @@ window.frame = (T) => {
     ctx.globalAlpha = 1;
   }
   // --- title: words rise in one by one
-  if (S.title && t < S.title.end) {
+  if (S.title && t < S.title.end && FLAT()) flatTitle(S, t);
+  else if (S.title && t < S.title.end) {
     const a = Math.min(1, (S.title.end - t) / 0.25);
     const font = "92px LSerif"; const toks = S.title.text.split(" "); const lines = wrapToks(toks, font, 960);
     ctx.font = font; const sp = ctx.measureText(" ").width;
@@ -253,9 +366,10 @@ window.frame = (T) => {
     ctx.globalAlpha = 1;
   }
   // --- captions (word highlight)
-  for (const C of CAPW) { const a = alphaFade(t - C.a, C.b - C.a, 0.15, 0.15); if (a > 0) caption(C, t, a); }
+  for (const C of CAPW) { const a = alphaFade(t - C.a, C.b - C.a, 0.15, 0.15); if (a > 0) (FLAT() ? flatCaption : caption)(C, t, a); }
   // --- big centre text with pop
-  for (const B of S.bigs || []) { const lt2 = t - B.at; const a = alphaFade(lt2, B.dur, 0.08, 0.25); if (a > 0) {
+  if (FLAT()) for (const B of S.bigs || []) flatBig(B, t);
+  else for (const B of S.bigs || []) { const lt2 = t - B.at; const a = alphaFade(lt2, B.dur, 0.08, 0.25); if (a > 0) {
     ctx.globalAlpha = a; ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.fillRect(0, 0, W, H);
     const s = 1.25 - 0.25 * EASE["ease-out"](clamp01(lt2 / 0.3));
     ctx.save(); ctx.translate(W / 2, (B.y || 700) + 130); ctx.scale(s, s);
@@ -263,7 +377,8 @@ window.frame = (T) => {
   // --- flashes
   for (const f of S.flashes || []) { const d = f.dur || 0.45; if (t >= f.at && t < f.at + d) { ctx.globalAlpha = 0.85 * (1 - (t - f.at) / d); ctx.fillStyle = f.color || "#FFFFFF"; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; } }
   // --- end card
-  if (S.endCard && t >= S.endCard.at) {
+  if (S.endCard && t >= S.endCard.at && FLAT()) flatEnd(S.endCard, t);
+  else if (S.endCard && t >= S.endCard.at) {
     const E = S.endCard, le = t - E.at; ctx.globalAlpha = Math.min(1, le / 0.4);
     ctx.fillStyle = "#05060A"; ctx.fillRect(0, 0, W, H);
     const font = "76px LSerif"; const toks = E.title.split(" "); const lines = wrapToks(toks, font, 880);
@@ -279,7 +394,7 @@ window.frame = (T) => {
     ctx.globalAlpha = 1;
   }
   // --- film grain
-  ctx.save(); ctx.globalAlpha = 0.06; ctx.globalCompositeOperation = "overlay";
+  ctx.save(); ctx.globalAlpha = FLAT() ? 0.035 : 0.06; ctx.globalCompositeOperation = "overlay";
   const ox = Math.floor(Math.random() * 512), oy = Math.floor(Math.random() * 512);
   for (let y = -oy; y < H; y += 512) for (let x = -ox; x < W; x += 512) ctx.drawImage(grainC, x, y);
   ctx.restore();

@@ -17,8 +17,9 @@ for ep in $(grep -v '^#' posts/schedule.txt); do
   elif [ -f "out/$ep.mp4" ]; then src=(--video-file "out/$ep.mp4")
   else continue; fi
   [ -n "$cover" ] && src+=(--cover-url "$cover")
-  out=$(python3 scripts/ig_publish.py "${src[@]}" --caption-file "episodes/$ep/caption.txt" --thumb-ms 1500 \
-        --first-comment "Part 2 or a new What If? 👇 Comment your idea - the best one gets simulated next! 🔁 Save this so you can find Part 2.")
+  fc="Part 2 or a new What If? 👇 Comment your idea - the best one gets simulated next! 🔁 Save this so you can find Part 2."
+  [ -f "episodes/$ep/first_comment.txt" ] && fc=$(cat "episodes/$ep/first_comment.txt")
+  out=$(python3 scripts/ig_publish.py "${src[@]}" --caption-file "episodes/$ep/caption.txt" --thumb-ms 1500 --first-comment "$fc")
   echo "$out"
   echo "$ep" >> posts/posted.txt
   link=$(echo "$out" | tail -1 | python3 -c "import json,sys;print(json.load(sys.stdin).get('permalink',''))")
