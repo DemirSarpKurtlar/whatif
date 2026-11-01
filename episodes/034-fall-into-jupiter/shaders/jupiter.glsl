@@ -84,7 +84,7 @@ vec3 atmoBg(vec3 rd, float d){
   float s = sunAt(d);
   vec3 up = deckCol(d - 12.0, 0.2)*s*1.1 + glowAt(d);
   vec3 dn = deckCol(d + 15.0, 0.5)*sunAt(d + 25.0)*0.6 + glowAt(d + 30.0);
-  if (d < 0.0) { up = mix(vec3(0.02, 0.03, 0.07), vec3(0.6, 0.62, 0.7), exp(rd.y*-4.0)*0.6*(1.0 - smoothstep(-200.0, -60.0, d)*0.0)); }
+  if (d < 0.0) { up = mix(vec3(0.004, 0.006, 0.02), vec3(0.55, 0.5, 0.45), exp(-max(rd.y, 0.0)*14.0)*0.75); }
   return mix(dn, up, smoothstep(-0.6, 0.6, rd.y));
 }
 vec3 atmosphere(vec3 rd, float d, out float hitT){
@@ -103,10 +103,10 @@ vec3 atmosphere(vec3 rd, float d, out float hitT){
     vec2 xz = ro.xz + rd.xz*t + vec2(dk*7.3, dk*3.1);
     float lay = fbm2(xz*0.11 + vec2(gT*0.02, 0.0)) + 0.35*fbm2(xz*0.6);
     float cov = mix(0.62, 0.42, smoothstep(30.0, 60.0, dk));     // water clouds are thicker / towering
-    float a = smoothstep(cov, cov + 0.25, lay);
+    float a = smoothstep(cov, cov + 0.14, lay);
     if (dk < 0.5) a = 1.0;                                        // top deck is solid from above
     float band = bandAt(xz);
-    vec3 c = deckCol(dk, band)*(0.55 + 0.6*lay);
+    vec3 c = deckCol(dk, band)*(0.35 + 0.95*smoothstep(0.3, 1.0, lay));
     float lit = sunAt(dk)*(0.75 + 0.25*lay);
     vec3 cc = c*lit + glowAt(dk)*(0.6 + lay);
     // lightning inside the water-cloud level
@@ -126,7 +126,7 @@ vec3 zapBolt(vec3 rd, float d, vec3 fwd, vec3 rgt){
   if (u_zap <= 0.0) return vec3(0.0);
   vec3 ro = vec3(0.0, -d, 0.0);
   vec3 fh = normalize(vec3(fwd.x, 0.0, fwd.z) + vec3(1e-4));
-  vec3 B = vec3(0.0, -d - 4.0, 0.0) + fh*22.0 + rgt*u_zx;
+  vec3 B = vec3(0.0, -d - 2.0, 0.0) + fh*12.0 + rgt*u_zx;
   vec3 col = vec3(0.0);
   // closest approach of the ray to the vertical line through B
   vec3 w = ro - B; vec3 u = vec3(0.0, 1.0, 0.0);
@@ -136,15 +136,15 @@ vec3 zapBolt(vec3 rd, float d, vec3 fwd, vec3 rgt){
   if (tr <= 0.0) return col;
   vec3 P = ro + rd*tr;
   float y = P.y - B.y;
-  float jx = (noise2(vec2(y*0.35, 3.0)) - 0.5)*5.0 + (noise2(vec2(y*1.7, 7.0)) - 0.5)*1.2;
+  float jx = (noise2(vec2(y*0.6, 3.0)) - 0.5)*2.6 + (noise2(vec2(y*3.1, 7.0)) - 0.5)*0.7;
   vec3 Q = B + vec3(jx, y, 0.0);
   float dist = length((P - Q).xz);
-  float env = smoothstep(14.0, 4.0, abs(y));
-  col += vec3(0.8, 0.88, 1.0)*(0.06/(dist*dist + 0.02) + 1.2*exp(-dist*0.6))*env*u_zap;
+  float env = smoothstep(9.0, 3.0, abs(y));
+  col += vec3(0.8, 0.88, 1.0)*(0.004/(dist*dist + 0.0012) + 0.5*exp(-dist*1.2))*env*u_zap;
   // branch
-  float y2 = y - 1.5; float bx = jx + max(0.0, -y2)*0.9 + (noise2(vec2(y*2.3, 1.0)) - 0.5)*0.8;
+  float y2 = y - 1.0; float bx = jx + max(0.0, -y2)*0.7 + (noise2(vec2(y*4.3, 1.0)) - 0.5)*0.5;
   float d2 = length(vec2(P.x - (B.x + bx), P.z - B.z));
-  col += vec3(0.7, 0.8, 1.0)*0.02/(d2*d2 + 0.02)*step(y2, 0.0)*smoothstep(-6.0, -2.0, y2)*u_zap;
+  col += vec3(0.7, 0.8, 1.0)*0.0015/(d2*d2 + 0.001)*step(y2, 0.0)*smoothstep(-5.0, -1.5, y2)*u_zap;
   return col;
 }
 // liquid / metallic hydrogen surroundings
@@ -222,7 +222,7 @@ vec3 space(vec3 rd, vec3 fwd, vec3 upv, out float hitT){
     if (u_cut > 0.01) {
       // rotate the wedge so it faces the camera
       vec3 ro = -C; vec3 rr = rd;
-      float ca = 0.75;
+      float ca = u_wy;
       ro.xz = rot(ca)*ro.xz; rr.xz = rot(ca)*rr.xz;
       float tt = t;
       vec3 pp = ro + rr*tt;
@@ -238,11 +238,12 @@ vec3 space(vec3 rd, vec3 fwd, vec3 upv, out float hitT){
           col = lc*face;
           // you: a glowing marker on the cut face, sinking
           float yr = 1.0 - u_you;
-          vec2 fp = abs(pp.x) < abs(pp.z) ? vec2(pp.z, pp.y) : vec2(pp.x, pp.y);
-          vec2 yp = vec2(yr*0.55, yr*0.835);
-          float ds = length(fp - yp);
-          col = mix(col, vec3(1.0, 0.95, 0.6), smoothstep(0.018, 0.010, ds)*u_cut);
-          col += vec3(1.0, 0.85, 0.4)*exp(-ds*40.0)*0.6*u_cut;
+          vec2 fp = vec2(pp.z, pp.y);
+          vec2 yp = vec2(yr*0.5, yr*0.866);
+          float ds = abs(pp.x) < abs(pp.z) ? length(fp - yp) : 9.0;
+          col = mix(col, vec3(1.0, 0.95, 0.6), smoothstep(0.026, 0.016, ds)*u_cut);
+          col = mix(col, vec3(1.0, 0.9, 0.5), smoothstep(0.006, 0.0, abs(ds - 0.05 - 0.04*fract(gT*0.8)))*(1.0 - fract(gT*0.8))*u_cut);
+          col += vec3(1.0, 0.85, 0.4)*exp(-ds*30.0)*0.5*u_cut;
           // faint layer rings
           col *= 0.97 + 0.03*sin(r*90.0);
           col = pow(col, vec3(1.0));
@@ -365,8 +366,8 @@ vec4 pixel(vec2 uv){
       // paraboloid shell opening upward, apex 0.5 m below you
       float yy = P.y + 0.55;
       float rr = length(P.xz*vec2(1.0, 0.8));
-      float shell = abs(rr - sqrt(max(yy, 0.0))*1.15) ;
-      float e = exp(-shell*7.0)*step(0.0, yy)*exp(-yy*0.35);
+      float shell = abs(rr - sqrt(max(yy, 0.0))*0.75) ;
+      float e = exp(-shell*9.0)*step(0.0, yy)*exp(-yy*0.55)*smoothstep(2.5, 1.2, rr);
       float flick = 0.6 + 0.4*noise2(vec2(atan(P.z, P.x)*4.0, P.y*3.0 - gT*14.0));
       acc += e*flick;
     }

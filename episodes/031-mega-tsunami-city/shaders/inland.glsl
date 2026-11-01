@@ -99,11 +99,11 @@ vec4 pixel(vec2 uv){
       vec3 rr = reflect(rd, n);
       float fr = 0.04 + 0.96*pow(1.0 - clamp(dot(-rd, n), 0.0, 1.0), 5.0);
       float sea = smoothstep(-6.0, 6.0, wp.z);
-      vec3 mud = mix(vec3(96.0, 84.0, 62.0), vec3(40.0, 82.0, 96.0), sea)/255.0;
-      vec3 c = mix(mud*(0.8 + 0.3*noise2(wp.xz*0.4)), skyc(rr), fr*0.6 + 0.06);
+      vec3 mud = mix(vec3(112.0, 96.0, 70.0), vec3(70.0, 92.0, 92.0), sea)/255.0;
+      vec3 c = mix(mud*(0.8 + 0.3*noise2(wp.xz*0.4)), skyc(rr), fr*0.25 + 0.04);
       float behind = wp.z - u_front;
-      float foam = smoothstep(0.55, 0.85, noise2(vec2(wp.x*0.6, wp.z*0.25 + gT*1.5)))*0.55;
-      foam += smoothstep(4.0, 0.0, behind)*0.9*(0.6 + 0.4*noise2(wp.xz*3.0 + gT*3.0));
+      float foam = smoothstep(0.55, 0.85, noise2(vec2(wp.x*1.4, wp.z*0.6 + gT*1.5)))*0.6*(1.0 - 0.6*sea);
+      foam += smoothstep(7.0, 0.0, behind)*(0.7 + 0.3*noise2(wp.xz*3.0 + gT*3.0));
       gNoBnd = 1.0; float dd = map(wp).x; gNoBnd = 0.0;
       foam += smoothstep(0.35, 0.0, dd)*0.7;
       c = mix(c, vec3(0.93, 0.92, 0.88)*mix(1.0, 0.75, u_dark), clamp(foam, 0.0, 1.0));
