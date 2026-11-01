@@ -14,7 +14,9 @@ Optional:
 
 Usage:
   python3 ig_publish.py --video-url https://.../final.mp4 --caption-file caption.txt [--thumb-ms 1200]
+  python3 ig_publish.py --video-file out/001.mp4 --caption-file caption.txt [--first-comment "..."]
   python3 ig_publish.py --check        # only verifies the token and account
+Network: graph.facebook.com (+ rupload.facebook.com for --video-file) must be reachable.
 """
 import argparse
 import json
@@ -53,11 +55,25 @@ def check():
     print(json.dumps({"account": me, "publishing_limit": lim}, indent=1))
 
 
-def publish(video_url, caption, thumb_ms):
+def upload_file(path, cid_uri):
+    size = os.path.getsize(path)
+    req = urllib.request.Request(cid_uri, data=open(path, "rb").read(), method="POST", headers={
+        "Authorization": "OAuth " + os.environ["IG_ACCESS_TOKEN"], "offset": "0", "file_size": str(size)})
+    with urllib.request.urlopen(req, timeout=600) as r:
+        return json.loads(r.read())
+
+
+def publish(video_url, caption, thumb_ms, video_file=None, first_comment=None):
     uid = os.environ["IG_USER_ID"]
-    c = call("POST", f"{uid}/media", media_type="REELS", video_url=video_url,
-             caption=caption, share_to_feed="true", thumb_offset=str(thumb_ms))
+    params = dict(media_type="REELS", caption=caption, share_to_feed="true", thumb_offset=str(thumb_ms))
+    if video_file:
+        params["upload_type"] = "resumable"
+    else:
+        params["video_url"] = video_url
+    c = call("POST", f"{uid}/media", **params)
     cid = c["id"]
+    if video_file:
+        print("upload", upload_file(video_file, c["uri"]), flush=True)
     print("container", cid, flush=True)
     for _ in range(90):  # up to ~15 min
         st = call("GET", cid, fields="status_code,status")
@@ -73,12 +89,16 @@ def publish(video_url, caption, thumb_ms):
     pub = call("POST", f"{uid}/media_publish", creation_id=cid)
     mid = pub["id"]
     info = call("GET", mid, fields="permalink,timestamp")
+    if first_comment:
+        call("POST", f"{mid}/comments", message=first_comment)
     print(json.dumps({"media_id": mid, **info}))
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--video-url")
+    ap.add_argument("--video-file")
+    ap.add_argument("--first-comment")
     ap.add_argument("--caption-file")
     ap.add_argument("--thumb-ms", type=int, default=1200)
     ap.add_argument("--check", action="store_true")
@@ -87,4 +107,4 @@ if __name__ == "__main__":
         check()
     else:
         cap = open(a.caption_file, encoding="utf-8").read().strip()
-        publish(a.video_url, cap, a.thumb_ms)
+        publish(a.video_url, cap, a.thumb_ms, a.video_file, a.first_comment)
