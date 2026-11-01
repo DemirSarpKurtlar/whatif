@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: "LSerif"; src: url("LiberationSerif-Regular.ttf"); }
+@font-face { font-family: "LSerif"; font-style: italic; src: url("LiberationSerif-Italic.ttf"); }
+@font-face { font-family: "LSans"; font-weight: 700; src: url("LiberationSans-Bold.ttf"); }
+html,body{margin:0;background:#000}
+</style></head>
+<body>
+<canvas id="gl"></canvas>
+<canvas id="out"></canvas>
+<script>
+// Overlay drawing + WebGL shader scenes. Driven from Node via window.setup(spec) and window.frame(t).
+const W = 1080, H = 1920;
+let SPEC, gl, glc, out, ctx, progs = {}, quad;
+
+const EASE = {
+  "linear": (x) => x,
+  "ease-in": (x) => x * x * x,
+  "ease-out": (x) => 1 - Math.pow(1 - x, 3),
+  "ease-in-out": (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  "hold": (x) => 0,
+};
+function valAt(v, lt, dur) {
+  if (typeof v === "number") return v;
+  if (Array.isArray(v) && typeof v[0] === "number") {
+    const x = Math.min(1, Math.max(0, lt / dur));
+    return v[0] + (v[1] - v[0]) * EASE["ease-in-out"](x);
+  }
+  // keyframes [[t, v, easing?], ...]; easing applies to the segment LEAVING keyframe
+  if (lt <= v[0][0]) return v[0][1];
+  for (let i = 1; i < v.length; i++) {
+    if (lt <= v[i][0]) {
+      const [t0, a, e] = v[i - 1], [t1, b] = v[i];
+      const x = (lt - t0) / Math.max(1e-6, t1 - t0);
+      return a + (b - a) * EASE[e || "ease-in-out"](x);
+    }
+  }
+  return v[v.length - 1][1];
+}
+function compile(name, src, params) {
+  const decl = params.map((k) => `uniform float u_${k};`).join("\n");
+  const fs = `precision highp float;\nuniform vec2 u_resolution;\nuniform float u_time;\n${decl}\n${src}\nvoid main(){ vec2 uv = gl_FragCoord.xy / u_resolution; uv.y = 1.0 - uv.y; vec4 c = pixel(uv); gl_FragColor = vec4(c.rgb, 1.0); }`;
+  const vs = `attribute vec2 p; void main(){ gl_Position = vec4(p,0.0,1.0); }`;
+  const sh = (type, s) => { const o = gl.createShader(type); gl.shaderSource(o, s); gl.compileShader(o);
+    if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(name + ": " + gl.getShaderInfoLog(o)); return o; };
+  const pr = gl.createProgram();
+  gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs));
+  gl.bindAttribLocation(pr, 0, "p"); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(name + " link: " + gl.getProgramInfoLog(pr));
+  const loc = { res: gl.getUniformLocation(pr, "u_resolution"), time: gl.getUniformLocation(pr, "u_time") };
+  for (const k of params) loc[k] = gl.getUniformLocation(pr, "u_" + k);
+  return { pr, loc };
+}
+window.setup = async (spec) => {
+  SPEC = spec;
+  glc = document.getElementById("gl"); glc.width = spec.glW; glc.height = spec.glH;
+  gl = glc.getContext("webgl", { preserveDrawingBuffer: true, antialias: false });
+  if (!gl) throw new Error("no webgl");
+  quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  for (const [name, src] of Object.entries(spec.shaders)) {
+    const params = [...new Set(spec.scenes.filter((s) => s.glsl === name).flatMap((s) => Object.keys(s.p)))];
+    progs[name] = compile(name, src, params);
+  }
+  out = document.getElementById("out"); out.width = W; out.height = H; ctx = out.getContext("2d");
+  await document.fonts.load('96px LSerif'); await document.fonts.load('italic 58px LSerif'); await document.fonts.load('700 24px LSans');
+  return gl.getParameter(gl.RENDERER) || "webgl";
+};
+
+// ---------- overlay helpers ----------
+function alphaFade(lt, dur, inD = 0.3, outD = 0.2) {
+  if (lt < 0 || lt > dur) return 0;
+  return Math.min(1, lt / inD, (dur - lt) / outD);
+}
+function txt(s, x, y, font, color, align = "left", shadow = 10, spacing = 0) {
+  ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = "top";
+  ctx.letterSpacing = spacing + "px";
+  ctx.shadowColor = "rgba(0,0,0,0.55)"; ctx.shadowBlur = shadow; ctx.shadowOffsetY = 2;
+  ctx.fillText(s, x, y);
+  ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.letterSpacing = "0px";
+}
+function wrap(s, font, maxW) {
+  ctx.font = font; const words = s.split(" "); const lines = []; let cur = "";
+  for (const w of words) { const t = cur ? cur + " " + w : w; if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; }
+  if (cur) lines.push(cur);
+  // avoid a single-word orphan on the last line
+  if (lines.length > 1 && !lines[lines.length - 1].includes(" ")) {
+    const prev = lines[lines.length - 2].split(" "); if (prev.length > 2) { const mv = prev.pop(); lines[lines.length - 2] = prev.join(" "); lines[lines.length - 1] = mv + " " + lines[lines.length - 1]; }
+  }
+  return lines;
+}
+function shadeTop(a) {
+  const g = ctx.createLinearGradient(0, 0, 0, 430); g.addColorStop(0, `rgba(0,0,0,${0.45 * a})`); g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, 430);
+}
+function hud(h, a) {
+  ctx.globalAlpha = a;
+  ctx.fillStyle = h.dot || "#E8473C"; ctx.beginPath(); ctx.arc(79, 135, 7, 0, Math.PI * 2); ctx.fill();
+  txt(h.cat, 98, 122, "700 25px LSans", "rgba(255,255,255,0.9)", "left", 8, 2.5);
+  txt(h.label, 72, 168, "700 23px LSans", "rgba(255,255,255,0.75)", "left", 8, 2);
+  if (h.value) txt(h.value, 68, 196, "96px LSerif", h.vcol || "#FFFFFF", "left", 14);
+  txt(h.sub, 72, 310, "700 22px LSans", "rgba(255,255,255,0.7)", "left", 8, 2);
+  ctx.globalAlpha = 1;
+}
+function caption(s, a) {
+  ctx.globalAlpha = a;
+  const g = ctx.createLinearGradient(0, 1190, 0, 1490);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.5, "rgba(0,0,0,0.32)"); g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 1190, W, 300);
+  const font = "italic 58px LSerif"; const lines = wrap(s, font, 880);
+  const y0 = 1300 - (lines.length - 1) * 34;
+  lines.forEach((l, i) => txt(l, W / 2, y0 + i * 68, font, "#FFFFFF", "center", 12));
+  ctx.globalAlpha = 1;
+}
+function fmtNum(v, dec) { return v.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+
+window.frame = (t) => {
+  const S = SPEC;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = S.bg || "#05060A"; ctx.fillRect(0, 0, W, H);
+  const sc = S.scenes.find((s) => t >= s.a && t < s.b) || S.scenes[S.scenes.length - 1];
+  const lt = t - sc.a, dur = sc.b - sc.a;
+  // --- 3D layer
+  if (sc.glsl && t < (S.endCard ? S.endCard.at : 1e9) + 0.5) {
+    const P = progs[sc.glsl]; gl.viewport(0, 0, glc.width, glc.height); gl.useProgram(P.pr);
+    gl.uniform2f(P.loc.res, glc.width, glc.height); gl.uniform1f(P.loc.time, t);
+    for (const [k, v] of Object.entries(sc.p)) if (P.loc[k]) gl.uniform1f(P.loc[k], valAt(v, lt, dur));
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    ctx.imageSmoothingQuality = "high"; ctx.drawImage(glc, 0, 0, W, H);
+  }
+  // --- HUD
+  const showEl = S.elapsed && t >= S.elapsed.start && t < S.elapsed.end;
+  if (sc.hud || showEl) shadeTop(1);
+  if (sc.hud) {
+    const h = sc.hud, at = h.at || 0;
+    const a = alphaFade(lt - at, dur - at);
+    if (a > 0) {
+      let hv = h;
+      if (h.counter) { const c = h.counter; const x = Math.min(1, Math.max(0, (lt - c.at) / c.dur)); const e = EASE[c.easing || "ease-in"](x);
+        hv = { ...h, value: (c.prefix || "") + fmtNum(c.from + (c.to - c.from) * e, c.dec || 0) + (c.suffix || "") }; }
+      hud(hv, a);
+    }
+  }
+  for (const h of S.huds || []) { const a = alphaFade(t - h.at, h.dur); if (a > 0) hud(h, a); }
+  if (showEl) {
+    const E = S.elapsed; let v = 0; const P = E.points;
+    if (t <= P[0][0]) v = P[0][1]; else { v = P[P.length - 1][1]; for (let i = 1; i < P.length; i++) if (t <= P[i][0]) { const [a0, x0] = P[i - 1], [b0, y0] = P[i]; v = x0 + (y0 - x0) * (t - a0) / (b0 - a0); break; } }
+    const a = Math.min(1, (t - E.start) / 0.2, (E.end - t) / 0.15);
+    ctx.globalAlpha = a;
+    txt(E.label || "ELAPSED", 1008, 124, "700 22px LSans", "rgba(255,255,255,0.75)", "right", 8, 2);
+    txt(fmtNum(v, E.dec ?? 1) + (E.unit || " s"), 1008, 152, "54px LSerif", "#FFFFFF", "right", 10);
+    if (E.note) txt(E.note, 1008, 226, "700 20px LSans", "rgba(255,255,255,0.6)", "right", 8, 2);
+    ctx.globalAlpha = 1;
+  }
+  // --- title
+  if (S.title && t < S.title.end) {
+    const a = Math.min(1, (S.title.end - t) / 0.25);
+    ctx.globalAlpha = a; const font = "90px LSerif"; const lines = wrap(S.title.text, font, 960);
+    lines.forEach((l, i) => txt(l, W / 2, 330 + i * 101, font, "#FFFFFF", "center", 18));
+    ctx.globalAlpha = 1;
+  }
+  // --- captions
+  for (const [a0, b0, s] of S.captions) { const a = alphaFade(t - a0, b0 - a0, 0.18, 0.15); if (a > 0) caption(s, a); }
+  // --- big centre text
+  for (const B of S.bigs || []) { const a = alphaFade(t - B.at, B.dur, 0.08, 0.25); if (a > 0) {
+    ctx.globalAlpha = a; ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.fillRect(0, 0, W, H);
+    txt(B.text, W / 2, B.y || 700, `${B.size || 260}px LSerif`, B.color || "#FFFFFF", "center", 30); ctx.globalAlpha = 1; } }
+  // --- flashes
+  for (const f of S.flashes || []) { const d = f.dur || 0.45; if (t >= f.at && t < f.at + d) { ctx.globalAlpha = 0.85 * (1 - (t - f.at) / d); ctx.fillStyle = f.color || "#FFFFFF"; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; } }
+  // --- end card
+  if (S.endCard && t >= S.endCard.at) {
+    const E = S.endCard; ctx.globalAlpha = Math.min(1, (t - E.at) / 0.4);
+    ctx.fillStyle = "#05060A"; ctx.fillRect(0, 0, W, H);
+    const font = "74px LSerif"; const lines = wrap(E.title, font, 860);
+    lines.forEach((l, i) => txt(l, W / 2, 700 + i * 85, font, "#FFFFFF", "center", 0));
+    let y = 720 + lines.length * 85 + 90;
+    for (const l of E.small || []) { txt(l, W / 2, y, "700 24px LSans", "rgba(255,255,255,0.65)", "center", 0, 2.5); y += 36; }
+    y += 80; txt(E.cta || "WHERE WOULD YOU BE STANDING?", W / 2, y, "700 34px LSans", "#FFFFFF", "center", 0, 2.5);
+    txt(E.follow || "FOLLOW FOR MORE WHAT IFS", W / 2, y + 62, "700 22px LSans", "rgba(255,255,255,0.5)", "center", 0, 2.5);
+    ctx.globalAlpha = 1;
+  }
+};
+window.grab = (q) => out.toDataURL("image/jpeg", q || 0.93);
+</script>
+</body></html>

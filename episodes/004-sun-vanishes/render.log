@@ -1,0 +1,36 @@
+w1 frame 0/837 1s
+w0 frame 0/837 1s
+w1 frame 60/837 18s
+w0 frame 60/837 29s
+w1 frame 120/837 39s
+w0 frame 120/837 54s
+w1 frame 180/837 68s
+w0 frame 180/837 72s
+w1 frame 240/837 97s
+w0 frame 240/837 98s
+w1 frame 300/837 128s
+w0 frame 300/837 130s
+w1 frame 360/837 153s
+w0 frame 360/837 161s
+w1 frame 420/837 176s
+w0 frame 420/837 193s
+w1 frame 480/837 201s
+w0 frame 480/837 224s
+w1 frame 540/837 246s
+w0 frame 540/837 255s
+w0 frame 600/837 286s
+w1 frame 600/837 312s
+w0 frame 660/837 317s
+w0 frame 720/837 340s
+w0 frame 780/837 359s
+w1 frame 660/837 373s
+w1 frame 720/837 383s
+w1 frame 780/837 385s
+done /home/user/whatif/episodes/004-sun-vanishes/video.mp4 388s
+bed.wav ok, peak 0.712
+stream|codec_type=video|width=1080|height=1920|r_frame_rate=30/1
+stream|codec_type=audio|r_frame_rate=0/0
+format|duration=55.800000
+    I:         -14.2 LUFS
+    Peak:       -0.8 dBFS
+FINISHED 004-sun-vanishes

@@ -1,0 +1,39 @@
+w0 frame 0/856 1s
+w1 frame 0/857 1s
+w1 frame 60/857 18s
+w0 frame 60/856 22s
+w1 frame 120/857 38s
+w0 frame 120/856 46s
+w1 frame 180/857 58s
+w0 frame 180/856 67s
+w1 frame 240/857 78s
+w0 frame 240/856 88s
+w1 frame 300/857 99s
+w0 frame 300/856 108s
+w1 frame 360/857 119s
+w0 frame 360/856 127s
+w1 frame 420/857 139s
+w0 frame 420/856 148s
+w1 frame 480/857 160s
+w0 frame 480/856 170s
+w1 frame 540/857 182s
+w0 frame 540/856 193s
+w1 frame 600/857 204s
+w0 frame 600/856 213s
+w1 frame 660/857 226s
+w0 frame 660/856 234s
+w1 frame 720/857 249s
+w0 frame 720/856 255s
+w1 frame 780/857 258s
+w1 frame 840/857 263s
+w0 frame 780/856 271s
+w0 frame 840/856 283s
+done /home/user/whatif/episodes/008-tunnel-through-earth/video.mp4 289s
+Traceback (most recent call last):
+  File "/home/user/whatif/engine/sfx.py", line 67, in <module>
+    add(mus, st, lp(x, 1800) * env(n, 2.0, 2.5), db(-34)); st += 8.0; k += 1
+                               ~~~^^^^^^^^^^^^^
+  File "/home/user/whatif/engine/sfx.py", line 28, in env
+    e[:na] = np.linspace(0, 1, na); e[-nr:] *= np.linspace(1, 0, nr) ** 2; return e
+    ~^^^^^
+ValueError: could not broadcast input array from shape (96000,) into shape (52800,)

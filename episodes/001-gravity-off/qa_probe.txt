@@ -1,0 +1,5 @@
+stream|codec_type=video|width=1080|height=1920|r_frame_rate=30/1
+stream|codec_type=audio|r_frame_rate=0/0
+format|duration=60.700000
+    I:         -14.1 LUFS
+    Peak:       -0.6 dBFS

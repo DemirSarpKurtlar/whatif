@@ -1,0 +1,36 @@
+w0 frame 0/819 1s
+w1 frame 0/819 1s
+w0 frame 60/819 25s
+w1 frame 60/819 31s
+w0 frame 120/819 50s
+w1 frame 120/819 63s
+w0 frame 180/819 75s
+w1 frame 180/819 95s
+w0 frame 240/819 101s
+w1 frame 240/819 127s
+w0 frame 300/819 128s
+w0 frame 360/819 155s
+w1 frame 300/819 158s
+w0 frame 420/819 181s
+w1 frame 360/819 190s
+w0 frame 480/819 211s
+w1 frame 420/819 221s
+w0 frame 540/819 241s
+w1 frame 480/819 248s
+w0 frame 600/819 271s
+w1 frame 540/819 275s
+w1 frame 600/819 301s
+w0 frame 660/819 303s
+w1 frame 660/819 328s
+w0 frame 720/819 333s
+w1 frame 720/819 338s
+w1 frame 780/819 342s
+w0 frame 780/819 355s
+done /home/user/whatif/episodes/007-saturn-rings/video.mp4 367s
+bed.wav ok, peak 1.011
+stream|codec_type=video|width=1080|height=1920|r_frame_rate=30/1
+stream|codec_type=audio|r_frame_rate=0/0
+format|duration=54.600000
+    I:         -14.2 LUFS
+    Peak:        0.2 dBFS
+FINISHED 007-saturn-rings

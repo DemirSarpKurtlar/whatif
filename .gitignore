@@ -1,0 +1,7 @@
+*.mp4
+*.wav
+renders/
+prev/
+*.parts/
+out/
+__pycache__/

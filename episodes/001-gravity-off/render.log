@@ -1,0 +1,40 @@
+w0 frame 0/910 3s
+w1 frame 0/911 5s
+w1 frame 60/911 99s
+w0 frame 60/910 113s
+w1 frame 120/911 127s
+w1 frame 180/911 154s
+w1 frame 240/911 179s
+w1 frame 300/911 215s
+w0 frame 120/910 247s
+w1 frame 360/911 270s
+w1 frame 420/911 339s
+w1 frame 480/911 402s
+w1 frame 540/911 445s
+w0 frame 180/910 461s
+w1 frame 600/911 611s
+w0 frame 240/910 614s
+w1 frame 660/911 766s
+w0 frame 300/910 767s
+w1 frame 720/911 841s
+w1 frame 780/911 873s
+w1 frame 840/911 884s
+w1 frame 900/911 888s
+w0 frame 360/910 890s
+w0 frame 420/910 924s
+w0 frame 480/910 941s
+w0 frame 540/910 956s
+w0 frame 600/910 974s
+w0 frame 660/910 989s
+w0 frame 720/910 1041s
+w0 frame 780/910 1106s
+w0 frame 840/910 1184s
+w0 frame 900/910 1273s
+done /home/user/whatif/episodes/001-gravity-off/video.mp4 1288s
+bed.wav ok, peak 0.692
+stream|codec_type=video|width=1080|height=1920|r_frame_rate=30/1
+stream|codec_type=audio|r_frame_rate=0/0
+format|duration=60.700000
+    I:         -14.1 LUFS
+    Peak:       -0.6 dBFS
+FINISHED 001-gravity-off
