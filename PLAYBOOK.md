@@ -23,7 +23,7 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
   izlenme ve ortalama izlenme süresi en yüksek konunun **"Part 2"**'sini sıraya al (ör. "What if gravity switched off for 1 minute?").
 - Zayıf (ortalamanın yarısından az izlenme) konu tipini 2 hafta tekrar etme.
 - Ses: ElevenLabs Holden (kredi varsa) → yoksa Chatterbox (`scripts/tts_chatterbox.py`, ücretsiz). Kokoro kullanma.
-- Yayın (2026-11-01 sahibin isteği): **her saat** (:59) zamanlanmış görev `scripts/post_next.sh` çalıştırır (günde ~24; IG limiti 50/24 sa).
+- Yayın (2026-11-01 sahibin isteği): **her saat :30** + günde 8 kez ekstra **:00** (UTC 01,04,07,10,13,16,19,22) zamanlanmış görev `scripts/post_next.sh` çalıştırır (günde ~24; IG limiti 50/24 sa).
   📦 Havuz kuralı: yüklü ama paylaşılmamış **en az 5-6 yan video** her zaman hazır olmalı; zombi serisi daha yavaş (oylamaya bağlı).
   Üretim paralel: her yeni bölümü ayrı bir alt ajan hazırlar (TTS için `scripts/voice.sh`), ana oturum render/QA/yükleme/sıra yönetir;
   yeni bölüm `posts/schedule.txt`'e eklenmeli ve videosu + kapağı `posts/media.json`'a (Higgsfield URL) girmeli.
