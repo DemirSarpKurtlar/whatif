@@ -48,6 +48,14 @@ def call(method, path, **params):
         sys.exit(f"Instagram API error {e.code} on {path}: {body}")
 
 
+def refresh():
+    """Extend a long-lived Instagram-Login token by another 60 days (prints the new token's expiry, not the token)."""
+    q = urllib.parse.urlencode({"grant_type": "ig_refresh_token", "access_token": os.environ["IG_ACCESS_TOKEN"]})
+    with urllib.request.urlopen(f"https://graph.instagram.com/refresh_access_token?{q}", timeout=60) as r:
+        d = json.loads(r.read())
+    print(json.dumps({"expires_in_days": round(d.get("expires_in", 0) / 86400, 1)}))
+
+
 def check():
     uid = os.environ["IG_USER_ID"]
     me = call("GET", uid, fields="username,media_count")
@@ -102,9 +110,12 @@ if __name__ == "__main__":
     ap.add_argument("--caption-file")
     ap.add_argument("--thumb-ms", type=int, default=1200)
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--refresh", action="store_true")
     a = ap.parse_args()
     if a.check:
         check()
+    elif a.refresh:
+        refresh()
     else:
         cap = open(a.caption_file, encoding="utf-8").read().strip()
         publish(a.video_url, cap, a.thumb_ms, a.video_file, a.first_comment)
