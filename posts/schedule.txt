@@ -11,6 +11,7 @@
 022-fall-into-black-hole
 023-zombie-ep1
 025-jump-from-space
+024-gravity-doubled
 009-no-friction
 010-asteroid-hits-ocean
 018-rain-for-a-year
