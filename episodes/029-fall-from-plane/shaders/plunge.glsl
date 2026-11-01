@@ -71,7 +71,7 @@ vec2 airliner(vec3 q){
   float fus = sdCapsule(q, vec3(-6.0,0.0,0.0), vec3(fx0,0.0,0.0), 0.75);
   if (brk > 0.5) { // jagged torn end
     float j = 0.25*sin(q.y*9.0)*sin(q.z*7.0);
-    fus = max(fus, q.x - (fx0 + 0.4 + j));
+    fus = max(fus, q.x - (fx0 - 0.15 + j));
   }
   float tail = sdRoundBox(q-vec3(-5.6,1.3,0.0), vec3(0.8,1.3,0.08), 0.05);
   float stab = sdRoundBox(q-vec3(-5.7,0.2,0.0), vec3(0.6,0.06,2.6), 0.04);
@@ -150,7 +150,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
     if (u_snow > 0.0) {
       vec2 gs = pos.xz*140.0;                      // ~7 m tree cells
       float big2 = smoothstep(0.36, 0.56, fbm3(vec3(pos.xz*0.12, 8.0)));
-      float patch = smoothstep(0.28, 0.38, fbm3(vec3(pos.xz*1.6, 3.0)) + 0.25*(big2 - 0.5));
+      float patch = smoothstep(0.33, 0.43, fbm3(vec3(pos.xz*1.6, 3.0)) + 0.25*(big2 - 0.5));
       float hgt = fbm3(vec3(pos.xz*1.3, 6.0));
       float hgx = fbm3(vec3((pos.xz+vec2(0.03,0.0))*1.3, 6.0));
       float hgz = fbm3(vec3((pos.xz+vec2(0.0,0.03))*1.3, 6.0));
@@ -159,7 +159,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
       float tr = 0.0, shd = 0.0, tv = 1.0;
       for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
         vec2 cid = cid0 + vec2(float(i), float(j));
-        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/140.0*1.6, 3.0)) + 0.17 + 0.25*(big2 - 0.5));
+        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/140.0*1.6, 3.0)) + 0.12 + 0.25*(big2 - 0.5));
         if (on < 0.5) continue;
         vec2 tc = gs - cid - 0.5 - (vec2(hash2(cid), hash2(cid+7.3)) - 0.5)*0.7;
         float tsz = 0.3 + 0.22*hash2(cid+4.4);
@@ -175,7 +175,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
       float far = smoothstep(0.12, 0.45, px);
       tr = mix(tr, patch*0.6, far); shd = mix(shd, patch*0.2, far);
       vec3 snowc = vec3(0.86,0.89,0.94)*hs*(1.0 - 0.4*shd) + vec3(-0.08,-0.03,0.04)*shd;
-      vec3 tree = vec3(0.08,0.17,0.11)*(0.75+0.5*hs)*tv;
+      vec3 tree = mix(vec3(0.08,0.17,0.11)*tv, vec3(0.2,0.21,0.15), far)*(0.75+0.5*hs);
       vec3 sAlb = mix(snowc, tree, tr);
       sAlb = mix(sAlb, vec3(0.45,0.5,0.55)*hs, smoothstep(0.72, 0.8, hgt)*0.5); // rocky ridges
       float road = smoothstep(0.012, 0.0, abs(n3(vec3(pos.xz*0.35, 21.0)) - 0.5)) * (1.0 - patch);
@@ -284,7 +284,7 @@ vec4 pixel(vec2 uv){
         if (m.y < 11.5 && abs(q.y+0.12) < 0.1) alb = vec3(0.18,0.34,0.68);           // cheat line
         if (m.y < 11.5 && abs(q.y-0.25) < 0.06 && fract(q.x*2.2) < 0.45 && q.x > -4.8 && q.x < 5.6 && abs(q.z) > 0.5) alb = vec3(0.12,0.14,0.2); // windows
         if (m.y > 11.5 && m.y < 12.5 && q.x < -4.6 && q.y > 0.6) alb = vec3(0.85,0.22,0.2); // tail fin
-        if (u_brk > 0.5 && m.y < 11.5 && q.x > -2.2) alb *= 0.45;                    // scorched torn edge
+        if (u_brk > 0.5 && m.y < 11.5 && q.x > -2.15) alb = vec3(0.1,0.09,0.09);      // dark, torn open end
         float dif = clamp(dot(n, Lc), 0.0, 1.0);
         float sky = 0.5 + 0.5*dot(n, Uc);
         vec3 h = normalize(Lc - rdc);
