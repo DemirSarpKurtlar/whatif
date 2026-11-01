@@ -1,1 +1,3 @@
 001-gravity-off
+003-all-ice-melts
+006-everyone-jumps

@@ -1,20 +1,21 @@
 # Posting order (strongest hooks first). One line per episode folder. post_next.sh takes the first one not yet in posts/posted.txt
+# 2026-11-01 reorder: early data -> human/body POV + physical action first, abstract space later
 001-gravity-off
 008-tunnel-through-earth
 004-sun-vanishes
 002-earth-stops-spinning
 006-everyone-jumps
 003-all-ice-melts
-018-rain-for-a-year
-007-saturn-rings
 009-no-friction
-005-moon-disappears
 010-asteroid-hits-ocean
-011-jupiter-replaces-moon
+018-rain-for-a-year
 012-ocean-drains
-016-all-volcanoes-erupt
-017-earth-stops-orbiting
+011-jupiter-replaces-moon
+005-moon-disappears
+007-saturn-rings
 013-magnetic-field-off
-014-oxygen-doubles
 015-earth-moon-size
+014-oxygen-doubles
+016-all-volcanoes-erupt
 019-insects-vanish
+017-earth-stops-orbiting

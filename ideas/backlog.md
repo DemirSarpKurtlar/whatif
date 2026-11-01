@@ -4,6 +4,15 @@ Durum: `done` yayınlandı · `wip` yapılıyor · `todo` sırada. Her döngü e
 Kural: tek cümlelik, şaşırtıcı, bilimsel dayanağı olan, 3D sahneye dökülebilen senaryo.
 Sahne seti: park/şehir (park.glsl), gökyüzü (sky.glsl), uzaydan Dünya (earth.glsl). Yeni set eklenebilir.
 
+
+## 🔥 Öncelik (2026-11-01 ilk veri: gravity 14 ❤️, tunnel 11 ❤️, earth-spin 2, sun 0)
+Kazanan kalıp: **"sen/insanlar" bedeniyle yaşanan fiziksel aksiyon + kısa süre**. Soyut uzay konuları geride.
+| P1 | todo | What if gravity switched off for 1 minute? (Part 2) | park, şehir, okyanus, atmosfer | İnsanlar 1 dk boyunca uzaya süzülüyor |
+| P2 | todo | What if you fell into a tunnel to the Moon? / Tunnel Part 2: off-center tunnel | Dünya kesiti | 42 dk'lık düşüş tekrar |
+| P3 | todo | What if you stood on the Sun for 1 second? | Güneş yüzeyi | 28 g'de çöküş |
+| P4 | todo | What if you fell into a black hole? | uzay | spagettileşme |
+| P5 | todo | What if you jumped from the edge of space? | stratosfer | 39 km serbest düşüş |
+
 | # | Durum | Başlık | Ana sahneler | Kanca (ilk 2 sn) |
 |---|-------|--------|--------------|------------------|
 | 1 | done | What if gravity switched off for 10 seconds? | park, uçak, Dünya | Herkes yerden kalkıyor |
