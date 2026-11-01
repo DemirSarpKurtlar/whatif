@@ -6,7 +6,7 @@
 //         man, fx, fy, fz (figure position, m), pose (0 standing .. 1 spread), froll, ftilt, fyaw,
 //         crust (0 molten .. 1 fully crusted), glow (lake light), so2 (yellow haze), co2 (blue low layer),
 //         steam (plume), heat (shimmer), therm (thermal camera 0..1), sink (how deep the figure sits, m; visual only),
-//         cell (crust plate size, m; 0 = 7.5)
+//         cell (crust plate size, m; 0 = 7.5), ledge (1 = rock outcrop under the figure at the rim)
 const float DEP = 240.0;   // rim height above the lake
 float h3(vec3 p){ return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453); }
 float n3(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
@@ -26,7 +26,13 @@ float wallR(vec3 p){
 float terr(vec3 p){
   float r = length(p.xz);
   float top = DEP - max(0.0, r - 178.0)*0.24 + 2.5*n3(p*0.04);
-  return max(wallR(p) - r, p.y - top)*0.62;
+  float d = max(wallR(p) - r, p.y - top)*0.62;
+  if (u_ledge > 0.5) {   // rock outcrop the figure stands on (top surface at the figure's feet)
+    vec3 lq = p - vec3(u_fx, u_fy - 1.25 - 1.6, u_fz + 7.0);
+    lq.y += 0.02*lq.z*lq.z*0.1;
+    d = min(d, (sdRoundBox(lq, vec3(1.4 + 0.08*lq.z, 1.6, 8.0), 0.5) + 0.7*n3(p*0.6) + 0.25*n3(p*2.1) - 0.45)*0.7);
+  }
+  return d;
 }
 vec3 terrN(vec3 p, float e){
   vec2 k = vec2(e, 0.0);

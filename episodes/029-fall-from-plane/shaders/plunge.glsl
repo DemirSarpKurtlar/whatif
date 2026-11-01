@@ -144,12 +144,12 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
     // clouds (cast faint shadow)
     float cl = smoothstep(0.6, 0.75, fbm3(vec3(g/26.0 + vec2(u_time*0.01, 0.0), 9.0)));
     float cls = smoothstep(0.6, 0.75, fbm3(vec3((g+vec2(1.2,0.8))/26.0 + vec2(u_time*0.01, 0.0), 9.0)));
-    cl *= 1.0 - u_snow; cls *= 1.0 - u_snow;
+    float cAlt = smoothstep(2.5, 5.0, alt); cl *= cAlt; cls *= cAlt;
     alb *= 1.0 - 0.35*cls;
     alb = mix(alb, vec3(0.97,0.98,1.0), cl*0.9);
     if (u_snow > 0.0) {
-      vec2 gs = pos.xz*70.0;                       // ~14 m tree cells
-      float patch = smoothstep(0.36, 0.46, fbm3(vec3(pos.xz*1.6, 3.0)));
+      vec2 gs = pos.xz*140.0;                      // ~7 m tree cells
+      float patch = smoothstep(0.28, 0.38, fbm3(vec3(pos.xz*1.6, 3.0)));
       float hgt = fbm3(vec3(pos.xz*1.3, 6.0));
       float hgx = fbm3(vec3((pos.xz+vec2(0.03,0.0))*1.3, 6.0));
       float hgz = fbm3(vec3((pos.xz+vec2(0.0,0.03))*1.3, 6.0));
@@ -158,7 +158,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
       float tr = 0.0, shd = 0.0, tv = 1.0;
       for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
         vec2 cid = cid0 + vec2(float(i), float(j));
-        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/70.0*1.6, 3.0)) + 0.14);
+        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/140.0*1.6, 3.0)) + 0.17);
         if (on < 0.5) continue;
         vec2 tc = gs - cid - 0.5 - (vec2(hash2(cid), hash2(cid+7.3)) - 0.5)*0.7;
         float tsz = 0.3 + 0.22*hash2(cid+4.4);
@@ -170,7 +170,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
         shd = max(shd, smoothstep(tsz*1.15, tsz*0.6, length(tc - vec2(0.2, 0.24))));
       }
       shd *= 1.0 - tr;
-      float px = t*0.0008*70.0;                    // tree cells per pixel
+      float px = t*0.0008*140.0;                   // tree cells per pixel
       float far = smoothstep(0.12, 0.45, px);
       tr = mix(tr, patch*0.6, far); shd = mix(shd, patch*0.2, far);
       vec3 snowc = vec3(0.97,0.98,1.0)*hs*(1.0 - 0.4*shd) + vec3(-0.08,-0.03,0.04)*shd;
@@ -180,7 +180,7 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
       alb = mix(alb, sAlb, u_snow);
     }
     float dif = clamp(dot(n, L)*0.6 + 0.55, 0.0, 1.0);
-    dif = mix(dif, 1.12, 0.6*u_snow);
+    dif = mix(dif, 1.02, 0.6*u_snow);
     col = alb*dif;
     float mu = clamp(dot(n, -rd), 0.0, 1.0);
     float haze = clamp(0.1 + 0.9*pow(1.0 - mu, 3.0) + 0.25*(1.0-dark)*(1.0-mu), 0.0, 1.0);

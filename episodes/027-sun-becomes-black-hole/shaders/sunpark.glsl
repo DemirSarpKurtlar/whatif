@@ -174,7 +174,7 @@ vec4 pixel(vec2 uv){
   vec3 col = bgd;
   vec3 L = normalize(vec3(-0.6,1.0,0.5));
   float N = clamp(u_night, 0.0, 1.0), FR = clamp(u_frost, 0.0, 1.0);
-  vec3 key = vec3(1.25,1.15,1.0)*(1.0-N), skyF = mix(lin(vec3(0.62,0.72,0.86))*0.55, vec3(0.035,0.045,0.08)+vec3(0.07,0.08,0.11)*FR, N), bnc = lin(vec3(0.42,0.5,0.28))*0.5*(1.0-N);
+  vec3 key = vec3(1.25,1.15,1.0)*(1.0-N), skyF = mix(lin(vec3(0.62,0.72,0.86))*0.55, vec3(0.035,0.045,0.08)+vec3(0.08,0.11,0.17)*FR, N), bnc = lin(vec3(0.42,0.5,0.28))*0.5*(1.0-N);
   vec3 hazeC = mix(lin(vec3(173.0,198.0,226.0)/255.0), vec3(0.004,0.005,0.012), N);
   vec3 frostC = lin(vec3(0.86,0.9,0.97));
   if (m.x > 0.0) {
@@ -228,7 +228,7 @@ vec4 pixel(vec2 uv){
     float fd = length((pos.xz - FC.xz + vec2(0.5,-0.4)));
     s *= mix(0.6,1.0,smoothstep(1.5,2.2,fd));
     col = a*(key*0.85*s + skyF*1.2);
-    col += vec3(0.6,0.75,1.0)*step(0.996, hash2(floor(pos.xz*40.0)))*FR*N*smoothstep(12.0,2.0,tg)*0.5;
+    col += vec3(0.7,0.85,1.0)*step(0.99, hash2(floor(pos.xz*40.0)))*FR*N*smoothstep(14.0,2.0,tg)*0.9;
     col = grade(col, hazeC, tg/hz, 16.0, 0.3, 0.03);
   }
   return vec4(col, 1.0);

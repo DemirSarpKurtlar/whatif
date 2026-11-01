@@ -16,10 +16,10 @@ vec3 bhStars(vec3 rd){
 vec3 sunSurf(vec3 n, vec3 rd){
   float mu = clamp(dot(n, -rd), 0.0, 1.0);
   float gr = 0.75*noise2(n.xy*18.0+n.z*7.0+u_time*0.3) + 0.25*noise2(n.yz*55.0-u_time*0.5);
-  vec3 c = mix(vec3(1.0,0.36,0.05), vec3(1.0,0.86,0.55), pow(mu,0.6));
-  c *= 0.82 + 0.3*gr;
+  vec3 c = mix(vec3(1.0,0.3,0.03), vec3(1.0,0.74,0.3), pow(mu,0.5));
+  c *= 0.7 + 0.5*gr;
   float hot = clamp(u_glow, 0.0, 1.0);
-  return mix(c, vec3(1.0,0.97,0.92)*1.6, hot*0.7)*1.15;
+  return mix(c, vec3(1.0,0.97,0.92)*1.6, hot*0.7)*1.8;
 }
 vec4 pixel(vec2 uv){
   vec2 sp = screenP(uv, 0.0);
@@ -36,7 +36,7 @@ vec4 pixel(vec2 uv){
   for (int i=0;i<150;i++){
     float r = length(p);
     float dt = clamp((r - (S > 0.01 ? R : 1.0))*0.25 + r*0.03, 0.015, 0.8);
-    vec3 a = -1.5*h2*p/pow(r,5.0);
+    vec3 a = -1.5*h2*p/pow(r,5.0)*mix(1.0, 0.25, S);
     v += a*dt; p += v*dt;
     float rn = length(p);
     if (S > 0.01 && rn < R) { hitSun = 1.0; break; }
