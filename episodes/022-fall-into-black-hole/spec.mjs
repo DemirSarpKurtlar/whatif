@@ -1,0 +1,37 @@
+// Episode 022 — What if you fell into a black hole?
+const BH = { dist: 26, orb: 0.3, tilt: 0.16, disk: 1, red: 0, man: 0, str: 1, mpos: 8, tx: 0, glow: 0 };
+export default {
+  END: 30.0,
+  title: { text: "What if you fell into a black hole?", end: 2.0 },
+  hook: { scene: 3, at: 1.2 },
+  cover: 10.3,
+  scenes: [
+    { a: 0, b: 2.05, glsl: "blackhole", p: { ...BH, dist: [34, 28], orb: [0.1, 0.3], tilt: [0.3, 0.18] } },
+    { a: 2.05, b: 4.6, glsl: "blackhole", p: { ...BH, dist: [28, 22], orb: [0.3, 0.45], tilt: [0.18, 0.14] },
+      hud: { cat: "A SMALL BLACK HOLE", label: "MASS", value: "10 Suns", sub: "ITS EDGE IS JUST 60 KM ACROSS" } },
+    { a: 4.6, b: 9.0, glsl: "blackhole", p: { ...BH, dist: [20, 17], orb: [0.45, 0.55], tilt: [0.22, 0.25], man: 1, mpos: [9.5, 7.5], str: [1, 1.7] },
+      hud: { cat: "3,800 KM OUT", label: "PULL ON YOUR FEET", value: "+10 g", sub: "MORE THAN ON YOUR HEAD", vcol: "#FFB36B" } },
+    { a: 9.0, b: 11.1, glsl: "blackhole", p: { ...BH, dist: [17, 15.5], orb: [0.55, 0.6], tilt: 0.25, man: 1, mpos: [7.5, 6.2], str: [1.7, 6] },
+      hud: { cat: "SPAGHETTIFICATION", label: "YOUR BODY", value: "Stretching", sub: "THE REAL SCIENTIFIC TERM", vcol: "#FF6B5E" } },
+    { a: 11.1, b: 14.55, glsl: "blackhole", p: { ...BH, dist: [15.5, 12.5], orb: [0.6, 0.66], tilt: [0.25, 0.2], man: [[0, 1], [2.4, 1], [2.6, 0]], mpos: [[0, 6.2], [2.4, 2.7, "ease-in"]], str: [6, 11], glow: [[0, 0], [2.3, 0], [2.5, 1], [3.4, 0]] },
+      hud: { cat: "THE LAST STRETCH", label: "TO THE EDGE", value: "", sub: "IN LESS THAN 0.25 SECONDS", counter: { at: 0.2, dur: 2.2, from: 3800, to: 0, suffix: " km", easing: "ease-in" } } },
+    { a: 14.55, b: 18.65, glsl: "blackhole", p: { ...BH, dist: [44, 32], orb: [1.0, 1.25], tilt: [0.45, 0.3] },
+      hud: { cat: "A GIANT BLACK HOLE", label: "MASS", value: "4 million Suns", sub: "SAGITTARIUS A* · CENTRE OF OUR GALAXY", dot: "#F2C14E" } },
+    { a: 18.65, b: 20.75, glsl: "blackhole", p: { ...BH, dist: [17, 15], orb: [1.25, 1.3], tilt: 0.22, man: 1, mpos: [6.5, 4.2], str: 1 },
+      hud: { cat: "AT ITS EDGE", label: "STRETCH YOU FEEL", value: "Nothing", sub: "THE HOLE IS 25 MILLION KM WIDE", dot: "#4FD1A5" } },
+    { a: 20.75, b: 27.0, glsl: "blackhole", p: { ...BH, dist: [15, 22], orb: [1.3, 1.45], tilt: [0.22, 0.28], man: [[0, 1], [5.4, 1], [6.2, 0]], mpos: [[0, 4.2], [1.5, 3.4, "ease-out"], [6.2, 3.3]], str: 1, red: [[0, 0], [3.5, 0], [5.2, 1]] },
+      hud: { cat: "SEEN FROM FAR AWAY", label: "YOU APPEAR", value: "Frozen", sub: "TIME SLOWS · YOUR LIGHT TURNS RED", vcol: "#FF6B5E" } },
+    { a: 27.0, b: 30.0, glsl: "blackhole", p: { ...BH, dist: [30, 36], orb: [1.45, 1.6], tilt: [0.28, 0.35] } },
+  ],
+  captions: [
+    [2.1, 4.5, "Pick a small one, 10 times the mass of the Sun."], [4.68, 6.5, "Almost 4,000 km out,"],
+    [6.68, 8.9, "gravity pulls your feet much harder than your head."], [9.08, 11.0, "Your body is stretched like spaghetti."],
+    [11.16, 14.4, "The last stretch to the edge takes less than a quarter of a second."],
+    [14.66, 16.8, "Now pick a giant one, 4 million Suns,"], [17.0, 18.6, "like the one at the centre of our galaxy."],
+    [18.78, 20.6, "You cross the edge and feel nothing at all."], [20.8, 23.0, "But your friends, watching from far away,"],
+    [22.86, 24.1, "never see you fall in."], [24.26, 26.2, "You freeze, fade red, and vanish."],
+  ],
+  bigs: [{ at: 12.95, dur: 1.2, text: "0.2 s" }],
+  flashes: [{ at: 13.55, dur: 0.35 }],
+  endCard: { at: 26.9, title: "What if you fell into a black hole?", small: ["SIMPLIFIED PHYSICS", "NON-ROTATING BLACK HOLES"], cta: "WHICH ONE WOULD YOU PICK?" },
+};
