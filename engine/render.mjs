@@ -31,7 +31,7 @@ const warp = existsSync(warpFile) ? JSON.parse(readFileSync(warpFile, "utf8")) :
 // captions live in the spec's (old) timeline, so highlight with the old word times when warped
 const wordsFile = join(EPD, warp && existsSync(join(EPD, "words_old.json")) ? "words_old.json" : "words.json");
 const words = existsSync(wordsFile) ? JSON.parse(readFileSync(wordsFile, "utf8")) : [];
-const payload = { ...spec, glW, glH, shaders, words, warp };
+const payload = { ...spec, glW, glH, shaders, words, warp, clean: process.env.WHATIF_CLEAN === "1" };
 const PAGE = opt("page", process.env.WHATIF_PAGE || "page.html");
 
 async function openPage() {

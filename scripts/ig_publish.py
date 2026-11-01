@@ -71,9 +71,11 @@ def upload_file(path, cid_uri):
         return json.loads(r.read())
 
 
-def publish(video_url, caption, thumb_ms, video_file=None, first_comment=None):
+def publish(video_url, caption, thumb_ms, video_file=None, first_comment=None, cover_url=None):
     uid = os.environ["IG_USER_ID"]
     params = dict(media_type="REELS", caption=caption, share_to_feed="true", thumb_offset=str(thumb_ms))
+    if cover_url:
+        params["cover_url"] = cover_url
     if video_file:
         params["upload_type"] = "resumable"
     else:
@@ -107,6 +109,7 @@ if __name__ == "__main__":
     ap.add_argument("--video-url")
     ap.add_argument("--video-file")
     ap.add_argument("--first-comment")
+    ap.add_argument("--cover-url")
     ap.add_argument("--caption-file")
     ap.add_argument("--thumb-ms", type=int, default=1200)
     ap.add_argument("--check", action="store_true")
@@ -118,4 +121,4 @@ if __name__ == "__main__":
         refresh()
     else:
         cap = open(a.caption_file, encoding="utf-8").read().strip()
-        publish(a.video_url, cap, a.thumb_ms, a.video_file, a.first_comment)
+        publish(a.video_url, cap, a.thumb_ms, a.video_file, a.first_comment, a.cover_url)

@@ -189,6 +189,7 @@ window.frame = (T) => {
   }
   // --- vignette
   ctx.fillStyle = vign; ctx.fillRect(0, 0, W, H);
+  if (S.clean) return;
   // --- HUD
   const showEl = S.elapsed && t >= S.elapsed.start && t < S.elapsed.end;
   if (sc.hud || showEl) shadeTop(1);
