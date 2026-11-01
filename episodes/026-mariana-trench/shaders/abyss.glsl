@@ -204,7 +204,7 @@ vec4 pixel(vec2 uv){
     vec3 c = alb*(HUE*AMB*(0.25 + 1.4*up) + lampC*lamp*spot*dif*10.0/(1.0 + ld*ld*0.18));
     // self-glow from the lamp spill so the diver never vanishes
     if (m.y < 2.0) c += alb*lampC*lamp*0.018 + alb*HUE*0.02 + lampC*lamp*0.05*pow(clamp(1.0 + dot(n, rd), 0.0, 1.0), 2.5);
-    else c += lin(vec3(0.16,0.2,0.24))*(0.35 + 0.65*up)*0.22 + alb*0.6;   // ghostly fill on the wreck
+    else { vec3 q2 = bowLocal(pos); c += (lin(vec3(0.16,0.2,0.24))*(0.35 + 0.65*up)*0.16 + alb*0.3)*smoothstep(-4.5, 0.5, q2.y); }   // ghostly fill on the wreck
     float rim = pow(clamp(1.0 + dot(n, rd), 0.0, 1.0), 3.0);
     c += rim*HUE*(AMB*0.6 + 0.02);
     float fog = 1.0 - exp(-m.x*mix(0.03, 0.012, smoothstep(0.0, 800.0, d)));
