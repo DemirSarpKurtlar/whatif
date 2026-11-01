@@ -20,7 +20,7 @@ export default {
       hud: { cat: "WITHIN WEEKS", label: "THE GROUND", value: "Saturated", sub: "NOWHERE LEFT FOR THE WATER TO GO" } },
     { a: 22.7, b: 26.85, glsl: "floodrain", p: { ...F, cx: [-3, 0], cz: [26, 22], cy: 1.2, ty: [3, 4], water: [[0, 0.05], [0.4, 0.05], [4.1, 0.9]], gloom: 0.55 },
       hud: { cat: "RIVERS BURST THEIR BANKS", label: "FLOODWATER", value: "", sub: "BASEMENTS, THEN SUBWAYS, FILL UP", counter: { at: 0.4, dur: 3.6, from: 0, to: 9, dec: 0, prefix: "+", suffix: " m", easing: "ease-in-out" } } },
-    { a: 26.85, b: 30.5, glsl: "meadowrain", p: { ...ME, cam: [0.6, 1.1], pitch: [0.35, 0.3], yaw: [0.25, 0.35], shake: [[0, 0], [1.2, 0], [1.6, 0.35], [3.6, 0.15]], gloom: 0.6 },
+    { a: 26.85, b: 30.5, glsl: "meadowrain", p: { ...ME, cam: [0.6, 1.1], pitch: [0.1, 0.05], yaw: [0.25, 0.35], shake: [[0, 0], [1.2, 0], [1.6, 0.35], [3.6, 0.15]], gloom: 0.6 },
       hud: { cat: "ON THE HILLS", label: "WATERLOGGED SOIL", value: "Starts to slide", sub: "LANDSLIDES ON EVERY SLOPE" } },
     { a: 30.5, b: 34.4, glsl: "earthcloud", p: { ...EA, dist: [5.0, 4.5], spin: [0.8, 1.0], cloud: 1.0, sun: 0.2 },
       hud: { cat: "ALL YEAR", label: "SUNLIGHT", value: "Blocked", sub: "A PLANET WRAPPED IN CLOUD", vcol: "#C9D3DE" } },

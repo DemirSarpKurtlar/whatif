@@ -1,0 +1,42 @@
+// Episode 019 — What if every insect on Earth vanished tomorrow?
+const G = { cam: 0, yaw: 0, pitch: 0, low: 0, bugs: 1, fruit: 1, birds: 1, litter: 0, grey: 0 };
+const EA = { dist: 5.6, orb: 0.3, camy: 0, tx: 0, ty: 0, spin: 0, leak: 0, quake: 0, shake: 0, sun: 0.6, diag: 0 };
+export default {
+  END: 54.4,
+  accent: "#FFD866",
+  title: { text: "What if every insect on Earth vanished tomorrow?", end: 3.3 },
+  scenes: [
+    { a: 0, b: 3.4, glsl: "garden", p: { ...G, cam: [0, 0.4], pitch: [0.1, 0.02] } },
+    { a: 3.4, b: 9.0, glsl: "garden", p: { ...G, low: 0.85, cam: [0.4, 1.0], yaw: [-0.1, 0.1] },
+      hud: { cat: "RIGHT NOW", label: "INSECTS ALIVE", value: "10 quintillion", sub: "OVER A BILLION FOR EVERY PERSON", dot: "#F2C14E" } },
+    { a: 9.0, b: 10.6, glsl: "garden", p: { ...G, low: 0.85, cam: [1.0, 1.15], yaw: 0.1, bugs: [[0, 1], [0.9, 1], [1.0, 0]] },
+      hud: { at: 0.95, cat: "OVERNIGHT", label: "INSECTS LEFT", value: "0", vcol: "#FF6B5E", sub: "EVERY SINGLE ONE" } },
+    { a: 10.6, b: 14.0, glsl: "garden", p: { ...G, bugs: 0, cam: [1.0, 1.4], pitch: [0.05, 0.1], yaw: [0.15, 0.3] },
+      hud: { cat: "AT FIRST", label: "MOSQUITO BITES", value: "Zero", sub: "NO MOSQUITOES · NO FLIES", dot: "#4FD1A5" } },
+    { a: 14.0, b: 22.4, glsl: "garden", p: { ...G, bugs: 0, cam: [1.4, 2.4], pitch: [0.12, 0.18], yaw: [-0.2, 0.0], fruit: [[0, 1], [2.0, 1], [8.4, 0.15]] },
+      hud: { cat: "BY SPRING", label: "LEADING FOOD CROPS THAT NEED POLLINATORS", value: "~75 %", sub: "87 OF THE 115 TOP CROPS, AT LEAST PARTLY", vcol: "#FFD866" } },
+    { a: 22.4, b: 26.4, glsl: "garden", p: { ...G, bugs: 0, fruit: 0.08, cam: [2.4, 3.0], pitch: [0.2, 0.22], yaw: [0.0, 0.15], grey: 0.1 },
+      hud: { cat: "APPLES · ALMONDS · COCOA · COFFEE", label: "HARVESTS", value: "Crash", vcol: "#FF6B5E", sub: "FLOWERS BLOOM, BUT FEW BECOME FRUIT" } },
+    { a: 26.4, b: 34.4, glsl: "garden", p: { ...G, bugs: 0, fruit: 0.08, cam: [3.0, 2.4], pitch: [0.35, 0.3], birds: [[0, 1], [3.0, 1], [7.6, 0.05]], grey: [0.1, 0.3] },
+      hud: { cat: "THE FOOD CHAIN", label: "SONGBIRDS · FROGS · BATS · FISH", value: "Go hungry", sub: "MOST SONGBIRDS FEED INSECTS TO THEIR CHICKS" } },
+    { a: 34.4, b: 43.4, glsl: "garden", p: { ...G, bugs: 0, fruit: 0.05, birds: 0, low: [0.2, 0.7], cam: [1.0, 1.8], pitch: [-0.05, -0.1], litter: [[0, 0.05], [3.4, 0.1], [9.0, 0.95]], grey: [0.3, 0.45] },
+      hud: { cat: "THE QUIETEST PROBLEM", label: "DEAD LEAVES · DUNG · CARCASSES", value: "Pile up", sub: "FEWER DECOMPOSERS · POORER SOIL", dot: "#C08A4A" } },
+    { a: 43.4, b: 47.3, glsl: "earth", p: { ...EA, spin: [0.3, 0.6], orb: [0.3, 0.45] },
+      hud: { cat: "WE'D SURVIVE ON", label: "RICE · WHEAT · CORN", value: "No insects needed", sub: "WIND- AND SELF-POLLINATED GRAINS", dot: "#4FD1A5" } },
+    { a: 47.3, b: 54.4, glsl: "garden", p: { ...G, bugs: 0, fruit: 0.05, birds: 0, litter: 0.9, grey: [0.5, 0.95], cam: [1.8, 2.6], pitch: [0.05, 0.1] },
+      hud: { cat: "THE WORLD WOULD BE", label: "GREY · SILENT", value: "And hungry", sub: "", vcol: "#C9D3DE" } },
+  ],
+  captions: [
+    [3.52, 6.6, "At any moment, about 10 quintillion insects are alive."], [6.92, 8.8, "That's over a billion for every person."],
+    [9.12, 10.4, "Overnight, they're all gone."], [10.68, 11.9, "At first, it feels nice."], [12.32, 13.8, "No mosquitoes, no flies."],
+    [14.16, 15.9, "But by spring, something is missing."], [16.26, 19.0, "About three quarters of the world's main food crops"],
+    [19.18, 22.2, "rely, at least partly, on animal pollinators, mostly insects."], [22.66, 25.0, "Apples, almonds, cocoa, coffee..."],
+    [25.26, 26.3, "harvests crash."], [26.54, 28.0, "Then the food chain starts to fall."], [28.14, 30.9, "Most songbirds feed insects to their chicks."],
+    [31.3, 34.2, "Frogs, lizards, bats and many fish all go hungry."], [34.6, 35.9, "And the quietest problem?"],
+    [36.14, 37.9, "Insects help recycle the dead."], [38.18, 40.9, "Fallen leaves, dung and carcasses start to pile up,"],
+    [41.08, 43.3, "and the soil slowly loses its nutrients."], [43.7, 47.1, "Rice, wheat and corn don't need insects, so we would survive."],
+    [47.4, 50.2, "But the world would be grey, silent... and hungry."],
+  ],
+  flashes: [{ at: 9.96, dur: 0.35 }],
+  endCard: { at: 50.3, title: "What if every insect on Earth vanished tomorrow?", small: ["SIMPLIFIED · NUMBERS ARE ROUGH ESTIMATES", "10 QUINTILLION: SMITHSONIAN · 75%: KLEIN ET AL. 2007"], cta: "WOULD YOU MISS THE MOSQUITOES?" },
+};
