@@ -50,9 +50,9 @@ vec2 map(vec3 p){
       float hh = hash2(vec2(c, 7.0));
       for (int row = 0; row < 2; row++) {
         float fr = float(row);
-        float ht = (row == 0 ? 14.0 + 34.0*hh*hh : 26.0 + 40.0*hash2(vec2(c, 11.0)));
+        float ht = (row == 0 ? 14.0 + 26.0*hh*hh : 20.0 + 28.0*hash2(vec2(c, 11.0)));
         vec3 bp = vec3(xc, ht*0.5, zs + 16.0 + 40.0*fr + 6.0*hash2(vec2(c, 3.0 + fr)));
-        if (abs(xc - TW.x) < 40.0 && row == 0) continue;
+        if (abs(xc - TW.x) < 50.0) continue;
         float d = sdRoundBox(p - bp, vec3(12.0 + 3.0*hash2(vec2(c, 5.0)), ht*0.5, 11.0), 0.2);
         r = opU(r, vec2(d, 3.0 + 0.1*fr + 0.01*floor(hh*5.0)));
       }
@@ -137,8 +137,8 @@ vec4 pixel(vec2 uv){
       float wet = smoothstep(0.6, -0.1, g0);               // below old sea level = seabed
       vec3 sand = mix(vec3(0.88, 0.8, 0.62), vec3(0.8, 0.72, 0.54), noise2(pos.xz*1.7));
       vec3 bed = mix(vec3(0.5, 0.43, 0.32), vec3(0.36, 0.32, 0.25), noise2(pos.xz*0.6))*(0.85 + 0.3*noise2(pos.xz*3.0));
-      float weed = smoothstep(0.62, 0.78, noise2(pos.xz*0.12 + 4.0))*wet;
-      bed = mix(bed, vec3(0.16, 0.22, 0.12), weed*0.8);
+      float weed = smoothstep(0.7, 0.8, noise2(pos.xz*0.3 + 4.0))*wet;
+      bed = mix(bed, vec3(0.2, 0.26, 0.14), weed*0.6);
       float rock = smoothstep(0.72, 0.8, noise2(pos.xz*0.35 + 9.0))*wet;
       bed = mix(bed, vec3(0.2, 0.19, 0.18), rock);
       vec3 alb = mix(sand, bed, wet);
@@ -146,7 +146,7 @@ vec4 pixel(vec2 uv){
       vec3 n = normalize(vec3(groundH(pos.xz - e.xy) - groundH(pos.xz + e.xy), 0.3, groundH(pos.xz - e.yx) - groundH(pos.xz + e.yx)));
       vec3 c = lin(alb)*(key*clamp(dot(n, L), 0.0, 1.0) + skyF*1.1);
       // glossy wet seabed + puddles reflecting the sky
-      float pud = smoothstep(0.76, 0.8, noise2(pos.xz*0.3 + 2.0))*wet*(1.0 - rock);
+      float pud = smoothstep(0.8, 0.84, noise2(pos.xz*0.3 + 7.3))*wet*(1.0 - rock);
       float fr = 0.04 + 0.96*pow(1.0 - clamp(-rd.y, 0.0, 1.0), 5.0);
       float rip = sin(dot(pos.xz, vec2(0.35, 1.0))*4.5 + 2.5*noise2(pos.xz*0.4));
       c *= 1.0 + wet*(0.12*rip + 0.1*(noise2(pos.xz*6.0) - 0.5));

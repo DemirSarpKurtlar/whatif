@@ -43,7 +43,7 @@ vec4 pixel(vec2 uv){
     hit = b;
     vec3 pos = ro + rd*hit;
     float h = terr(pos.xz);
-    vec3 L = normalize(vec3(-0.5, 0.65, 0.55));
+    vec3 L = normalize(vec3(0.85, 0.5, 0.15));
     vec3 key = vec3(1.25, 1.15, 1.0), skyF = lin(vec3(0.6, 0.72, 0.88))*0.6;
     vec3 c;
     if (h <= 0.0) {
@@ -63,8 +63,8 @@ vec4 pixel(vec2 uv){
       vec3 rock = mix(vec3(0.45, 0.43, 0.4), vec3(0.6, 0.58, 0.54), noise2(pos.xz*0.08));
       vec3 alb = mix(forest, rock, smoothstep(0.55, 0.75, slope + 0.1*tn));
       float tl = 820.0 + 160.0*noise2(pos.xz*0.004);
-      alb = mix(alb, rock, smoothstep(tl - 80.0, tl, pos.y));
-      float snow = smoothstep(1250.0 + 150.0*noise2(pos.xz*0.003), 1350.0, pos.y + 120.0*n.y);
+      alb = mix(alb, rock, smoothstep(tl - 80.0, tl + 80.0, pos.y));
+      float snow = smoothstep(1350.0, 1500.0, pos.y + 150.0*noise2(pos.xz*0.004))*smoothstep(0.2, 0.6, n.y);
       alb = mix(alb, vec3(0.93, 0.95, 0.98), snow);
       // the 1958 trimline: forest stripped below u_run
       float edge = u_run + 14.0*(noise2(pos.xz*0.02) - 0.5);
@@ -73,7 +73,7 @@ vec4 pixel(vec2 uv){
       alb = mix(alb, bare, strip*(1.0 - snow));
       float fo = smoothstep(edge - 60.0, edge - 4.0, pos.y)*strip*u_foam*(0.6 + 0.4*noise2(pos.xz*0.08 + gT*2.0));
       alb = mix(alb, vec3(0.95, 0.97, 0.98), fo);
-      c = lin(alb)*(key*clamp((dot(n, L) + 0.25)/1.25, 0.0, 1.0) + skyF*(0.6 + 0.4*n.y));
+      c = lin(alb)*(key*clamp(dot(n, L), 0.0, 1.0)*1.1 + skyF*(0.45 + 0.35*n.y));
       // 100 m contour for scale
       float ln = smoothstep(4.0, 1.0, abs(pos.y - 100.0))*u_mark;
       c = mix(c, lin(vec3(0.35, 0.95, 1.0))*1.4, ln);
