@@ -1,14 +1,29 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Higgsfield__*",
-      "mcp__ffmpeg__*",
+      "Bash(bash:*)",
       "Bash(ffmpeg:*)",
       "Bash(ffprobe:*)",
+      "Bash(higgsfield:*)",
       "Bash(node:*)",
       "Bash(npm:*)",
       "Bash(npx:*)",
-      "Bash(higgsfield:*)"
+      "Bash(python3:*)",
+      "mcp__ElevenLabs__*",
+      "mcp__Higgsfield__*",
+      "mcp__ffmpeg__*"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/resume.sh\""
+          }
+        ]
+      }
     ]
   }
 }
