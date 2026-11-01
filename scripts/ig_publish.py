@@ -64,6 +64,16 @@ def refresh():
     print(json.dumps({"expires_in_days": round(d.get("expires_in", 0) / 86400, 1)}))
 
 
+def posted_titles():
+    """Print the first caption line of the account's recent posts (one per line) - used to skip already-posted episodes."""
+    uid = os.environ["IG_USER_ID"].strip()
+    d = call("GET", f"{uid}/media", fields="caption", limit="100")
+    for m in d.get("data", []):
+        first = (m.get("caption") or "").split("\n")[0].strip()
+        if first:
+            print(first)
+
+
 def check():
     uid = os.environ["IG_USER_ID"].strip()
     print("host:", HOST, "| token prefix:", TOKEN[:4] + "…", "| token length:", len(TOKEN))
@@ -123,11 +133,14 @@ if __name__ == "__main__":
     ap.add_argument("--thumb-ms", type=int, default=1200)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--posted-titles", action="store_true")
     a = ap.parse_args()
     if a.check:
         check()
     elif a.refresh:
         refresh()
+    elif a.posted_titles:
+        posted_titles()
     else:
         cap = open(a.caption_file, encoding="utf-8").read().strip()
         publish(a.video_url, cap, a.thumb_ms, a.video_file, a.first_comment, a.cover_url)
