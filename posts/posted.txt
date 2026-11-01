@@ -7,3 +7,6 @@
 010-asteroid-hits-ocean
 018-rain-for-a-year
 012-ocean-drains
+011-jupiter-replaces-moon
+005-moon-disappears
+007-saturn-rings

@@ -246,7 +246,7 @@ if (SC === 0 || SC === 1) {
   arc(12, 1.2, INK2, [4, 6]); arc(50, 1.2, INK2, [4, 6]); arc(85, 1.2, INK2, [4, 6]);
   G(true, 16, "rgba(127,211,255,0.9)"); arc(100, 3, CY, [18, 10]); G(false);
   const yl = (h) => base - h * s;
-  mt("TROPOSPHERE", 70, yl(6) + 8, 16, INK2, "left", 3); mt("STRATOSPHERE", 70, yl(31) + 8, 16, INK2, "left", 3); mt("MESOSPHERE", 70, yl(68) + 8, 16, INK2, "left", 3);
+  mt("TROPOSPHERE", 70, yl(6) + 8, 18, INK2, "left", 3); mt("STRATOSPHERE", 70, yl(31) + 8, 18, INK2, "left", 3); mt("MESOSPHERE", 70, yl(68) + 8, 18, INK2, "left", 3);
   mt("KÁRMÁN LINE · 100 KM", W - 70, yl(100) - 18, 22, CY, "right", 3, 700); mt("EDGE OF SPACE", W - 70, yl(100) + 34, 17, INK2, "right", 3);
   ladV(540, 120, base, 40, 18, t * 18);
   climber(540, 1060, 1.2, t);
@@ -258,9 +258,9 @@ if (SC === 0 || SC === 1) {
   // ISS rushes past at 7.66 km/s
   grid(0, t * 9);
   stars(40, 140, 1850, 11, 0.8);
-  ladV(250, 120, H, 40, 18, t * 18);
-  climber(250, 1080, 1.2, t);
-  const pass = (lt - (p.iss || 0)) / 2.5, cx = lerp(1750, -760, pass), cy = 820;
+  ladV(880, 282, H, 40, 18, t * 18);
+  climber(880, 1120, 1.2, t);
+  const pass = (lt - (p.iss || 0)) / 3.0, cx = lerp(1750, -760, pass), cy = 820;
   // speed lines behind it
   if (pass > -0.1 && pass < 1.3) {
     ctx.save(); for (let j = 0; j < 9; j++) { const yy = cy - 230 + j * 58 + rnd(j) * 20, x0 = cx + 380 + rnd(j + 3) * 120, len = 300 + rnd(j + 7) * 500; ctx.globalAlpha = 0.5; sl(x0, yy, x0 + len, yy, 1.4, INK2, [26, 14]); } ctx.restore();
@@ -291,10 +291,10 @@ if (SC === 0 || SC === 1) {
     for (const xr of [-16, 16]) { const r1 = Q(xr - 1.5, 0, 3), r2 = Q(xr + 1.5, 0, 3), r3 = Q(xr + 1.5, 0, 20), r4 = Q(xr - 1.5, 0, 20); pl([r1, r2, r3, r4], 1.3, INK2, true); }
     G(false);
   }
-  const kv = kk((p.iss || 0) + 1.5, (p.iss || 0) + 2.3);
-  if (kv > 0) { ctx.save(); ctx.globalAlpha *= kv; sl(W - 60, cy, 60, cy, 1, INK3, [8, 8]); G(true, 12, "rgba(242,184,75,0.8)"); arr(900, cy + 150, 900 - 520 * ez(kv), cy + 150, AMB, 3, 22); G(false);
-    mt("v = 7.66 KM/S", 900, cy + 205, 26, AMB, "right", 3, 700); mt("ISS ORBIT · 92 MIN PER LAP", 900, cy + 240, 16, INK2, "right", 3); ctx.restore(); }
-  lead(cx + 60, cy - 30, cx + 260, cy - 330, "ISS", "ALT 408 KM · 420 T", cx > 200 && cx < 760 ? 1 : 0);
+  const kv = kk((p.iss || 0) + 1.8, (p.iss || 0) + 2.6);
+  if (kv > 0) { ctx.save(); ctx.globalAlpha *= kv; sl(W - 60, cy, 60, cy, 1, INK3, [8, 8]); G(true, 12, "rgba(242,184,75,0.8)"); arr(800, cy + 150, 800 - 600 * ez(kv), cy + 150, AMB, 3, 22); G(false);
+    mt("v = 7.66 KM/S", 800, cy + 205, 26, AMB, "right", 3, 700); mt("ISS ORBIT · 92 MIN PER LAP", 800, cy + 240, 17, INK2, "right", 3); ctx.restore(); }
+  lead(cx - 40, cy - 40, cx - 160, cy - 300, "ISS", "ALT 408 KM · 420 T", cx > 470 && cx < 1060 ? 1 : 0);
   chromeBegin(); chrome();
   hero("T + 16 DAYS · ALT 408 KM", "7.66", "KM/S", "≈ 27,600 KM/H PAST YOUR LADDER", p.h ? cl(lt / 0.3) : 0);
   ctx.restore();
@@ -309,8 +309,9 @@ if (SC === 0 || SC === 1) {
   G(true, 12, "rgba(127,211,255,0.8)"); ctx.strokeStyle = CY; ctx.lineWidth = 2 / z; ctx.beginPath(); ctx.arc(ex, ey, rG, -Math.PI / 2, -Math.PI / 2 + TAU * ez(kk(0.3, 1.5))); ctx.stroke(); G(false);
   globe(ex, ey, rE, { tilt: 0.45, spin: t * 0.4, lat: 6, lon: 12 });
   // ladder: radial, straight up
-  ctx.strokeStyle = INK; ctx.lineWidth = 1.6 / z; ctx.beginPath(); ctx.moveTo(ex - 5, ey - rE); ctx.lineTo(ex - 5, -400); ctx.moveTo(ex + 5, ey - rE); ctx.lineTo(ex + 5, -400); ctx.stroke();
-  ctx.lineWidth = 1 / z; ctx.beginPath(); for (let y = ey - rE; y > -400; y -= 9) { ctx.moveTo(ex - 5, y); ctx.lineTo(ex + 5, y); } ctx.stroke();
+  ctx.strokeStyle = INK; ctx.lineWidth = 1.6 / z; ctx.beginPath(); ctx.moveTo(ex - 5, ey - rE); ctx.lineTo(ex - 5, ey - rS - 30); ctx.moveTo(ex + 5, ey - rE); ctx.lineTo(ex + 5, ey - rS - 30); ctx.stroke();
+  sl(ex, ey - rS - 36, ex, ey - rS - 70, 1.4 / z, INK2, [5, 5]);
+  ctx.lineWidth = 1 / z; ctx.beginPath(); for (let y = ey - rE; y > ey - rS - 30; y -= 9) { ctx.moveTo(ex - 5, y); ctx.lineTo(ex + 5, y); } ctx.stroke();
   // GPS satellites
   for (let j = 0; j < 6; j++) {
     const th = j * TAU / 6 + t * 0.22 + 0.3, sx = ex + rG * Math.cos(th), sy = ey + rG * Math.sin(th);
@@ -330,26 +331,26 @@ if (SC === 0 || SC === 1) {
   // GEOSTATIONARY: forces cancel, you float off the rungs
   grid(0, 0);
   stars(36, 140, 1850, 21, 0.7);
-  sl(40, 1000, W - 40, 1000, 1.4, INK2, [16, 10]); mt("GEOSTATIONARY RING · 35,786 KM", W - 60, 1036, 17, INK2, "right", 3);
-  ladV(380, 120, H, 44, 18, 0);
-  const fx = 560 + 14 * Math.sin(t * 0.7), fy = 1060 + 26 * Math.sin(t * 0.9) - 40 * ez(kk(0.2, 2.5)), rot = 0.25 * Math.sin(t * 0.5) + 0.12 * lt;
+  sl(40, 1000, W - 40, 1000, 1.4, INK2, [16, 10]); mt("GEOSTATIONARY RING · 35,786 KM", 60, 1036, 17, INK2, "left", 3);
+  ladV(880, 282, H, 44, 18, 0);
+  const fx = 700 + 14 * Math.sin(t * 0.7), fy = 1060 + 26 * Math.sin(t * 0.9) - 40 * ez(kk(0.2, 2.5)), rot = -0.25 * Math.sin(t * 0.5) - 0.12 * lt;
   climber(fx, fy, 1.3, 0, { float: 1, rot });
   const cyc = fy - 75, kf = ez(kk(0.5, 1.4)), L = 200 * kf;
   if (kf > 0) {
     G(true, 12, "rgba(127,211,255,0.8)"); arr(fx, cyc - 95, fx, cyc - 95 - L, CY, 3, 22); G(false);
     G(true, 12, "rgba(242,184,75,0.8)"); arr(fx, cyc + 95, fx, cyc + 95 + L, AMB, 3, 22); G(false);
     ctx.save(); ctx.globalAlpha *= kf;
-    mt("SPIN-OUT  ω²r", fx + 26, cyc - 230, 21, CY, "left", 3, 700); mt("0.224 M/S²", fx + 26, cyc - 200, 18, INK2, "left", 3);
-    mt("GRAVITY  GM/r²", fx + 26, cyc + 220, 21, AMB, "left", 3, 700); mt("0.224 M/S²", fx + 26, cyc + 250, 18, INK2, "left", 3);
+    mt("SPIN-OUT  ω²r", fx - 30, cyc - 230, 22, CY, "right", 3, 700); mt("0.224 M/S²", fx - 30, cyc - 198, 19, INK2, "right", 3);
+    mt("GRAVITY  GM/r²", fx - 30, cyc + 220, 22, AMB, "right", 3, 700); mt("0.224 M/S²", fx - 30, cyc + 252, 19, INK2, "right", 3);
     ctx.restore();
   }
-  const kn = kk(1.6, 2.2); if (kn > 0) { ctx.save(); ctx.globalAlpha *= kn; ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.strokeRect(fx + 120, cyc - 28, 250, 56); mt("NET = 0", fx + 245, cyc + 10, 26, INK, "center", 4, 700); ctx.restore(); }
+  const kn = kk(1.6, 2.2); if (kn > 0) { ctx.save(); ctx.globalAlpha *= kn; ctx.fillStyle = "#10305F"; ctx.fillRect(fx - 380, cyc - 30, 250, 60); ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.strokeRect(fx - 380, cyc - 30, 250, 60); mt("NET = 0", fx - 255, cyc + 10, 28, INK, "center", 4, 700); ctx.restore(); }
   // geostationary satellite
-  const gx = 830, gy = 560 + 10 * Math.sin(t * 0.6);
+  const gx = 260, gy = 620 + 10 * Math.sin(t * 0.6);
   G(true, 8); ctx.strokeStyle = INK; ctx.lineWidth = 1.8; ctx.strokeRect(gx - 26, gy - 22, 52, 44); ctx.strokeRect(gx - 150, gy - 14, 110, 28); ctx.strokeRect(gx + 40, gy - 14, 110, 28);
   sl(gx - 40, gy, gx - 26, gy, 1.5, INK); sl(gx + 26, gy, gx + 40, gy, 1.5, INK); ctx.beginPath(); ctx.ellipse(gx, gy + 40, 26, 9, 0, 0, Math.PI); ctx.stroke(); G(false);
   ctx.strokeStyle = INK3; ctx.lineWidth = 1; ctx.beginPath(); for (let u = 1; u < 5; u++) { ctx.moveTo(gx - 150 + u * 22, gy - 14); ctx.lineTo(gx - 150 + u * 22, gy + 14); ctx.moveTo(gx + 40 + u * 22, gy - 14); ctx.lineTo(gx + 40 + u * 22, gy + 14); } ctx.stroke();
-  lead(gx - 90, gy + 14, 640, 720, "COMSAT", "ORBITS ONCE PER DAY", kk(0.8, 1.6));
+  ctx.save(); ctx.globalAlpha *= kk(0.8, 1.4); mt("COMSAT", gx, gy + 92, 21, INK, "center", 3, 600); mt("ALSO HANGS STILL · 24 H ORBIT", gx, gy + 120, 15, INK2, "center", 2.5); ctx.restore();
   chromeBegin(); chrome();
   hero("T + 3.8 YEARS · 35,786 KM", "0.00", "G", "YOU WEIGH NOTHING", cl(lt / 0.3));
   ctx.restore();
@@ -372,11 +373,12 @@ if (SC === 0 || SC === 1) {
   globe(m[0], m[1], 40, { tilt: 0.2, spin: t * 0.1, lat: 4, lon: 8, w: 2, craters: [[0.3, 0.2, 0.2], [-0.3, -0.5, 0.15]] });
   // velocity arrow
   const m2 = pt(th + 0.18); arr(m[0], m[1], m[0] + (m2[0] - m[0]) * 1.6, m[1] + (m2[1] - m[1]) * 1.6, INK2, 2, 16);
-  mt(fmt(Math.round(km / 100) * 100) + " KM", m[0], m[1] + (m[1] > ey ? 92 : -66), 24, col, "center", 3, 700);
-  if (Math.abs(st) > 0.15) mt(st < 0 ? "COMPRESSION · BUCKLES" : "TENSION · TEARS", m[0], m[1] + (m[1] > ey ? 124 : -100), 18, col, "center", 3, 600);
+  const lx = Math.min(870, Math.max(210, m[0])), ly = m[1] + (m[1] > ey - 5 ? 96 : -70);
+  mt(fmt(Math.round(km / 100) * 100) + " KM", lx, ly, 24, col, "center", 3, 700);
+  if (Math.abs(st) > 0.15) mt(st < 0 ? "COMPRESSION · BUCKLES" : "TENSION · TEARS", lx, ly + 30, 18, col, "center", 3, 600);
   dim(ex - a * (1 - e), ey + 60, ex, ey + 60, "363,300", kk(0.4, 1.2));
   dim(ex, ey - 60, ex + a * (1 + e), ey - 60, "405,500", kk(0.8, 1.6));
-  mt("PERIGEE", ex - a * (1 - e), ey + 112, 16, INK2, "center", 3); mt("APOGEE", ex + a * (1 + e), ey - 92, 16, INK2, "center", 3);
+  mt("PERIGEE", ex - a * (1 - e) + 6, ey - 26, 16, INK2, "left", 3); mt("APOGEE", ex + a * (1 + e) - 6, ey + 40, 16, INK2, "right", 3);
   mt("ECCENTRICITY EXAGGERATED ×2", 60, 1500, 15, INK3, "left", 3);
   chromeBegin(); chrome();
   hero("EVERY 27.5 DAYS", "42,200", "KM", "THE MOON'S DISTANCE SWINGS", cl(lt / 0.3), { size: 168 });

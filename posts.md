@@ -7,3 +7,6 @@
 | 2026-11-01 20:53 | 010-asteroid-hits-ocean | https://www.instagram.com/reel/DfNoptokZ0x/ |
 | 2026-11-01 20:57 | 018-rain-for-a-year | https://www.instagram.com/reel/DfNo-2dlKvP/ |
 | 2026-11-01 20:59 | 012-ocean-drains | https://www.instagram.com/reel/DfNpRcuDVGq/ |
+| 2026-11-01 21:01 | 011-jupiter-replaces-moon | https://www.instagram.com/reel/DfNpiInDaW7/ |
+| 2026-11-01 21:04 | 005-moon-disappears | https://www.instagram.com/reel/DfNp6LDEWKD/ |
+| 2026-11-01 21:07 | 007-saturn-rings | https://www.instagram.com/reel/DfNqK23juEr/ |

@@ -1,0 +1,221 @@
+// Alexandria harbour: gold sun, Pharos lighthouse, ink sea with brush waves. p: zoom, cx, cy, sun (y offset), beacon, drift
+// ---- Ink & Gold helpers (episode 038; inlined into every draw file by the episode's build step) ----
+const C8 = window.__c038 || (window.__c038 = {});
+const INK = { paper: "#CFC8B9", mid: "#9C978E", dark: "#55524D", ink: "#141312", g0: "#7E5E19", g1: "#C9A64B", g2: "#F2D68A", seal: "#B8322A" };
+function prng(seed) { let a = seed >>> 0; return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t2 = Math.imul(a ^ (a >>> 15), 1 | a); t2 = (t2 + Math.imul(t2 ^ (t2 >>> 7), 61 | t2)) ^ t2; return ((t2 ^ (t2 >>> 14)) >>> 0) / 4294967296; }; }
+function mkC(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
+function cached(key, w, h, fn) { if (!C8[key]) { const c = mkC(w, h); fn(c.getContext("2d"), w, h); C8[key] = c; } return C8[key]; }
+// paper: warm grey rice paper (blotches, fibres, grain). Drawn larger than the frame so camera moves never show edges.
+function paperTex() {
+  return cached("paper", 1400, 2400, (g, w, h) => {
+    const R = prng(38); g.fillStyle = INK.paper; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 90; i++) { const x = R() * w, y = R() * h, r = 60 + R() * 380, d = R() < 0.6; const rg = g.createRadialGradient(x, y, 0, x, y, r);
+      rg.addColorStop(0, d ? `rgba(70,64,56,${0.03 + R() * 0.05})` : `rgba(255,250,236,${0.04 + R() * 0.06})`); rg.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
+    g.lineCap = "round";
+    for (let i = 0; i < 1600; i++) { const x = R() * w, y = R() * h, l = 8 + R() * 50, a = R() * TAU; g.strokeStyle = R() < 0.5 ? `rgba(60,55,48,${0.05 + R() * 0.07})` : `rgba(255,252,240,${0.08 + R() * 0.1})`;
+      g.lineWidth = 0.6 + R() * 1.1; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a + 0.6) * l * 0.5, y + Math.sin(a + 0.6) * l * 0.5, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }
+    const id = g.getImageData(0, 0, w, h), d = id.data; for (let i = 0; i < d.length; i += 4) { const n = (R() - 0.5) * 22; d[i] += n; d[i + 1] += n; d[i + 2] += n; } g.putImageData(id, 0, 0);
+  });
+}
+function drawPaper(g) { g.drawImage(paperTex(), -160, -240); }
+// soft wash blob (ellipse), any context
+function blob(g, x, y, rx, ry, rgb, a) { g.save(); g.translate(x, y); g.scale(1, ry / rx); const rg = g.createRadialGradient(0, 0, 0, 0, 0, rx); rg.addColorStop(0, `rgba(${rgb},${a})`); rg.addColorStop(0.55, `rgba(${rgb},${a * 0.6})`); rg.addColorStop(1, `rgba(${rgb},0)`); g.fillStyle = rg; g.fillRect(-rx, -rx, 2 * rx, 2 * rx); g.restore(); }
+// vertical wash gradient band
+function vwash(g, y0, y1, rgb, a0, a1) { const lg = g.createLinearGradient(0, y0, 0, y1); lg.addColorStop(0, `rgba(${rgb},${a0})`); lg.addColorStop(1, `rgba(${rgb},${a1})`); g.fillStyle = lg; g.fillRect(-300, y0, W + 600, y1 - y0); }
+// ink ridge (mountains / hills / clouds) fading downward into mist; static use (uses blur filter)
+function ridge(g, yb, amp, seed, rgb, a, blur = 6, fade = 380, freq = 1) {
+  g.save(); if (blur) g.filter = `blur(${blur}px)`;
+  const lg = g.createLinearGradient(0, yb - amp, 0, yb + fade); lg.addColorStop(0, `rgba(${rgb},${a})`); lg.addColorStop(0.45, `rgba(${rgb},${a * 0.75})`); lg.addColorStop(1, `rgba(${rgb},0)`);
+  g.fillStyle = lg; g.beginPath(); g.moveTo(-300, yb + fade);
+  for (let x = -300; x <= W + 300; x += 12) { const u = x / W * freq; const y = yb - amp * (0.55 * Math.abs(Math.sin(u * 2.3 + seed)) + 0.3 * Math.sin(u * 5.1 + seed * 2) ** 2 + 0.15 * Math.sin(u * 13 + seed * 3)); g.lineTo(x, y); }
+  g.lineTo(W + 300, yb + fade); g.closePath(); g.fill(); g.restore();
+}
+// long horizontal cloud streak (static; blurred)
+function streak(g, x, y, w, h, rgb, a, blur = 10) { g.save(); g.filter = `blur(${blur}px)`; g.fillStyle = `rgba(${rgb},${a})`; g.beginPath(); g.ellipse(x, y, w / 2, h / 2, 0, 0, TAU); g.fill(); g.fillStyle = `rgba(${rgb},${a * 0.8})`; g.beginPath(); g.ellipse(x + w * 0.18, y - h * 0.35, w * 0.3, h * 0.45, 0, 0, TAU); g.fill(); g.restore(); }
+// bristle brush stroke along a polyline [x0,y0,x1,y1,...] (tapered, dry-brush gaps). k = reveal 0..1
+function brush(g, pts, w, col = INK.ink, a = 1, seed = 1, dry = 0.35, k = 1) {
+  const P = []; for (let i = 0; i + 3 < pts.length; i += 2) { const [x0, y0, x1, y1] = [pts[i], pts[i + 1], pts[i + 2], pts[i + 3]]; const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 10)); for (let j = 0; j < n; j++) P.push([lerp(x0, x1, j / n), lerp(y0, y1, j / n)]); }
+  P.push([pts[pts.length - 2], pts[pts.length - 1]]);
+  const m = Math.max(2, Math.floor(P.length * cl(k))); if (m < 2) return;
+  const nb = Math.max(5, Math.round(w / 3)); g.save(); g.globalAlpha = a; g.strokeStyle = col; g.fillStyle = col; g.lineCap = "round";
+  const nrm = (j) => { const p0 = P[Math.max(0, j - 1)], p1 = P[Math.min(P.length - 1, j + 1)]; const dx = p1[0] - p0[0], dy = p1[1] - p0[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; };
+  const tp = (j) => Math.pow(Math.sin(Math.PI * cl((j + 0.5) / P.length * 0.92 + 0.04)), 0.55);
+  // solid core
+  g.beginPath(); for (let j = 0; j < m; j++) { const [nx, ny] = nrm(j), s = w * 0.3 * tp(j); j ? g.lineTo(P[j][0] + nx * s, P[j][1] + ny * s) : g.moveTo(P[j][0] + nx * s, P[j][1] + ny * s); }
+  for (let j = m - 1; j >= 0; j--) { const [nx, ny] = nrm(j), s = -w * 0.3 * tp(j); g.lineTo(P[j][0] + nx * s, P[j][1] + ny * s); } g.closePath(); g.fill();
+  // bristles
+  g.lineWidth = Math.max(1, (w / nb) * 1.5);
+  for (let b = 0; b < nb; b++) { const o = (b / (nb - 1) - 0.5) * w; let on = false; g.beginPath();
+    for (let j = 0; j < m; j++) { const u = j / P.length; const gap = rnd(seed * 7.3 + b * 3.1 + Math.floor(j / 3)) < dry * Math.pow(u, 1.6) * (Math.abs(o) / w * 2 + 0.3);
+      const [nx, ny] = nrm(j), s = o * tp(j), x = P[j][0] + nx * s, y = P[j][1] + ny * s; if (gap) { on = false; continue; } on ? g.lineTo(x, y) : g.moveTo(x, y); on = true; }
+    g.stroke(); }
+  g.restore();
+}
+// mottled gold leaf texture as a pattern
+function goldPat(g) {
+  const c = cached("gold", 512, 512, (q, w, h) => {
+    const R = prng(7); q.fillStyle = "#D2AE5C"; q.fillRect(0, 0, w, h);
+    const wrap = (fn) => { for (const ox of [-w, 0, w]) for (const oy of [-h, 0, h]) fn(ox, oy); };
+    for (let i = 0; i < 300; i++) { const x = R() * w, y = R() * h, r = 8 + R() * 60, L = R() < 0.5, al = 0.2 + R() * 0.3;
+      wrap((ox, oy) => { const rg = q.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r); rg.addColorStop(0, L ? `rgba(255,240,190,${al})` : `rgba(120,84,22,${al})`); rg.addColorStop(1, "rgba(0,0,0,0)"); q.fillStyle = rg; q.fillRect(x + ox - r, y + oy - r, 2 * r, 2 * r); }); }
+    q.lineWidth = 1; for (let i = 0; i < 220; i++) { const x = R() * w, y = R() * h, d = [(R() - 0.5) * 50, (R() - 0.5) * 50, (R() - 0.5) * 70, (R() - 0.5) * 70]; const col = R() < 0.5 ? "rgba(255,246,210,0.45)" : "rgba(120,86,24,0.4)";
+      wrap((ox, oy) => { q.strokeStyle = col; q.beginPath(); q.moveTo(x + ox, y + oy); q.lineTo(x + ox + d[0], y + oy + d[1]); q.lineTo(x + ox + d[2], y + oy + d[3]); q.stroke(); }); }
+    for (let i = 0; i < 1400; i++) { q.fillStyle = R() < 0.5 ? "rgba(90,62,14,0.5)" : "rgba(255,250,225,0.7)"; q.fillRect(R() * w, R() * h, 1 + R() * 2, 1 + R() * 2); }
+  });
+  return g.createPattern(c, "repeat");
+}
+function glow(g, x, y, r, a = 0.5, rgb = "242,214,138") { const rg = g.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, `rgba(${rgb},${a})`); rg.addColorStop(0.4, `rgba(${rgb},${a * 0.35})`); rg.addColorStop(1, `rgba(${rgb},0)`); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
+function goldDisc(g, x, y, r, gl = 1) {
+  if (gl > 0) { glow(g, x, y, r * 2.4, 0.45 * gl); }
+  g.save(); g.beginPath(); for (let i = 0; i <= 90; i++) { const a = i / 90 * TAU; const rr2 = r * (1 + 0.012 * Math.sin(a * 7 + 1) + 0.008 * Math.sin(a * 19)); i ? g.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2) : g.moveTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2); }
+  g.closePath(); g.fillStyle = goldPat(g); g.fill(); g.clip();
+  const rg = g.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.1, x, y, r); rg.addColorStop(0, "rgba(255,248,220,0.35)"); rg.addColorStop(0.7, "rgba(0,0,0,0)"); rg.addColorStop(1, "rgba(90,60,10,0.35)"); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r);
+  g.restore();
+}
+function goldShape(g, pathFn, gl = 0) { g.save(); if (gl) { g.shadowColor = "rgba(242,214,138,0.75)"; g.shadowBlur = gl; } g.beginPath(); pathFn(g); g.fillStyle = goldPat(g); g.fill(); g.restore(); }
+function sparkle(g, x, y, s, a = 1) { g.save(); g.globalAlpha = a; g.fillStyle = "#FFF4CF"; g.beginPath(); g.moveTo(x, y - s); g.quadraticCurveTo(x, y, x + s * 0.3, y); g.quadraticCurveTo(x, y, x, y + s); g.quadraticCurveTo(x, y, x - s * 0.3, y); g.quadraticCurveTo(x, y, x, y - s); g.fill();
+  g.beginPath(); g.moveTo(x - s * 0.6, y); g.quadraticCurveTo(x, y, x, y - s * 0.2); g.quadraticCurveTo(x, y, x + s * 0.6, y); g.quadraticCurveTo(x, y, x, y + s * 0.2); g.fill(); glow(g, x, y, s * 1.2, 0.5); g.restore(); }
+function goldDust(g, n, x0, y0, w, h, seed = 1, a = 0.8, rise = 20) { for (let i = 0; i < n; i++) { const x = x0 + rnd(i * 3.7 + seed) * w + Math.sin(t * 0.7 + i) * 10, y = y0 + ((rnd(i * 5.3 + seed) * h - t * rise * (0.5 + rnd(i))) % h + h) % h, s = 1.5 + rnd(i * 9.1 + seed) * 3.5;
+  const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * (1 + rnd(i) * 2) + i)); g.fillStyle = `rgba(242,214,138,${a * tw})`; g.fillRect(x, y, s, s); } }
+function splatter(g, x, y, r, n, seed, col = INK.ink, a = 0.85) { g.fillStyle = col; g.globalAlpha = a; for (let i = 0; i < n; i++) { const ang = rnd(seed + i) * TAU, d = r * Math.pow(rnd(seed * 3 + i), 0.7), s = 1 + rnd(seed * 7 + i) * 5; g.beginPath(); g.arc(x + Math.cos(ang) * d, y + Math.sin(ang) * d, s, 0, TAU); g.fill(); } g.globalAlpha = 1; }
+function seal(g, x, y, s = 1, glyph = "Α") { g.save(); g.translate(x, y); g.rotate(-0.04); g.fillStyle = INK.seal; g.globalAlpha = 0.92; g.beginPath(); g.moveTo(-34 * s, -36 * s); g.lineTo(35 * s, -34 * s); g.lineTo(36 * s, 35 * s); g.lineTo(-35 * s, 36 * s); g.closePath(); g.fill();
+  g.globalAlpha = 1; g.fillStyle = "#F3E7D0"; g.font = `${46 * s}px LSerif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(glyph, 0, 3 * s); g.restore(); }
+// ---- silhouettes (fill = ink) ----
+function column(g, x, yb, h, w, col = INK.ink, rim = 0) {
+  g.fillStyle = col; g.fillRect(x - w * 0.75, yb - w * 0.28, w * 1.5, w * 0.28); g.fillRect(x - w * 0.62, yb - w * 0.46, w * 1.24, w * 0.2);
+  g.beginPath(); g.moveTo(x - w * 0.5, yb - w * 0.46); g.lineTo(x - w * 0.42, yb - h + w * 0.5); g.lineTo(x + w * 0.42, yb - h + w * 0.5); g.lineTo(x + w * 0.5, yb - w * 0.46); g.closePath(); g.fill();
+  g.fillRect(x - w * 0.6, yb - h + w * 0.3, w * 1.2, w * 0.22); g.fillRect(x - w * 0.8, yb - h, w * 1.6, w * 0.32);
+  if (rim) { g.fillStyle = `rgba(242,214,138,${0.7 * rim})`; g.fillRect(x + w * 0.36, yb - h + w * 0.55, Math.max(2, w * 0.06), h - w * 1.05); }
+}
+function pharos(g, x, yb, s = 1, fire = 1, col = INK.ink) {
+  g.fillStyle = col;
+  g.beginPath(); g.moveTo(x - 210 * s, yb); g.lineTo(x - 230 * s, yb + 30 * s); g.lineTo(x + 230 * s, yb + 30 * s); g.lineTo(x + 210 * s, yb); g.closePath(); g.fill();
+  g.fillRect(x - 200 * s, yb - 40 * s, 400 * s, 40 * s);
+  g.beginPath(); g.moveTo(x - 120 * s, yb - 40 * s); g.lineTo(x - 98 * s, yb - 560 * s); g.lineTo(x + 98 * s, yb - 560 * s); g.lineTo(x + 120 * s, yb - 40 * s); g.closePath(); g.fill();
+  g.fillRect(x - 112 * s, yb - 585 * s, 224 * s, 26 * s);
+  g.beginPath(); g.moveTo(x - 72 * s, yb - 585 * s); g.lineTo(x - 62 * s, yb - 830 * s); g.lineTo(x + 62 * s, yb - 830 * s); g.lineTo(x + 72 * s, yb - 585 * s); g.closePath(); g.fill();
+  g.fillRect(x - 80 * s, yb - 852 * s, 160 * s, 24 * s);
+  g.fillRect(x - 40 * s, yb - 975 * s, 80 * s, 125 * s);
+  for (let i = -1; i <= 1; i++) g.fillRect(x + i * 30 * s - 5 * s, yb - 1010 * s, 10 * s, 40 * s);
+  g.beginPath(); g.moveTo(x - 50 * s, yb - 1010 * s); g.lineTo(x, yb - 1060 * s); g.lineTo(x + 50 * s, yb - 1010 * s); g.closePath(); g.fill();
+  g.fillRect(x - 4 * s, yb - 1130 * s, 8 * s, 75 * s); circ2(g, x, yb - 1135 * s, 12 * s, col);
+  // windows (gold slits)
+  g.fillStyle = `rgba(242,214,138,${0.5 + 0.4 * fire})`; for (let i = 0; i < 6; i++) g.fillRect(x - 6 * s, yb - 120 * s - i * 72 * s, 12 * s, 30 * s);
+  if (fire > 0) { glow(g, x, yb - 935 * s, 260 * s * fire, 0.7 * fire); flame(g, x, yb - 900 * s, 36 * s * fire, 70 * s * fire, 3); }
+}
+function circ2(g, x, y, r, col) { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); }
+// gold-leaf flame (flickering tongues)
+function flame(g, x, yb, w, h, seed = 1, gl = 30) {
+  goldShape(g, (q) => { for (let k = 0; k < 3; k++) { const ox = (k - 1) * w * 0.55, hh = h * (k === 1 ? 1 : 0.68) * (0.85 + 0.15 * Math.sin(t * 9 + seed + k * 2)), sw = Math.sin(t * 6 + seed * 3 + k) * w * 0.25;
+    q.moveTo(x + ox - w * 0.5, yb); q.bezierCurveTo(x + ox - w * 0.6, yb - hh * 0.5, x + ox + sw - w * 0.1, yb - hh * 0.7, x + ox + sw, yb - hh); q.bezierCurveTo(x + ox + sw + w * 0.1, yb - hh * 0.6, x + ox + w * 0.6, yb - hh * 0.45, x + ox + w * 0.5, yb); q.closePath(); } }, gl);
+}
+function ship(g, x, y, s = 1, sail = 1, col = INK.ink, dir = 1) {
+  g.save(); g.translate(x, y); g.scale(s * dir, s); g.fillStyle = col;
+  g.beginPath(); g.moveTo(-230, -40); g.quadraticCurveTo(-120, 40, 0, 30); g.quadraticCurveTo(160, 30, 240, -60); g.lineTo(262, -92); g.lineTo(220, -50); g.lineTo(-210, -40); g.closePath(); g.fill();
+  g.beginPath(); g.moveTo(-230, -40); g.quadraticCurveTo(-260, -70, -250, -110); g.lineTo(-238, -104); g.quadraticCurveTo(-238, -70, -214, -44); g.fill();
+  g.fillRect(-6, -330, 12, 300);
+  g.strokeStyle = col; g.lineWidth = 4; for (let i = 0; i < 9; i++) { g.beginPath(); g.moveTo(-160 + i * 40, 10); g.lineTo(-180 + i * 40, 60); g.stroke(); }
+  if (sail > 0) { g.beginPath(); g.moveTo(-120, -300); g.quadraticCurveTo(0, -280 + 30 * sail, 120, -300); g.lineTo(130, -90); g.quadraticCurveTo(0, -60 + 30 * sail, -130, -90); g.closePath(); g.fill(); g.fillRect(-140, -312, 280, 10); }
+  g.restore();
+}
+// robed figure silhouette. pose: stand | read | run | point | sit. yb = feet.
+function figure(g, x, yb, s = 1, pose = "stand", col = INK.ink, dir = 1, ph = 0) {
+  g.save(); g.translate(x, yb); g.scale(s * dir, s); g.fillStyle = col; g.strokeStyle = col; g.lineCap = "round";
+  const run = pose === "run", st = run ? Math.sin(t * 10 + ph) : 0, bob = run ? Math.abs(Math.sin(t * 10 + ph)) * -8 : 0; g.translate(0, bob);
+  if (run) { g.lineWidth = 26; g.beginPath(); g.moveTo(0, -150); g.lineTo(40 * st, -70); g.lineTo(30 * st + 20, 0); g.stroke(); g.beginPath(); g.moveTo(0, -150); g.lineTo(-40 * st, -70); g.lineTo(-30 * st - 10, 0); g.stroke(); }
+  // robe
+  g.beginPath(); g.moveTo(-34, -290); g.quadraticCurveTo(-52, -160, run ? -60 : -64, run ? -110 : 0); g.lineTo(run ? 60 : 62, run ? -110 : 0); g.quadraticCurveTo(48, -170, 34, -290); g.closePath(); g.fill();
+  if (pose === "sit") { g.fillRect(-60, -120, 120, 120); }
+  // drape over shoulder
+  g.beginPath(); g.moveTo(-40, -300); g.quadraticCurveTo(10, -240, 40, -150); g.lineTo(52, -170); g.quadraticCurveTo(30, -260, 30, -300); g.fill();
+  // head + neck + beard
+  g.fillRect(-10, -320, 20, 30); g.beginPath(); g.ellipse(4, -345, 27, 31, 0, 0, TAU); g.fill(); g.beginPath(); g.moveTo(10, -335); g.lineTo(38, -342); g.lineTo(28, -318); g.fill();
+  g.lineWidth = 20;
+  if (pose === "read") { g.beginPath(); g.moveTo(-26, -275); g.lineTo(10, -215); g.lineTo(70, -225); g.stroke(); g.beginPath(); g.moveTo(26, -275); g.lineTo(60, -230); g.stroke(); }
+  else if (pose === "point") { g.beginPath(); g.moveTo(22, -275); g.lineTo(80, -330); g.lineTo(120, -380); g.stroke(); g.beginPath(); g.moveTo(-26, -275); g.lineTo(-36, -200); g.lineTo(-30, -150); g.stroke(); }
+  else if (pose === "run") { g.beginPath(); g.moveTo(-20, -275); g.lineTo(30, -230); g.lineTo(70, -250); g.stroke(); g.beginPath(); g.moveTo(20, -275); g.lineTo(60, -220); g.stroke(); }
+  else if (pose === "talk") { g.beginPath(); g.moveTo(22, -275); g.lineTo(70, -250); g.lineTo(110, -275 + Math.sin(t * 3 + ph) * 12); g.stroke(); g.beginPath(); g.moveTo(-26, -275); g.lineTo(-36, -200); g.lineTo(-30, -150); g.stroke(); }
+  else { g.beginPath(); g.moveTo(-26, -275); g.lineTo(-38, -190); g.lineTo(-32, -140); g.stroke(); g.beginPath(); g.moveTo(26, -275); g.lineTo(38, -190); g.lineTo(32, -140); g.stroke(); }
+  g.restore();
+}
+// scroll seen end-on (for shelves); gold = gold cap
+function scrollEnd(g, x, y, r, gold = 0) { if (gold > 0.5) { g.save(); g.beginPath(); g.arc(x, y, r, 0, TAU); g.fillStyle = goldPat(g); g.fill(); g.restore(); circ2(g, x, y, r * 0.45, "#5A4214"); circ2(g, x, y, r * 0.18, "#F2D68A"); }
+  else { circ2(g, x, y, r, "#D8D0BC"); g.strokeStyle = "rgba(20,19,18,0.85)"; g.lineWidth = Math.max(1.5, r * 0.12); g.beginPath(); g.arc(x, y, r * 0.95, 0, TAU); g.stroke();
+    g.lineWidth = Math.max(1, r * 0.07); g.beginPath(); for (let i = 0; i <= 30; i++) { const a = i / 30 * TAU * 2.2, rr2 = r * (0.12 + 0.68 * i / 30); i ? g.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2) : g.moveTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2); } g.stroke(); } }
+// pigeonhole shelf block. fill: fraction of scrolls left; seed varies order
+function shelf(g, x, y, w, h, cols, rows, fill = 1, seed = 1, goldK = 0.12, col = INK.ink) {
+  g.fillStyle = col; g.fillRect(x - 10, y - 10, w + 20, h + 20);
+  const cw = w / cols, ch = h / rows;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const cx = x + c * cw, cy = y + r * ch; g.fillStyle = "rgba(48,46,42,0.96)"; g.fillRect(cx + 5, cy + 5, cw - 10, ch - 10);
+    const id = seed * 101 + r * 17 + c * 7; const n = 3 + Math.floor(rnd(id) * 3); const rad = Math.min(cw, ch) * 0.2;
+    for (let k = 0; k < n; k++) { if (rnd(id * 3 + k * 11) > fill) continue; const ox = cx + cw * (0.25 + 0.5 * rnd(id + k * 5.1)), oy = cy + ch - 5 - rad * (1 + (k % 2) * 1.6) - (k > 2 ? rad * 1.6 : 0); scrollEnd(g, ox, oy, rad, rnd(id * 7 + k) < goldK ? 1 : 0); }
+  }
+}
+// greek temple (pediment + columns + steps). crack: 0..1 gold fissure; tilt: collapse
+function temple(g, x, yb, s = 1, ncol = 6, col = INK.ink, rim = 0) {
+  const w = 620 * s; g.fillStyle = col;
+  for (let i = 0; i < 3; i++) g.fillRect(x - w / 2 - 40 * s + i * 14 * s, yb - (i + 1) * 22 * s, w + 80 * s - i * 28 * s, 22 * s);
+  const top = yb - 66 * s - 360 * s; for (let i = 0; i < ncol; i++) column(g, x - w / 2 + 40 * s + i * (w - 80 * s) / (ncol - 1), yb - 66 * s, 360 * s, 44 * s, col, rim);
+  g.fillStyle = col; g.fillRect(x - w / 2 - 10 * s, top - 50 * s, w + 20 * s, 50 * s);
+  g.beginPath(); g.moveTo(x - w / 2 - 30 * s, top - 50 * s); g.lineTo(x, top - 190 * s); g.lineTo(x + w / 2 + 30 * s, top - 50 * s); g.closePath(); g.fill();
+}
+// ---- standard frame pieces ----
+function frameIn(px) { // camera: p.zoom, p.cx, p.cy, p.shake
+  cam(px.cx ?? W / 2, px.cy ?? H / 2, px.zoom ?? 1, px.shake || 0);
+}
+// final pass: rice-paper grain over everything + ink bleeding in from the edges + a few splatters
+function finish(g, edge = 0.55, spl = 1) {
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalCompositeOperation = "multiply"; g.globalAlpha = 0.55; g.drawImage(paperTex(), -160, -240); g.globalAlpha = 1;
+  g.globalCompositeOperation = "source-over";
+  const vg = g.createRadialGradient(W / 2, H * 0.47, H * 0.3, W / 2, H * 0.5, H * 0.75); vg.addColorStop(0, "rgba(20,19,18,0)"); vg.addColorStop(1, `rgba(20,19,18,${edge})`); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  if (spl) { splatter(g, 60, 1820, 120, 14, 3, INK.ink, 0.7); splatter(g, 1030, 140, 90, 10, 8, INK.ink, 0.6); }
+  g.restore();
+}
+frameIn(p);
+const bg = cached("harbor_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
+  vwash(g, -200, 700, "48,46,42", 0.85, 0.05);
+  streak(g, 250, 180, 900, 120, "40,38,35", 0.55, 14); streak(g, 820, 340, 700, 90, "40,38,35", 0.45, 12); streak(g, 300, 560, 620, 50, "60,57,52", 0.35, 8);
+  blob(g, 430, 830, 520, 420, "255,250,232", 0.55);
+  ridge(g, 1040, 120, 1.3, "120,115,105", 0.55, 8, 160, 0.8);
+  // far city (Alexandria) on the left horizon
+  g.fillStyle = "rgba(78,74,68,0.9)"; g.filter = "blur(1.2px)";
+  for (let i = 0; i < 9; i++) { const x = -40 + i * 66, h = 40 + rnd(i * 3.3) * 90; g.fillRect(x, 1062 - h, 54, h); }
+  temple(g, 330, 1064, 0.32, 6, "rgba(70,66,60,0.95)"); g.beginPath(); g.arc(120, 990, 46, Math.PI, 0); g.fill();
+  g.filter = "none";
+  // sea body
+  vwash(g, 1060, H + 200, "58,56,52", 0.5, 0.95);
+  for (let i = 0; i < 14; i++) { const y = 1080 + Math.pow(i / 13, 1.6) * 820; const k = i / 13; brush(g, [-50, y, 300, y + 3, 700, y - 2, 1130, y + 2], 2 + 5 * k, "rgba(20,19,18,1)", 0.35 + 0.3 * k, i * 3 + 1, 0.8); }
+});
+ctx.drawImage(bg, -200, -200);
+// gold sun
+const sy = 860 + (p.sun || 0);
+goldDisc(ctx, 430, sy, 205, 1);
+// streak of cloud across the sun
+ctx.save(); ctx.globalAlpha = 0.75; brush(ctx, [120, sy - 40, 400, sy - 52, 760, sy - 44], 16, INK.ink, 0.8, 4, 0.7); brush(ctx, [260, sy + 70, 520, sy + 64, 640, sy + 70], 9, INK.ink, 0.7, 9, 0.8); ctx.restore();
+// horizon cut so sun sits behind the sea
+ctx.fillStyle = "rgba(78,75,70,1)"; ctx.fillRect(-300, 1064, W + 600, 30);
+vwash(ctx, 1064, 1300, "70,67,62", 1, 0.0);
+// gold reflections
+for (let i = 0; i < 22; i++) { const y = 1080 + i * 18 + i * i * 0.9, wv = (180 - i * 5) * (0.6 + 0.4 * Math.sin(t * 2 + i * 1.7)); const x = 430 + Math.sin(i * 2.1 + t * 0.8) * 30;
+  ctx.fillStyle = `rgba(242,214,138,${0.75 - i * 0.025})`; ctx.fillRect(x - wv / 2, y, wv, 3 + i * 0.25); }
+// Pharos on its island
+ctx.fillStyle = INK.ink; ctx.beginPath(); ctx.moveTo(560, 1110); ctx.quadraticCurveTo(780, 1040, 1180, 1070); ctx.lineTo(1180, 1130); ctx.lineTo(560, 1130); ctx.fill();
+pharos(ctx, 840, 1080, 0.62, p.beacon ?? 1);
+// ships
+ship(ctx, 160 + (p.drift || 0) + lt * 12, 1180, 0.42, 1, INK.ink, 1);
+ship(ctx, 660 - lt * 8, 1235, 0.3, 1, "rgba(30,29,27,0.95)", -1);
+// birds
+for (let i = 0; i < 4; i++) { const bx = 200 + i * 70 + lt * 30, by = 620 + Math.sin(i * 2) * 40 + Math.sin(t * 3 + i) * 6; brush(ctx, [bx - 18, by - 6, bx, by + 2, bx + 18, by - 8], 4, INK.ink, 0.9, i, 0.2); }
+// brush waves (hooked strokes), drifting
+const rows = [[1300, 0.55, 18], [1420, 0.75, -14], [1560, 1.0, 20], [1720, 1.3, -16], [1880, 1.65, 22]];
+rows.forEach(([y, s, sp], r) => { const per = 420 * s; for (let k = -1; k < W / per + 2; k++) { const x = ((k * per + lt * sp + r * 130) % (per * 6) + per * 6) % (per * 6) - per;
+  const xx = -per + ((k * per + lt * sp + r * 137) % ((Math.ceil(W / per) + 2) * per) + (Math.ceil(W / per) + 2) * per) % ((Math.ceil(W / per) + 2) * per);
+  brush(ctx, [xx, y, xx + 70 * s, y - 28 * s, xx + 150 * s, y - 44 * s, xx + 215 * s, y - 34 * s, xx + 245 * s, y - 12 * s, xx + 228 * s, y + 4 * s], 16 * s, INK.ink, 0.95, r * 11 + k, 0.45);
+  brush(ctx, [xx - 120 * s, y + 8 * s, xx + 40 * s, y + 6 * s, xx + 260 * s, y + 10 * s], 5 * s, INK.ink, 0.6, r * 5 + k, 0.7);
+  if ((k + r) % 3 === 0) for (let d = 0; d < 4; d++) { const a = 0.5 + 0.5 * Math.sin(t * 4 + d + k); ctx.fillStyle = `rgba(242,214,138,${0.8 * a})`; ctx.fillRect(xx + 230 * s + d * 9, y - 40 * s - d * 7, 3, 3); }
+} });
+goldDust(ctx, 26, 0, 600, W, 700, 3, 0.7, 12);
+if (p.seal) seal(ctx, 990, 210, 0.9);
+finish(ctx);

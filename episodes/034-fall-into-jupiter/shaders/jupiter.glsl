@@ -69,21 +69,21 @@ vec3 deckCol(float d, float band){
   vec3 c1 = vec3(0.70, 0.43, 0.24);                               // ammonium hydrosulfide: rusty brown
   vec3 c2 = vec3(0.50, 0.55, 0.64);                               // water clouds: blue-grey
   vec3 c3 = vec3(0.45, 0.20, 0.10);                               // hot deep haze
-  vec3 c = mix(c0, c1, smoothstep(10.0, 20.0, d));
+  vec3 c = mix(c0, c1, smoothstep(13.0, 22.0, d));
   c = mix(c, c2, smoothstep(36.0, 46.0, d));
   c = mix(c, c3, smoothstep(85.0, 140.0, d));
   return c;
 }
 // sunlight left at depth d, plus a faint thermal floor
 float sunAt(float d){ return exp(-max(d, 0.0)/22.0); }
-vec3 glowAt(float d){ return vec3(1.0, 0.35, 0.12)*0.05*smoothstep(60.0, 160.0, d); }
+vec3 glowAt(float d){ return vec3(1.0, 0.35, 0.12)*0.1*smoothstep(60.0, 160.0, d); }
 float bandAt(vec2 xz){ float z = xz.y*0.012 + 0.6*fbm2(xz*0.004 + 3.0); return smoothstep(0.25, 0.75, 0.5 + 0.5*sin(z*6.2832)); }
 float boltCell(vec2 id){ float h = hash2(id); float ph = fract(gT*0.37 + h*13.0); return step(0.86, h)*pow(max(0.0, 1.0 - ph*9.0), 2.0)*step(0.5, fract(ph*61.0 + h)); }
 
 vec3 atmoBg(vec3 rd, float d){
   float s = sunAt(d);
   vec3 up = deckCol(d - 12.0, 0.2)*s*1.1 + glowAt(d);
-  vec3 dn = deckCol(d + 15.0, 0.5)*sunAt(d + 25.0)*0.6 + glowAt(d + 30.0);
+  vec3 dn = deckCol(d + 6.0, 0.3)*sunAt(d + 15.0)*0.7 + glowAt(d + 30.0);
   if (d < 0.0) { up = mix(vec3(0.004, 0.006, 0.02), vec3(0.55, 0.5, 0.45), exp(-max(rd.y, 0.0)*30.0)*0.8); }
   return mix(dn, up, d < 0.0 ? smoothstep(-0.04, 0.03, rd.y) : smoothstep(-0.6, 0.6, rd.y));
 }
@@ -159,10 +159,10 @@ vec3 fluid(vec3 rd){
   // metal: chrome-like bands with blue currents
   float m = fbm3(wq*0.9 + 4.0);
   float stripes = 0.5 + 0.5*sin(m*14.0 + rd.y*3.0);
-  vec3 met = mix(vec3(0.05, 0.06, 0.08), vec3(0.72, 0.76, 0.84), pow(stripes, 2.5));
-  met += vec3(0.9, 0.95, 1.0)*pow(stripes, 30.0)*0.8;
+  vec3 met = mix(vec3(0.02, 0.025, 0.035), vec3(0.42, 0.46, 0.54), pow(stripes, 3.0));
+  met += vec3(0.9, 0.95, 1.0)*pow(stripes, 30.0)*0.5;
   float arc = smoothstep(0.03, 0.0, abs(fbm3(wq*2.1 + vec3(0.0, gT*0.6, 0.0)) - 0.5));
-  met += vec3(0.3, 0.6, 1.0)*arc*(0.6 + 0.4*sin(gT*7.0 + m*20.0));
+  met += vec3(0.3, 0.6, 1.0)*arc*(0.45 + 0.3*sin(gT*7.0 + m*20.0));
   return mix(liq, met, u_metal);
 }
 
@@ -210,7 +210,7 @@ vec3 space(vec3 rd, vec3 fwd, vec3 upv, out float hitT){
   vec2 sc = floor(sq); vec2 sf = fract(sq) - 0.5; float hs = hash2(sc);
   vec3 col = vec3(0.004, 0.005, 0.012) + (hs > 0.985 ? smoothstep(0.25, 0.0, length(sf))*(0.3 + 0.7*hash2(sc + 3.0)) : 0.0)*vec3(0.9, 0.95, 1.0);
   vec3 C = fwd*u_pd - upv*u_pdy*u_pd;
-  vec3 L = normalize(-fwd*0.55 - cross(fwd, upv)*0.75 + upv*0.35);
+  vec3 L = normalize(-fwd*0.9 - cross(fwd, upv)*0.6 + upv*0.45);
   // planet frame: tilt slightly
   mat2 tl = rot(0.05);
   float b = dot(C, rd); float c2 = dot(C, C) - 1.0; float disc = b*b - c2;
