@@ -6,15 +6,17 @@ float gT = 0.0;
 float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++){ s += a*noise2(p); p = rot(0.6)*p*2.03; a *= 0.5; } return s; }
 float terr(vec2 xz){
   float x = xz.x, z = xz.y;
-  float side = max(0.0, abs(x + 60.0*sin(z*0.0015)) - 420.0);
-  float head = max(0.0, -z - 1300.0);
-  float d = length(vec2(side, head*1.15));
-  float h = d*1.05 - 0.00012*d*d;
-  h = max(h, 0.0);
-  float rough = fbm(xz*0.0022);
-  h += (rough - 0.45)*300.0*smoothstep(10.0, 300.0, h);
-  h += 1100.0*smoothstep(700.0, 2600.0, d)*fbm(xz*0.0009 + 3.0);
-  return h - 6.0;
+  float side = max(0.0, abs(x + 120.0*sin(z*0.0011)) - 850.0);
+  float head = max(0.0, -z - 3000.0);
+  float d = length(vec2(side, head));
+  float h = 2600.0*(1.0 - exp(-d/3000.0));
+  h += (fbm(xz*0.0016) - 0.45)*700.0*smoothstep(20.0, 500.0, h);
+  h += 1400.0*smoothstep(1500.0, 4500.0, d)*(fbm(xz*0.0007 + 3.0) - 0.2);
+  return h - 8.0;
+}
+float runAt(vec2 xz){ // run-up height: 524 m on the head wall, much lower along the sides
+  float k = exp(-max(0.0, xz.y + 3000.0)/1400.0);
+  return u_run*mix(0.22, 1.0, k);
 }
 vec2 map(vec3 p){ return vec2(1e9, 0.0); }
 vec4 pixel(vec2 uv){
@@ -35,7 +37,7 @@ vec4 pixel(vec2 uv){
     float dh = q.y - h;
     if (dh < 0.0) { hit = t; break; }
     tp = t; t += max(dh*0.4, 1.0 + t*0.004);
-    if (t > 9000.0) break;
+    if (t > 14000.0) break;
   }
   if (hit > 0.0) {
     float a = tp, b = hit;
@@ -64,10 +66,10 @@ vec4 pixel(vec2 uv){
       vec3 alb = mix(forest, rock, smoothstep(0.55, 0.75, slope + 0.1*tn));
       float tl = 820.0 + 160.0*noise2(pos.xz*0.004);
       alb = mix(alb, rock, smoothstep(tl - 80.0, tl + 80.0, pos.y));
-      float snow = smoothstep(1350.0, 1500.0, pos.y + 150.0*noise2(pos.xz*0.004))*smoothstep(0.2, 0.6, n.y);
+      float snow = smoothstep(1300.0, 1500.0, pos.y + 200.0*noise2(pos.xz*0.004))*smoothstep(0.15, 0.5, n.y);
       alb = mix(alb, vec3(0.93, 0.95, 0.98), snow);
       // the 1958 trimline: forest stripped below u_run
-      float edge = u_run + 14.0*(noise2(pos.xz*0.02) - 0.5);
+      float edge = runAt(pos.xz) + 14.0*(noise2(pos.xz*0.02) - 0.5);
       float strip = smoothstep(edge + 3.0, edge - 3.0, pos.y)*step(1.0, u_run);
       vec3 bare = mix(vec3(0.62, 0.55, 0.45), vec3(0.78, 0.72, 0.62), noise2(vec2(pos.x*0.03, pos.y*0.08)));
       alb = mix(alb, bare, strip*(1.0 - snow));
@@ -78,8 +80,8 @@ vec4 pixel(vec2 uv){
       float ln = smoothstep(4.0, 1.0, abs(pos.y - 100.0))*u_mark;
       c = mix(c, lin(vec3(0.35, 0.95, 1.0))*1.4, ln);
     }
-    col = grade(c, lin(hor), hit, 2500.0, 0.004, 0.02);
-    col = mix(col, hor, clamp((hit - 3000.0)/6000.0, 0.0, 0.6));
+    col = grade(c, lin(hor), hit, 2500.0, 0.0, 0.02);
+    col = mix(col, hor, clamp((hit - 2500.0)/9000.0, 0.0, 0.55));
   }
   return vec4(col, 1.0);
 }

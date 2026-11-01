@@ -3,8 +3,8 @@
 const MW = { cx: -20, cy: 1.7, cz: 10, yaw: 0.45, tilt: 0.03, lens: 0.95, shake: 0, level: 0, wh: 0, wz: -3000, fish: 0, dark: 0, boat: 1, spray: 0 };
 // looking out to sea from the wet sand, sea already pulled back
 const SEA = { ...MW, cx: 0, cy: 1.7, cz: 8, yaw: 0.12, tilt: 0.02, lens: 1.05, level: -6, spray: 1 };
-const IN = { cx: 0, cy: 12, cz: 30, tx: 0, ty: 0, tz: -40, water: 3.0, front: 0, dark: 0.45, shake: 0 };
-const FJ = { cx: 0, cy: 600, cz: 2600, tx: 0, ty: 150, tz: -1500, run: 0, foam: 0, mark: 0, shake: 0 };
+const IN = { cx: 0, cy: 26, cz: 34, tx: 0, ty: 0, tz: -28, water: 3.0, front: 0, dark: 0.45, shake: 0 };
+const FJ = { cx: 0, cy: 450, cz: 2500, tx: 0, ty: 250, tz: -3000, run: 0, foam: 0, mark: 0, shake: 0 };
 const IM = { dist: 90, orb: 0.4, camh: 30, rock: 0, flash: 0, cav: 0, col: 0, ring: 15, wave: 1, shake: 0 };
 export default {
   END: 34.4,
@@ -44,16 +44,16 @@ export default {
     // 10 yours: 100 m
     { a: 20.3, b: 21.3, glsl: "megawave", p: { ...SEA, wh: 105, wz: [-360, -300], dark: 0.6, tilt: [0.22, 0.3], shake: [0.15, 0.4] } },
     // 11 scale: 30-storey tower
-    { a: 21.3, b: 22.95, glsl: "megawave", p: { ...MW, cx: [-170, -185], cy: 14, cz: 250, yaw: [-0.02, 0.02], tilt: 0.1, lens: 1.3, level: -6, wh: 118, wz: [-390, -365], dark: 0.55, spray: 1 },
+    { a: 21.3, b: 22.95, glsl: "megawave", p: { ...MW, cx: [-170, -185], cy: 14, cz: 250, yaw: [-0.02, 0.02], tilt: 0.1, lens: 1.3, level: -6, wz: [-352, -335], wh: 126, dark: 0.55, spray: 1 },
       hud: { cat: "FOR SCALE", label: "A 30-STOREY BUILDING", value: "≈ 90-100 m", sub: "THE WAVE IS TALLER", vcol: "#FF6B5E" } },
     // 12 inland
-    { a: 22.95, b: 24.6, glsl: "inland", p: { ...IN, front: [[0, 2], [1.65, -40, "linear"]], cz: [32, 26], shake: 0.1 },
+    { a: 22.95, b: 24.6, glsl: "inland", p: { ...IN, front: [[0, 2], [1.65, -36, "linear"]], cz: [36, 30], shake: 0.1 },
       hud: { cat: "THEN IT KEEPS GOING", label: "INLAND", value: "Up to 10 km", sub: "2011: 10 KM INLAND NEAR SENDAI", vcol: "#9FD8FF" } },
     // 13 Lituya Bay, wide
-    { a: 24.6, b: 27.25, glsl: "fjord", p: { ...FJ, cx: [80, -60], cz: [2700, 2350] },
+    { a: 24.6, b: 27.25, glsl: "fjord", p: { ...FJ, cx: [120, -80], cz: [2600, 2200] },
       hud: { at: 1.4, cat: "LITUYA BAY, ALASKA · 9 JULY 1958", label: "AN EARTHQUAKE DROPS", value: "A mountainside", sub: "30 MILLION m³ OF ROCK INTO THE BAY", dot: "#F2C14E" } },
     // 14 the run-up
-    { a: 27.25, b: 30.45, glsl: "fjord", p: { ...FJ, cx: [250, 180], cy: 260, cz: [300, 100], tx: -50, ty: 330, tz: -1700, run: [[0, 0], [0.7, 0], [2.4, 524, "ease-out"]], foam: [[0, 0], [0.6, 1], [2.4, 1], [3.2, 0.2]], mark: [[0, 0], [2.4, 0], [2.8, 1]] },
+    { a: 27.25, b: 30.45, glsl: "fjord", p: { ...FJ, cx: [320, 260], cy: 260, cz: [-900, -1150], tx: -100, ty: 330, tz: -3400, run: [[0, 0], [0.7, 0], [2.4, 524, "ease-out"]], foam: [[0, 0], [0.6, 1], [2.4, 1], [3.2, 0.2]], mark: [[0, 0], [2.4, 0], [2.8, 1]] },
       hud: { cat: "THE WAVE RAN UP THE SLOPE", label: "FOREST STRIPPED TO", value: "", sub: "CYAN LINE · YOUR 100 M WAVE", vcol: "#FF6B5E", counter: { at: 0.7, dur: 1.7, from: 0, to: 524, suffix: " m", easing: "ease-out" } } },
     // 15 under the wall
     { a: 30.45, b: 34.4, glsl: "megawave", p: { ...SEA, cz: 6, wh: 105, wz: [-170, -95], dark: [0.65, 0.8], tilt: [0.35, 0.55], lens: 0.95, shake: [0.3, 0.6] } },
