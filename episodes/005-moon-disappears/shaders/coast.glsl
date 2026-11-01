@@ -64,6 +64,15 @@ vec3 skyN(vec3 rd){
     float st = hash2(sc) > 0.982 ? smoothstep(0.3, 0.0, length(sf))*(0.5 + 0.5*hash2(sc + 2.0)) : 0.0;
     float starBoost = 1.0 + 1.6*(1.0 - u_moon);
     c += vec3(st)*u_night*smoothstep(0.0, 0.1, rd.y)*0.7*starBoost;
+    // the Milky Way (only once the moonlight is gone)
+    vec3 mwN = normalize(vec3(0.85, 0.3, 0.15));
+    float md0 = dot(rd, mwN);
+    float band = exp(-md0*md0/0.012);
+    vec2 bq = vec2(atan(rd.z, rd.x)*6.0, rd.y*6.0);
+    float dust = 0.55 + 0.45*noise2(bq*3.0) - 0.18*smoothstep(0.5, 0.95, noise2(bq*2.5 + 3.0));
+    vec2 sq2 = vec2(atan(rd.z, rd.x), asin(clamp(rd.y, -1.0, 1.0)))*420.0;
+    float st2 = hash2(floor(sq2)) > 0.93 ? smoothstep(0.35, 0.0, length(fract(sq2) - 0.5)) : 0.0;
+    c += (vec3(0.55,0.55,0.7)*band*dust*0.65 + vec3(st2)*band*0.9)*u_milky*u_night*smoothstep(0.02, 0.15, rd.y);
     // the Moon
     vec3 md = normalize(vec3(0.1, 0.36, -1.0));
     float cosA = dot(rd, md);

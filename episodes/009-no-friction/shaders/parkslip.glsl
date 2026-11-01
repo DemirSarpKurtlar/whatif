@@ -23,8 +23,9 @@ vec2 people(vec3 p){
     vec3 q = vec3(mod(p.x,cs.x)-1.5-j.x, p.y, mod(p.z,cs.y)-1.5-j.y);
     float fa = clamp(u_fall*1.6 - 0.6*hash2(cid+17.0), 0.0, 1.0); fa = fa*fa*(3.0-2.0*fa)*1.42;
     float dir = hash2(cid+23.0);
+    q.y -= 0.21*sin(fa);
     if (dir < 0.5) q.yz = rot(dir < 0.25 ? fa : -fa)*q.yz; else q.yx = rot(dir < 0.75 ? fa : -fa)*q.yx;
-    q.y -= -0.18*sin(fa);
+
     float lift = gLift*(0.55+0.9*hash2(cid+11.0));
     q.y -= lift;
     q.xy = rot(gLift*0.35*(hash2(cid+5.0)-0.5))*q.xy;
@@ -50,7 +51,7 @@ vec2 trees(vec3 p){
   q.x = mod(q.x+2.5,5.0)-2.5;
   q.z += (hash2(vec2(cx,1.0))-0.5)*4.0;
   float s = 0.8+0.5*hash2(vec2(cx,2.0));
-  q.xy = rot(u_lean*(hash2(vec2(cx,7.0))-0.3)*0.5)*q.xy;
+  float lh = hash2(vec2(cx,7.0)); q.xy = rot(u_lean*(0.3+0.35*lh)*(lh > 0.5 ? 1.0 : -1.0))*q.xy;
   float can = sdEllipsoid(q-vec3(0.0,2.7*s,0.0), vec3(1.7,1.5,1.7)*s);
   float tr = sdCylinder(q-vec3(0.0,0.8,0.0), 0.9, 0.17);
   vec2 r = opU(vec2(can*0.9, 2.0), vec2(tr, 3.0));

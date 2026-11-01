@@ -1,0 +1,42 @@
+// Episode 009 — What if all friction on Earth disappeared for five seconds?
+const PK = { cam: 0, lift: 0, float: 0, rise: 0, shake: 0, panx: 0, tilt: 0, fall: 0, lean: 0, ball: 0 };
+const EA = { dist: 5.6, orb: 0.3, camy: 0, tx: 0, ty: 0, spin: 0, leak: 0, quake: 0, shake: 0, sun: 0.6, diag: 0 };
+export default {
+  END: 54.9,
+  title: { text: "What if all friction disappeared for 5 seconds?", end: 4.6 },
+  elapsed: { start: 11.6, end: 45.3, note: "TIME SLOWED ~6×", points: [[11.6, 0], [17.1, 1], [26.5, 2.2], [33.4, 3.4], [40.48, 5.0], [45.3, 5.0]] },
+  scenes: [
+    { a: 0, b: 4.6, glsl: "parkslip", p: { ...PK, cam: [0, 0.4], tilt: [1.2, 0.9] } },
+    { a: 4.6, b: 9.7, glsl: "parkslip", p: { ...PK, cam: [0.4, 1.0], panx: [0, 0.4] },
+      hud: { cat: "A SUNNY AFTERNOON", label: "GRAVITY", value: "Still on", sub: "NOBODY FLOATS AWAY", dot: "#4FD1A5" } },
+    { a: 9.7, b: 14.3, glsl: "parkslip", p: { ...PK, cam: [1.0, 1.4], panx: 0.4, fall: [[0, 0], [2.0, 0], [4.6, 0.12]] },
+      hud: { at: 1.9, cat: "SWITCHED OFF", label: "FRICTION", value: "0 %", sub: "EVERY SINGLE STEP FAILS", vcol: "#FF6B5E" } },
+    { a: 14.3, b: 18.0, glsl: "parkslip", p: { ...PK, cam: [1.4, 1.9], panx: [0.4, 0.8], fall: [0.12, 1.0], shake: [[0, 0], [2.6, 0.25], [3.7, 0.1]], tilt: [0, -0.15] },
+      hud: { cat: "EVERYONE, AT ONCE", label: "THEIR FEET", value: "Slide out", sub: "NOTHING GRIPS THE GRASS" } },
+    { a: 18.0, b: 22.9, glsl: "parkslip", p: { ...PK, cam: [2.4, 2.8], rise: -1.05, tilt: [-0.55, -0.45], panx: [0.9, 1.3], fall: 1 },
+      hud: { cat: "KNOTS · THREADS", label: "YOUR CLOTHES", value: "Unravelling", sub: "FABRIC IS HELD TOGETHER BY FRICTION", dot: "#F2C14E" } },
+    { a: 22.9, b: 29.7, glsl: "parkslip", p: { ...PK, cam: [0.6, 1.4], tilt: [0.6, 3.2], fall: 1, shake: [[0, 0], [4.0, 0.05], [6.8, 0.25]] },
+      hud: { cat: "EVERY BUILDING", label: "NAILS & SCREWS", value: "Sliding out", sub: "HELD IN PLACE ONLY BY FRICTION" } },
+    { a: 29.7, b: 34.0, glsl: "parkslip", p: { ...PK, cam: [2.6, 3.4], tilt: [0.9, 1.4], fall: 1, lean: [[0, 0], [0.6, 0], [4.3, 1]] },
+      hud: { cat: "THE TREES", label: "THEIR ROOTS", value: "Let go", sub: "ROOTS GRIP THE SOIL BY FRICTION", dot: "#4FD1A5" } },
+    { a: 34.0, b: 40.2, glsl: "parkslip", p: { ...PK, cam: [1.6, 2.0], panx: [-0.6, 0.6], fall: 1, lean: 1, ball: [0.05, 0.95] },
+      hud: { cat: "ANYTHING ALREADY MOVING", label: "A ROLLING BALL", value: "Never slows", sub: "NOTHING LEFT TO STOP IT" } },
+    { a: 40.2, b: 45.3, glsl: "parkslip", p: { ...PK, cam: [2.0, 2.2], panx: 0.6, fall: 1, lean: 1, ball: 0.95, shake: [[0, 0], [1.3, 0], [1.4, 0.8], [2.2, 0]] },
+      hud: { at: 1.3, cat: "FRICTION RETURNS", label: "FRICTION", value: "100 %", sub: "EVERYTHING STOPS WHERE IT SLID", dot: "#4FD1A5" } },
+    { a: 45.3, b: 54.9, glsl: "earth", p: { ...EA, dist: [5.8, 5.2], spin: [0.2, 0.6], orb: [0.3, 0.45], quake: 0.35 },
+      hud: { cat: "ALL AROUND THE WORLD", label: "ON THE GROUND", value: "8 billion", sub: "WONDERING WHAT JUST HAPPENED" } },
+  ],
+  captions: [
+    [4.82, 6.6, "It's a sunny afternoon in the park."], [7.08, 9.6, "Gravity still works, so nobody floats away."],
+    [9.88, 11.9, "But the instant friction is gone,"], [12.32, 14.1, "every single step fails."],
+    [14.52, 17.6, "Feet slide out from under everyone, at the same time."], [18.06, 19.8, "Knots in shoelaces slip open."],
+    [20.3, 22.6, "Threads in your clothes start sliding apart."], [23.1, 27.0, "Every nail and screw in every building is held in place by friction."],
+    [27.42, 29.4, "Without it, they begin to slide out."], [29.92, 31.9, "Trees grip the soil with their roots."],
+    [32.4, 33.9, "Now, they start to tilt."], [34.18, 36.6, "And anything already moving just keeps going."],
+    [36.98, 39.9, "A ball rolling across the grass won't slow down at all."], [40.3, 41.2, "Five seconds."],
+    [41.52, 45.1, "Friction returns, and everything stops exactly where it slid."], [45.5, 49.2, "Billions of people, lying on the ground, wondering what just happened."],
+  ],
+  bigs: [{ at: 40.25, dur: 1.2, text: "5.0 s" }],
+  flashes: [{ at: 11.6, dur: 0.4 }, { at: 41.52, dur: 0.3 }],
+  endCard: { at: 49.45, title: "What if all friction disappeared for 5 seconds?", small: ["SIMPLIFIED PHYSICS · FOR FUN", "GRAVITY STILL ON · AIR STILL THERE"], cta: "WHERE WOULD YOU WANT TO BE?" },
+};

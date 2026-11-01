@@ -24,24 +24,20 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
   voiceover referansındaki tek `generate_audio` çağrısı. (Bir video ≈ 4.6 kredi.)
 - faster-whisper ile kelime zamanlarını çıkar (`words.json`), metinle karşılaştır; kopukluk varsa bir kez yeniden üret.
 
-## 3. Sahne (Higgsfield sandbox, Higgsedit + GLSL)
-- Önceki bölümün `edit/` klasörünü şablon al (lib/park/earth/sky.glsl, comps.jsx, edit.jsx).
-  Dosyaları sandbox'a taşımak: zip → `media_upload` → PUT → sandbox'ta `curl` ile indir.
-- Ses dosyası: `media_upload` (audio) → sandbox'ta `curl`.
-- `edit.jsx`: SC (sahne listesi), CAP (altyazılar, kelime zamanlarından), HUD (kategori · etiket · büyük değer · alt satır),
-  ELAPSED sayacı, bitiş kartı ("WHERE WOULD YOU BE STANDING?").
-- Her sahnede kamera hareket etmeli; 4-6 sn'de bir kesme; ilk kare kanca başlığı.
-- `higgsedit build edit.jsx` → 4-8 önizleme karesi (`higgsedit frame`) → 540x960 JPEG → gözle kontrol → düzelt.
+## 3. Sahne (yerel motor — varsayılan)
+- Motor: `engine/render.mjs` (headless Chromium + WebGL GLSL sahneler + Canvas2D HUD/altyazı katmanı).
+- Bölüm klasörü: `script.txt`, `voice.mp3`, `words.json`, `spec.mjs`, `sfx.json`, `shaders/*.glsl` (isteğe bağlı yeni setler).
+- Hazır setler `engine/shaders/`: park (şehir parkı, insanlar, fontan), earth (uzaydan Dünya), sky (uçak).
+  Bölümlerin ürettiği ek setler: street, coast/ocean, crowd, earthcut, tunnel, parkslip, rings... (bkz. `episodes/*/shaders`).
+- `spec.mjs` formatı: `episodes/001-gravity-off/spec.mjs` (title, scenes, hud, huds, captions, bigs, flashes, elapsed, endCard).
+- Önizleme: `node engine/render.mjs episodes/<ep>/spec.mjs --preview 2,8,15,... --out /tmp/prev` → kareleri döşe, gözle kontrol et.
+- Seslendirme: ElevenLabs `eleven_v4`, ses Oliver (`lo1O1Dz1Tu4FWVEPaxuT`), ~900 kredi/video; yedek: Kokoro (ücretsiz).
+- Kelime zamanları: `python3 scripts/words.py voice.mp3 words.json`.
 
-## 4. Render
-- `size: "xl"`, `background: true`, en fazla ~30 sn'lik `--range` parçaları (15 dk sınırı).
-  `higgsedit render . --range 0:30 --bitrate 8M --out renders/part1.mp4`, sonra `30:<END>`.
-- Parçaları ffmpeg concat (`-c copy`) ile birleştir.
-
-## 5. Ses tasarımı
-- `audio/sfx.py` (numpy): rüzgâr/ambiyans yatağı, uzay drone'u, ambient pad, olay anlarına efekt
-  (power-down, whoosh, bloop, jet, deprem gürlemesi, darbe/thud, bitiş çanı). Zamanları senaryoya göre değiştir.
-- Miks: ses + yatak, sidechaincompress ile ducking; final -14 LUFS, true peak ≤ -1 dB.
+## 4-5. Render + ses tasarımı (otomatik kuyruk)
+- `touch episodes/<ep>/READY` → `engine/queue.sh` (arka planda) render eder, `engine/finish.sh` ile
+  `sfx.json`'dan SFX yatağı üretir, sesi ducking ile miksler, -14 LUFS, `final.mp4` + `qa_sheet.jpg` + `out/<ep>.mp4`.
+- Kuyruk çalışmıyorsa: `nohup bash engine/queue.sh &`.
 
 ## 6. QA (yayından önce zorunlu) ✅
 - ffprobe: 1080x1920, 30 fps, süre 55-65 sn, ses akışı var.
