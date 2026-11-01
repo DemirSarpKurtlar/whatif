@@ -1,2 +1,14 @@
 w1 frame 0/785 12s
 w0 frame 0/784 12s
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at grab (/home/user/whatif/engine/render.mjs:42:26)
+    at /home/user/whatif/engine/render.mjs:71:23
+    at async file:///home/user/whatif/engine/render.mjs:64:1 {
+  log: []
+}
+
+Node.js v22.23.4

@@ -2,7 +2,7 @@
 # finish.sh <episode_dir> : bed.wav (sfx) + voice -> ducked mix -> -14 LUFS -> mux with video.mp4 -> final.mp4 + QA sheet
 set -euo pipefail
 EP=$(cd "$1" && pwd); ENG=$(cd "$(dirname "$0")" && pwd)
-END=$(python3 -c "import json;print(json.load(open('$EP/sfx.json'))['END'])")
+END=$(python3 -c "import json,os;w='$EP/warp.json';print(json.load(open(w))['end_new'] if os.path.exists(w) else json.load(open('$EP/sfx.json'))['END'])")
 python3 "$ENG/sfx.py" "$EP"
 VOICE="$EP/voice.mp3"; [ -f "$VOICE" ] || VOICE="$EP/voice.wav"
 ffmpeg -v error -y -i "$VOICE" -i "$EP/bed.wav" -filter_complex \

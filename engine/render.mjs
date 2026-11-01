@@ -25,9 +25,13 @@ for (const s of spec.scenes) {
   const f = existsSync(local) ? local : join(ENGINE, "shaders", s.glsl + ".glsl");
   shaders[s.glsl] = lib + "\n" + readFileSync(f, "utf8");
 }
-const wordsFile = join(dirname(specPath), "words.json");
+const EPD = dirname(specPath);
+const warpFile = join(EPD, "warp.json");
+const warp = existsSync(warpFile) ? JSON.parse(readFileSync(warpFile, "utf8")) : null;
+// captions live in the spec's (old) timeline, so highlight with the old word times when warped
+const wordsFile = join(EPD, warp && existsSync(join(EPD, "words_old.json")) ? "words_old.json" : "words.json");
 const words = existsSync(wordsFile) ? JSON.parse(readFileSync(wordsFile, "utf8")) : [];
-const payload = { ...spec, glW, glH, shaders, words };
+const payload = { ...spec, glW, glH, shaders, words, warp };
 const PAGE = opt("page", process.env.WHATIF_PAGE || "page.html");
 
 async function openPage() {
@@ -56,7 +60,7 @@ if (preview) {
 }
 
 const out = resolve(opt("out", "video.mp4"));
-const END = spec.END; const N = Math.round(END * fps);
+const END = warp ? warp.end_new : spec.END; const N = Math.round(END * fps);
 const workers = +opt("workers", 2);
 const parts = [];
 const tmp = out + ".parts"; rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true });

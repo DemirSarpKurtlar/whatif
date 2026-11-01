@@ -18,6 +18,19 @@ import numpy as np, scipy.signal as ss, scipy.io.wavfile as wf
 SR = 48000
 ep = sys.argv[1]
 C = json.load(open(os.path.join(ep, "sfx.json")))
+_wp = os.path.join(ep, "warp.json")
+if os.path.exists(_wp):
+    _W = json.load(open(_wp)); _P = _W["pairs"]
+    def _o2n(t):
+        if t <= _P[0][1]: return _P[0][0]
+        for i in range(1, len(_P)):
+            if t <= _P[i][1]:
+                (n0, o0), (n1, o1) = _P[i - 1], _P[i]; return n0 + (n1 - n0) * (t - o0) / max(1e-6, o1 - o0)
+        return _P[-1][0] + (t - _P[-1][1])
+    for key in ("outdoor", "space", "tension", "arp", "pulse"):
+        if key in C: C[key] = [[_o2n(a), _o2n(b)] for a, b in C[key]]
+    for e in C.get("events", []): e["t"] = _o2n(e["t"])
+    C["END"] = _W["end_new"]
 END = C["END"]; N = int(SR * END)
 rng = np.random.default_rng(7)
 mus = np.zeros(N); fx = np.zeros(N); fxL = np.zeros(N); fxR = np.zeros(N)

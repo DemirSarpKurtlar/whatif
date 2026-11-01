@@ -1,0 +1,53 @@
+// Episode 016 — What if every volcano on Earth erupted at once?
+const VO = { cam: 0, yaw: 0, pitch: 0.12, erupt: 0, light: 0, ash: 0, lava: 0, shake: 0 };
+const ME = { cam: 0, yaw: 0, pitch: 0.25, lens: 0.85, sunel: 0.6, sunaz: 2.6, sunsize: 1, ash: 0, snow: 0, heat: 0, steam: 0, shake: 0 };
+const EF = { dist: 5.6, orb: 0.3, camy: 0, tx: 0, ty: 0, spin: 0, leak: 0, quake: 0, shake: 0, sun: 0.6, diag: 0, ash: 0, steam: 0 };
+const SKY = { fly: 0, climb: 0 };
+export default {
+  END: 62.2,
+  title: { text: "What if every volcano on Earth erupted at once?", end: 3.95 },
+  scenes: [
+    { a: 0, b: 3.95, glsl: "volcano", p: { ...VO, cam: [0, 0.35], yaw: [-0.08, 0.02], pitch: [0.2, 0.16] } },
+    { a: 3.95, b: 9.5, glsl: "earthfx", p: { ...EF, dist: [6.2, 5.4], spin: [0, 0.5], quake: [[0, 0], [0.8, 0], [4.8, 0.8]] },
+      hud: { cat: "ON LAND TODAY", label: "POTENTIALLY ACTIVE VOLCANOES", value: "", sub: "MOST ARE SLEEPING", counter: { at: 0.4, dur: 3.6, from: 0, to: 1350, easing: "ease-out" } } },
+    { a: 9.5, b: 13.45, glsl: "volcano", p: { ...VO, cam: [0.4, 0.7], pitch: [0.14, 0.2], erupt: [[0, 0], [2.85, 0], [3.95, 0.22]], lava: [[0, 0], [2.85, 0], [3.4, 0.8]], shake: [[0, 0], [2.8, 0], [2.9, 0.8], [3.95, 0.3]] },
+      hud: { at: 2.85, cat: "THE SAME SECOND", label: "ERUPTING", value: "1,350", sub: "ON EVERY CONTINENT", vcol: "#FF8A5C" } },
+    { a: 13.45, b: 17.9, glsl: "volcano", p: { ...VO, cam: [0.7, 0.3], pitch: [0.22, 0.5], erupt: [0.22, 1.0], lava: 0.9, ash: [0.0, 0.25], shake: [0.3, 0.1] },
+      hud: { cat: "THE BIGGEST ASH COLUMNS", label: "REACH", value: "20+ km", sub: "TWICE AS HIGH AS AIRLINERS FLY" } },
+    { a: 17.9, b: 22.55, glsl: "volcano", p: { ...VO, cam: [1.1, 1.4], pitch: [0.45, 0.4], yaw: [0.05, -0.05], erupt: 1, lava: 0.9, ash: [0.3, 0.5], light: [[0, 0], [1.0, 0], [1.6, 1]] },
+      hud: { cat: "INSIDE THE ASH", label: "VOLCANIC LIGHTNING", value: "Static", sub: "ASH PARTICLES COLLIDE AND CHARGE UP", dot: "#9EC5FF" } },
+    { a: 22.55, b: 26.0, glsl: "earthfx", p: { ...EF, dist: [5.2, 4.8], spin: [0.5, 0.75], quake: 0.8, ash: [0.0, 0.75] },
+      hud: { cat: "WITHIN HOURS", label: "THE JET STREAM SPREADS", value: "Ash", sub: "AROUND THE WHOLE PLANET" } },
+    { a: 26.0, b: 32.4, glsl: "sky", p: { ...SKY, fly: [0, 1] },
+      hud: { cat: "2010 · EYJAFJALLAJÖKULL", label: "FLIGHTS CANCELLED", value: "", sub: "ONE SMALL ICELANDIC VOLCANO", counter: { at: 2.8, dur: 2.6, from: 0, to: 100000, easing: "ease-out" } } },
+    { a: 32.4, b: 35.5, glsl: "meadow", p: { ...ME, ash: [0.45, 0.6], pitch: [0.2, 0.35], cam: [0, 0.5], sunel: 0.5 },
+      hud: { cat: "NOW", label: "AIRPORTS STILL OPEN", value: "0", sub: "EVERY RUNWAY ON EARTH CLOSES", vcol: "#FF6B5E" } },
+    { a: 35.5, b: 38.0, glsl: "earthfx", p: { ...EF, dist: [4.6, 4.3], spin: [0.8, 0.95], quake: 0.5, ash: 0.85, sun: 1.0, orb: [0.5, 0.6] },
+      hud: { cat: "BUT THE REAL DANGER", label: "SULFUR HAZE", value: "Invisible", sub: "HIGH IN THE STRATOSPHERE" } },
+    { a: 38.0, b: 42.3, glsl: "meadow", p: { ...ME, cam: [0.5, 1.0], pitch: [0.45, 0.55], yaw: [0.3, 0.4], sunaz: 0.4, sunel: 0.75, ash: [0.15, 0.55] },
+      hud: { cat: "A REFLECTIVE MIRROR", label: "SUNLIGHT REACHING YOU", value: "Dimmer", sub: "SENT BACK INTO SPACE" } },
+    { a: 42.3, b: 46.0, glsl: "volcano", p: { ...VO, cam: [0.2, 0.5], pitch: [0.3, 0.38], erupt: 1, lava: 1, ash: 0.6, light: 0.6 },
+      hud: { cat: "1815 · TAMBORA, INDONESIA", label: "ONE SINGLE VOLCANO", value: "VEI 7", sub: "THE LARGEST ERUPTION IN RECORDED HISTORY", dot: "#F2C14E" } },
+    { a: 46.0, b: 50.35, glsl: "meadow", p: { ...ME, cam: [1.0, 1.4], pitch: [0.2, 0.15], ash: 0.3, snow: [0.0, 0.35], sunel: 0.4 },
+      hud: { cat: "1816", label: "THE YEAR WITHOUT", value: "A summer", sub: "THE WORLD COOLED BY ABOUT 0.5 °C", dot: "#5CB8F0" } },
+    { a: 50.35, b: 53.7, glsl: "meadow", p: { ...ME, cam: [1.4, 1.9], pitch: [0.12, 0.1], yaw: [-0.2, -0.1], ash: 0.25, snow: [0.5, 1.0], sunel: 0.35 },
+      hud: { cat: "JUNE 1816", label: "SNOW FELL IN", value: "Summer", sub: "CROPS FAILED · FOOD PRICES SOARED", dot: "#5CB8F0" } },
+    { a: 53.7, b: 62.2, glsl: "earthfx", p: { ...EF, dist: [5.0, 6.0], spin: [1.0, 1.4], quake: 0.6, ash: 1.0, orb: [0.6, 0.8] },
+      hud: { cat: "NOW MULTIPLY THAT BY", label: "ERUPTIONS AT ONCE", value: "Hundreds", sub: "SUMMERS COULD VANISH FOR YEARS", vcol: "#FF8A5C" } },
+  ],
+  captions: [
+    [4.1, 6.0, "There are about 1,350"], [6.24, 9.0, "potentially active volcanoes on land."],
+    [9.66, 11.3, "Imagine all of them"], [11.34, 13.0, "waking up in the same second."],
+    [13.58, 17.4, "The biggest ash columns punch more than 20 km into the sky."],
+    [17.98, 19.9, "Inside them, static builds"], [19.98, 22.4, "until the clouds crackle with lightning."],
+    [22.7, 26.0, "Within hours, the jet stream spreads the ash around the planet."],
+    [26.1, 28.1, "In 2010,"], [28.22, 32.1, "one small Icelandic volcano grounded 100,000 flights."],
+    [32.62, 35.2, "Now, every airport on Earth closes."], [35.56, 37.7, "But the real danger is invisible."],
+    [38.04, 42.0, "Sulfur gas turns into a reflective haze high in the stratosphere."],
+    [42.38, 45.6, "In 1815, a single volcano, Tambora,"], [45.88, 47.6, "cooled the world so much"],
+    [47.7, 50.3, "that 1816 became the year without a summer."], [50.4, 52.4, "Snow fell in June."], [52.6, 53.4, "Crops failed."],
+    [53.8, 55.9, "Now multiply that by hundreds."],
+  ],
+  flashes: [{ at: 12.34, dur: 0.5, color: "#FFB27A" }, { at: 42.38, dur: 0.3 }],
+  endCard: { at: 55.95, title: "What if every volcano on Earth erupted at once?", small: ["SIMPLIFIED · FOR FUN", "1,350 = POTENTIALLY ACTIVE VOLCANOES ON LAND (USGS)"], cta: "THE LAVA, OR THE LONG WINTER AFTER?" },
+};
