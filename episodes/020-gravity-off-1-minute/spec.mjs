@@ -5,6 +5,7 @@ export default {
   END: 35.0,
   title: { text: "What if gravity switched off for 1 minute?", end: 2.42 },
   hook: { scene: 5, at: 1.2 },
+  cover: 15.6,
   elapsed: { start: 6.95, end: 24.75, note: "TIME SPED UP", points: [[6.95, 0], [13.0, 10], [14.6, 30], [16.3, 60], [24.75, 60]] },
   scenes: [
     { a: 0, b: 2.45, glsl: "park", p: { ...PK, cam: [0, 0.4] } },

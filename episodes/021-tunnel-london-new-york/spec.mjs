@@ -5,6 +5,7 @@ export default {
   END: 31.6,
   title: { text: "What if you dug a straight tunnel from London to New York?", end: 2.7 },
   hook: { scene: 7, at: 3.6 },
+  cover: 25.2,
   elapsed: { start: 5.25, end: 22.2, label: "TRIP TIME", unit: " min", dec: 1, note: "NO AIR · NO FRICTION",
     points: [[5.25, 0], [8.9, 4], [12.4, 21.1], [19.5, 42.2], [22.2, 42.2]] },
   scenes: [

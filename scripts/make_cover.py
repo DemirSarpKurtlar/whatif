@@ -10,7 +10,8 @@ m = re.search(r'title:\s*\{\s*text:\s*"([^"]+)"', spec)
 title = m.group(1) if m else slug
 body = re.sub(r"^What if\s+", "", title, flags=re.I)
 lines = textwrap.wrap(body, 16)
-t = float(os.environ.get("COVER_T", dur * 0.42))
+mc = re.search(r"\bcover:\s*([\d.]+)", spec)
+t = float(os.environ.get("COVER_T", mc.group(1) if mc else dur * 0.42))
 FS = "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf"
 SB = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
 esc = lambda s: s.replace("\\","\\\\").replace(":","\\:").replace("'","\u2019").replace("%","\\%")
