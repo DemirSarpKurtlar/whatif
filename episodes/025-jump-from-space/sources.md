@@ -6,3 +6,5 @@
 - Temperature: International Standard Atmosphere is −56.5 °C from 11 to 20 km (the layer where the thicker air slows the jumper); press reports gave about −70 °F (≈ −57 °C) for Baumgartner's jump. Above 20 km the air is actually a little warmer. https://glossary.ametsoc.org/wiki/Standard_atmosphere · https://www.universetoday.com/articles/capsule-and-skydiver-ready-for-record-setting-freefall
 - Kármán line: FAI boundary of space at 100 km, so 39–41 km is less than halfway to space. https://www.popsci.com/where-does-space-begin/
 - Note: en.wikipedia.org was not reachable from this session (fetch blocked); Wikipedia figures were cross-checked via search snippets and the other sources above.
+- HUD math: horizon distance from 39 km ≈ √(2·6,371·39) ≈ 705 km ("700 km in every direction"); pressure at 39 km ≈ 0.3 kPa ≈ 0.3% of sea level, so > 99% of the air (by mass) is below you; airliners cruise at ~11–12 km, so 39 km ≈ 3×.
+- Visual simplifications: Earth's curvature exaggerated (smaller planet radius + fisheye lens), free-fall clock sped up, jumper and parachute are stylised.
