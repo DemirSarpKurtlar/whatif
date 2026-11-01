@@ -5,3 +5,13 @@ prev/
 *.parts/
 out/
 __pycache__/
+render.log
+words.log
+engine/queue.log
+*.log
+AWAIT_VOICE
+REDO
+DONE
+FAILED
+READY
+AUTHORED
