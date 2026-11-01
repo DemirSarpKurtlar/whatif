@@ -20,7 +20,9 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
   izlenme ve ortalama izlenme süresi en yüksek konunun **"Part 2"**'sini sıraya al (ör. "What if gravity switched off for 1 minute?").
 - Zayıf (ortalamanın yarısından az izlenme) konu tipini 2 hafta tekrar etme.
 - Ses: ElevenLabs Holden (kredi varsa) → yoksa Chatterbox (`scripts/tts_chatterbox.py`, ücretsiz). Kokoro kullanma.
-- Yayın: zamanlanmış görevler günde 4 kez (`02:51, 11:51, 16:51, 20:21` İstanbul) `scripts/post_next.sh` çalıştırır;
+- Yayın (2026-11-01 sahibin isteği): **her saat** (:59) zamanlanmış görev `scripts/post_next.sh` çalıştırır (günde ~24; IG limiti 50/24 sa).
+  📦 Havuz kuralı: yüklü ama paylaşılmamış **en az 5-6 yan video** her zaman hazır olmalı; zombi serisi daha yavaş (oylamaya bağlı).
+  Üretim paralel: her yeni bölümü ayrı bir alt ajan hazırlar (TTS için `scripts/voice.sh`), ana oturum render/QA/yükleme/sıra yönetir;
   yeni bölüm `posts/schedule.txt`'e eklenmeli ve videosu + kapağı `posts/media.json`'a (Higgsfield URL) girmeli.
 
 ### 📊 İlk veri (2026-11-01): gravity 1173 izlenme / %41 izlenme oranı, tunnel 777 / %30, ice-melts 3 sn'de kaybetti.
