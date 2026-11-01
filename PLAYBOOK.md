@@ -23,6 +23,11 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - Yayın: zamanlanmış görevler günde 4 kez (`02:51, 11:51, 16:51, 20:21` İstanbul) `scripts/post_next.sh` çalıştırır;
   yeni bölüm `posts/schedule.txt`'e eklenmeli ve videosu + kapağı `posts/media.json`'a (Higgsfield URL) girmeli.
 
+### 📊 İlk veri (2026-11-01): gravity 1173 izlenme / %41 izlenme oranı, tunnel 777 / %30, ice-melts 3 sn'de kaybetti.
+- İzleyici ortalama 16-25 sn izliyor → hedef 30-40 sn kesin. İlk saniyede aksiyon, yavaş açılış yok.
+- Paylaşım/kaydetme 0 → caption'da "📤 Send this to a friend…" satırı + ilk yorumda "Save this for Part 2" zorunlu.
+- Gönderiler arası en az 3 saat.
+
 ## 1. Araştırma ve senaryo
 - WebSearch ile 4-6 sayısal gerçek bul; `episodes/<..>/sources.md` dosyasına kaynak linkleriyle yaz.
 - Senaryo 85-105 kelime (≈30-40 sn). Yapı: kanca sorusu (0-3 sn) → normal an → olay → 3-5 tırmanan vuruş
