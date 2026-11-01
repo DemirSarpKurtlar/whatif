@@ -6,7 +6,7 @@
 import { createRequire } from "node:module";
 const { chromium } = createRequire(import.meta.url)("playwright");
 import { spawn } from "node:child_process";
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, renameSync } from "node:fs";
 import { dirname, resolve, join } from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 
@@ -62,22 +62,35 @@ if (preview) {
 const out = resolve(opt("out", "video.mp4"));
 const END = warp ? warp.end_new : spec.END; const N = Math.round(END * fps);
 const workers = +opt("workers", 2);
-const parts = [];
-const tmp = out + ".parts"; rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true });
+// Resumable: frames are rendered in fixed chunks; finished chunks survive restarts and are skipped.
+// A fingerprint of the inputs invalidates old chunks when the spec, shaders, page or timing change.
+const { createHash } = await import("node:crypto");
+const CH = +opt("chunk", 90);
+const fp = createHash("sha1").update(JSON.stringify({ spec, shaders, warp, glW, glH, fps, page: readFileSync(join(ENGINE, PAGE), "utf8") })).digest("hex").slice(0, 12);
+const tmp = out + ".parts";
+if (!existsSync(join(tmp, "FP")) || readFileSync(join(tmp, "FP"), "utf8") !== fp) { rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true }); writeFileSync(join(tmp, "FP"), fp); }
+const chunks = []; for (let a = 0; a < N; a += CH) chunks.push([a, Math.min(N, a + CH)]);
+const partFile = (k) => join(tmp, `c${String(k).padStart(4, "0")}.mp4`);
+const todo = chunks.map((c, k) => k).filter((k) => !existsSync(partFile(k)));
+console.log(`chunks ${chunks.length}, already done ${chunks.length - todo.length}`);
 const t0 = Date.now();
-await Promise.all(Array.from({ length: workers }, async (_, w) => {
-  const a = Math.floor((N * w) / workers), b = Math.floor((N * (w + 1)) / workers);
-  const file = join(tmp, `p${w}.mp4`); parts[w] = file;
+let next = 0;
+await Promise.all(Array.from({ length: Math.min(workers, todo.length) }, async (_, w) => {
   const { browser, page } = await openPage();
-  const ff = spawn("ffmpeg", ["-v", "error", "-y", "-f", "image2pipe", "-framerate", String(fps), "-c:v", "mjpeg", "-i", "-",
-    "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", "-r", String(fps), file], { stdio: ["pipe", "inherit", "inherit"] });
-  for (let i = a; i < b; i++) {
-    const buf = await grab(page, (i + 0.5) / fps);
-    if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once("drain", r));
-    if ((i - a) % 60 === 0) console.log(`w${w} frame ${i - a}/${b - a} ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  while (next < todo.length) {
+    const k = todo[next++]; const [a, b] = chunks[k]; const file = partFile(k); const part = file + ".tmp.mp4";
+    const ff = spawn("ffmpeg", ["-v", "error", "-y", "-f", "image2pipe", "-framerate", String(fps), "-c:v", "mjpeg", "-i", "-",
+      "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", "-r", String(fps), part], { stdio: ["pipe", "inherit", "inherit"] });
+    for (let i = a; i < b; i++) {
+      const buf = await grab(page, (i + 0.5) / fps);
+      if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once("drain", r));
+    }
+    ff.stdin.end(); await new Promise((r) => ff.on("close", r));
+    renameSync(part, file);
+    console.log(`w${w} chunk ${k + 1}/${chunks.length} done ${((Date.now() - t0) / 1000).toFixed(0)}s`);
   }
-  ff.stdin.end(); await new Promise((r) => ff.on("close", r)); await browser.close();
+  await browser.close();
 }));
-writeFileSync(join(tmp, "list.txt"), parts.map((p) => `file '${p}'`).join("\n"));
+writeFileSync(join(tmp, "list.txt"), chunks.map((c, k) => `file '${partFile(k)}'`).join("\n"));
 await new Promise((r) => spawn("ffmpeg", ["-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", join(tmp, "list.txt"), "-c", "copy", out], { stdio: "inherit" }).on("close", r));
 console.log("done", out, ((Date.now() - t0) / 1000).toFixed(0) + "s");

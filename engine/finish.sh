@@ -18,4 +18,9 @@ ffmpeg -i "$EP/final.mp4" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I
 D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$EP/final.mp4")
 ffmpeg -v error -y -i "$EP/final.mp4" -vf "fps=12/$D,scale=270:480,tile=6x2" -frames:v 1 -q:v 4 "$EP/qa_sheet.jpg"
 mkdir -p "$ENG/../out"; cp "$EP/final.mp4" "$ENG/../out/$(basename "$EP").mp4"
-echo "FINISHED $(basename "$EP")"
+# Instagram-ready copy + designed cover
+SLUG=$(basename "$EP"); mkdir -p "$ENG/../out/ig"
+ffmpeg -v error -y -i "$EP/final.mp4" -c:v libx264 -preset fast -crf 20 -maxrate 10M -bufsize 20M -pix_fmt yuv420p -profile:v high \
+  -c:a aac -b:a 192k -ar 48000 -movflags +faststart "$ENG/../out/ig/.$SLUG.tmp.mp4" && mv "$ENG/../out/ig/.$SLUG.tmp.mp4" "$ENG/../out/ig/$SLUG.mp4"
+(cd "$ENG/.." && python3 scripts/make_cover.py "$SLUG") || true
+echo "FINISHED $SLUG"
