@@ -45,6 +45,8 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - Instagram API Reels'e anket çıkartması ekleyemiyor; oylama yorumlarla yapılıyor.
 
 ## 🎨 Diğer (yan) videolar
+- HER yeni yan videoya katalogdan FARKLI bir stil ata (stil çeşitliliği zorunlu; hangi stil daha iyi izleniyor ölç). Ajan, stilin referans videosunu indirip
+  kareleri inceler ve `style.md` yazar. Kullanılanlar: 035 Pixel Night, 036 Blueprint Line. 020-034 = Park Skyline (bizim 3D motor).
 - Higgsfield Content Factory stil kataloğundaki (get_preset_instructions /content-factory) stillerden konuya en uygun olanı seç
   (ör. Toy Planet, Pixel Night, Ink & Gold, Blueprint Line...). Görsel dili uyarla, referans videoların içeriğini/karakterlerini kopyalama.
 

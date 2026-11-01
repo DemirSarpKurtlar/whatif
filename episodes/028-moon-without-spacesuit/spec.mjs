@@ -1,5 +1,5 @@
 // Episode 028 — What if you stood on the Moon without a spacesuit for 15 seconds?
-const MO = { dist: 4.2, orb: 0.25, camy: 1.0, ty: 1.15, tx: 0, lens: 1.4, vapor: 0, boil: 0, steam: 0, swell: 0, arms: 0, fall: 0, dark: 0, thermal: 0, shake: 0, man: 1, lander: 0, earth: 0, eaz: 0, eel: 0 };
+const MO = { dist: 4.2, orb: 0.25, camy: 1.0, ty: 1.15, tx: 0, tz: 0, lens: 1.4, vapor: 0, boil: 0, steam: 0, swell: 0, arms: 0, fall: 0, dark: 0, thermal: 0, shake: 0, man: 1, lander: 0, earth: 0, eaz: 0, eel: 0 };
 export default {
   END: 32.7,
   title: { text: "What if you stood on the Moon without a spacesuit for 15 seconds?", end: 2.75 },
@@ -18,7 +18,7 @@ export default {
       hud: { cat: "SECOND 5", label: "YOUR BODY SWELLS UP TO", value: "2× size", sub: "SKIN STRETCHES · IT DOESN'T BURST", dot: "#F2C14E" } },
     { a: 15.1, b: 17.5, glsl: "moon", p: { ...MO, thermal: [[0, 0], [0.35, 1]], dist: [7, 8], orb: [0.3, 0.45], camy: [1.9, 2.2], ty: 1.0, swell: 1, steam: 0.6 },
       hud: { cat: "THERMAL VIEW · SUNLIT GROUND", label: "SURFACE TEMPERATURE", value: "", sub: "HOT ENOUGH TO BOIL WATER", counter: { at: 0.2, dur: 1.5, from: 20, to: 120, prefix: "+", suffix: " °C", easing: "ease-out" } } },
-    { a: 17.5, b: 19.5, glsl: "moon", p: { ...MO, thermal: 1, dist: 5.5, orb: [1.0, 1.3], camy: 2.6, ty: 0.2, tx: [1.0, 2.0], swell: 1, steam: 0.5 },
+    { a: 17.5, b: 19.5, glsl: "moon", p: { ...MO, thermal: 1, dist: 4.5, orb: [0.5, 0.7], camy: 3.2, ty: -0.6, tx: [3.0, 3.8], tz: [-3.5, -4.6], swell: 1, steam: 0.5 },
       hud: { cat: "THERMAL VIEW · IN SHADOW", label: "SURFACE TEMPERATURE", value: "", sub: "COLDER THAN ANTARCTICA", vcol: "#5CB8F0", counter: { at: 0.15, dur: 1.4, from: 0, to: -170, suffix: " °C", easing: "ease-out" } } },
     { a: 19.5, b: 23.25, glsl: "moon", p: { ...MO, thermal: [[0, 1], [0.7, 0]], dist: [4.6, 3.8], orb: [1.0, 0.6], camy: 1.2, ty: 1.2, swell: 1, steam: [0.3, 0.1] },
       hud: { cat: "NO AIR", label: "HEAT LEAVES YOUR BODY", value: "Very slowly", sub: "YOU DON'T COOK · YOU DON'T FREEZE", dot: "#5CB8F0" } },

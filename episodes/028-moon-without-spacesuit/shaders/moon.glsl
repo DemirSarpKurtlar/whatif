@@ -1,7 +1,7 @@
 // Lunar surface: grey cratered regolith, black sky with Earth, harsh sunlight, a person in normal clothes.
 // Units: metres. The person stands at the origin facing +z; the sun is low, behind the camera's left.
 // params: u_dist camera distance, u_orb camera azimuth (rad, 0 = in front of the person), u_camy camera height,
-// u_ty look-at height, u_tx look-at x, u_lens (0 -> 1.4), u_vapor breath plume 0..1, u_boil fizz at the mouth 0..1,
+// u_ty look-at height, u_tx/u_tz look-at x/z, u_lens (0 -> 1.4), u_vapor breath plume 0..1, u_boil fizz at the mouth 0..1,
 // u_steam vapour off the skin 0..1, u_swell 0..1, u_arms 0..1 (hands to chest), u_fall 0..1 (collapses sideways),
 // u_dark 0..1 blackout vignette, u_thermal 0..1 false-colour thermal view, u_shake, u_man person visible (>0.5),
 // u_lander 0..1 lander in the background, u_earth Earth size boost, u_eaz/u_eel Earth azimuth/elevation offsets (rad)
@@ -25,7 +25,10 @@ float gh(vec2 p){
   float k = smoothstep(1.4, 3.5, length(p)) * smoothstep(2.2, 4.5, length(p-LPOS.xz));
   float h = craterH(p, 11.0, 0.0) + craterH(p+3.1, 3.7, 7.0) + 0.5*craterH(p+1.3, 1.3, 13.0);
   h += 0.35*(noise2(p*0.11)-0.5) + 0.04*(noise2(p*1.7)-0.5);
-  return h*k + 0.05*(noise2(p*0.6)-0.5);
+  // one big crater near the person: at a low sun its floor sits in deep, frozen shadow
+  float rb = length(p - vec2(4.2, -5.2))/3.4;
+  float big = (-0.42*max(1.0-rb*rb, 0.0) + 0.12*exp(-(rb-1.0)*(rb-1.0)*7.0))*3.4;
+  return h*k*smoothstep(0.8, 1.4, rb) + big + 0.05*(noise2(p*0.6)-0.5);
 }
 vec3 toLocal(vec3 p){
   vec3 q = p;
@@ -150,7 +153,7 @@ vec4 pixel(vec2 uv){
   vec3 ro = vec3(sin(u_orb)*u_dist, u_camy, cos(u_orb)*u_dist);
   ro.y = max(ro.y, gh(ro.xz)+0.15);
   ro.xy += jit;
-  vec3 ta = vec3(u_tx, u_ty, 0.0);
+  vec3 ta = vec3(u_tx, u_ty, u_tz);
   float lens = u_lens > 0.0 ? u_lens : 1.4;
   vec3 rd = camRay(sp, ro, ta, lens);
   // Earth is framed: it hangs at a fixed screen spot (upper right, below the HUD); u_eaz/u_eel nudge it (screen units).
