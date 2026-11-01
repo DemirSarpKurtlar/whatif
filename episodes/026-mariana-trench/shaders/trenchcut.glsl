@@ -21,7 +21,7 @@ vec4 pixel(vec2 uv){
   float mPer = (YB - YS)/10935.0;
   vec3 col;
   // sky
-  vec3 sky = mix(vec3(0.42,0.62,0.86), vec3(0.86,0.9,0.95), smoothstep(0.0, YS, y));
+  vec3 sky = mix(vec3(0.07,0.12,0.26), vec3(0.34,0.48,0.68), smoothstep(0.08, YS, y));
   col = sky;
   // water body
   float wv = YS + 0.0025*sin(x*60.0 + u_time*2.0);
@@ -75,7 +75,8 @@ vec4 pixel(vec2 uv){
     float top = base - h*Hm;
     if (y > top && y < base && h > 0.0) {
       float hf = (base - y)/Hm;
-      float ridge = noise2(vec2(dx*55.0 + hf*8.0, hf*30.0));
+      vec2 rq = vec2(dx*38.0 + hf*14.0*sign(dx), hf*9.0 - abs(dx)*20.0);
+      float ridge = 0.65*noise2(rq) + 0.35*noise2(rq*2.7 + 5.0);
       vec3 rock = mix(vec3(0.36,0.37,0.42), vec3(0.55,0.56,0.6), ridge);
       rock *= 0.8 + 0.35*smoothstep(0.0, 0.02, dx + 0.01*sin(hf*40.0));   // lit east face
       float snow = smoothstep(0.7, 0.76, hf + 0.05*(ridge - 0.5));

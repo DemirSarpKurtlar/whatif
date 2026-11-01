@@ -104,7 +104,7 @@ vec3 skyCol(vec3 rd, out float temp){
   float sd = dot(rd, L);
   col += vec3(1.0,0.97,0.9)*(smoothstep(0.9993,0.9996,sd)*8.0 + pow(max(sd,0.0),400.0)*0.6 + pow(max(sd,0.0),40.0)*0.06);
   vec3 E = earthDir();
-  float R = 0.072*(1.0+u_earth);
+  float R = 0.05*(1.0+u_earth);
   vec3 T = normalize(cross(E, vec3(0.0,1.0,0.0))); vec3 B = cross(T, E);
   vec2 d = vec2(dot(rd,T), dot(rd,B)) / R;
   float r2 = dot(d,d);
@@ -153,9 +153,10 @@ vec4 pixel(vec2 uv){
   vec3 ta = vec3(u_tx, u_ty, 0.0);
   float lens = u_lens > 0.0 ? u_lens : 1.4;
   vec3 rd = camRay(sp, ro, ta, lens);
-  // Earth hangs at a fixed elevation, just right of where the camera looks (u_eaz shifts it, rad)
-  vec2 fw = normalize((ta-ro).xz); float az = atan(fw.x, -fw.y) + 0.07 + u_eaz;
-  gE = normalize(vec3(sin(az)*cos(0.3+u_eel), sin(0.3+u_eel), -cos(az)*cos(0.3+u_eel)));
+  // Earth is framed: it hangs at a fixed screen spot (upper right, below the HUD); u_eaz/u_eel nudge it (screen units).
+  // It is only drawn where that spot shows sky, so the ground still hides it.
+  { vec3 ww = normalize(ta-ro), uu = normalize(cross(ww, vec3(0.0,1.0,0.0))), vv = cross(uu, ww);
+    gE = normalize((0.13+u_eaz)*uu + (0.235+u_eel)*vv + lens*ww); }
   vec3 L = sunDir();
   // march
   float t = 0.0; vec2 h = vec2(0.0); float hit = 0.0;
@@ -222,7 +223,7 @@ vec4 pixel(vec2 uv){
       col += sunC*spc;
       col += vec3(0.25,0.3,0.4)*pow(clamp(1.0+dot(n,rd),0.0,1.0),3.0)*0.25;
     }
-    temp = id < 1.5 ? 0.04 + 0.82*smoothstep(0.0, 0.3, lit) : (id < 6.5 ? 0.42 + 0.04*lit : 0.3 + 0.6*lit);
+    temp = id < 1.5 ? 0.04 + 0.64*smoothstep(0.0, 0.3, lit) : (id < 6.5 ? 0.36 + 0.04*lit : 0.3 + 0.6*lit);
   }
   // vapour: breath plume, fizz at the mouth, steam off the skin
   if (gMan > 0.5 && (u_vapor + u_boil + u_steam) > 0.001) {
@@ -237,13 +238,13 @@ vec4 pixel(vec2 uv){
       float r = 0.02 + ph*0.17;
       a += puff(ro, rd, c, r, t)*u_vapor*pow(1.0-ph, 1.3)*0.5;
     }
-    if (u_boil > 0.001) for (int i=0;i<10;i++){
+    if (u_boil > 0.001) for (int i=0;i<16;i++){
       float fi = float(i);
-      float ph = fract(u_time*2.3 + fi/10.0);
+      float ph = fract(u_time*2.3 + fi/16.0);
       vec3 o = (vec3(hash2(vec2(fi,5.0)), hash2(vec2(fi,6.0)), hash2(vec2(fi,7.0)))-0.5)*vec3(0.05,0.03,0.02);
       vec3 c = mouth + o + vec3(o.x*ph*3.0, 0.02*ph, 0.02+0.14*ph);
-      float r = 0.008 + 0.03*ph;
-      a += puff(ro, rd, c, r, t)*u_boil*(1.0-ph)*0.9;
+      float r = 0.005 + 0.012*ph;
+      a += puff(ro, rd, c, r, t)*u_boil*(1.0-ph)*0.8;
     }
     if (u_steam > 0.001) for (int i=0;i<14;i++){
       float fi = float(i);
@@ -251,7 +252,7 @@ vec4 pixel(vec2 uv){
       vec3 b = vec3((hash2(vec2(fi,8.0))-0.5)*0.55, 0.35+1.25*hash2(vec2(fi,9.0)), (hash2(vec2(fi,10.0))-0.3)*0.3);
       vec3 c = b + normalize(vec3(b.x, 0.6, b.z+0.3))*ph*0.55;
       float r = 0.06 + ph*0.26;
-      a += puff(ro, rd, c, r, t)*u_steam*pow(1.0-ph,1.4)*0.32;
+      a += puff(ro, rd, c, r, t)*u_steam*pow(1.0-ph,1.4)*0.2;
     }
     a = clamp(a, 0.0, 0.92);
     col = mix(col, vc*(0.35 + 0.9*max(dot(normalize(vec3(0.0,0.3,1.0)), L), 0.0)), a);

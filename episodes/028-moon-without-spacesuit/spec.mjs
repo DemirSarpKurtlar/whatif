@@ -1,5 +1,5 @@
 // Episode 028 — What if you stood on the Moon without a spacesuit for 15 seconds?
-const MO = { dist: 4.2, orb: 0.25, camy: 1.0, ty: 1.15, tx: 0, lens: 1.4, vapor: 0, boil: 0, steam: 0, swell: 0, arms: 0, fall: 0, dark: 0, thermal: 0, shake: 0, man: 1, lander: 0, earth: 0.3, eaz: 0, eel: 0 };
+const MO = { dist: 4.2, orb: 0.25, camy: 1.0, ty: 1.15, tx: 0, lens: 1.4, vapor: 0, boil: 0, steam: 0, swell: 0, arms: 0, fall: 0, dark: 0, thermal: 0, shake: 0, man: 1, lander: 0, earth: 0, eaz: 0, eel: 0 };
 export default {
   END: 32.7,
   title: { text: "What if you stood on the Moon without a spacesuit for 15 seconds?", end: 2.75 },
@@ -12,13 +12,13 @@ export default {
       hud: { at: 0.1, cat: "SECOND 1", label: "THE AIR IN YOUR LUNGS", value: "Rushes out", sub: "DON'T FIGHT IT · LET IT GO", dot: "#4FD1A5" } },
     { a: 6.4, b: 8.35, glsl: "moon", p: { ...MO, dist: [2.3, 1.9], orb: [0.3, 0.4], camy: 1.45, ty: 1.35, arms: [[0, 0], [0.7, 1]], vapor: 0.15, shake: [[0, 0], [0.9, 0.25], [1.95, 0.1]] },
       hud: { cat: "NEVER HOLD YOUR BREATH", label: "TRAPPED AIR EXPANDS", value: "Lungs rupture", sub: "THE ONE MISTAKE THAT KILLS FAST", vcol: "#FF6B5E" } },
-    { a: 8.35, b: 10.95, glsl: "moon", p: { ...MO, dist: [1.1, 0.92], orb: [0.38, 0.26], camy: 1.62, ty: 1.58, lens: 1.6, eel: -0.1, arms: 1, boil: [[0, 0], [0.9, 1]] },
+    { a: 8.35, b: 10.95, glsl: "moon", p: { ...MO, dist: [1.1, 0.92], orb: [0.38, 0.26], camy: 1.62, ty: 1.58, lens: 1.6, arms: 1, boil: [[0, 0], [0.9, 1]] },
       hud: { cat: "SECOND 3", label: "WATER BOILS AT", value: "37 °C", sub: "BODY TEMPERATURE · ZERO PRESSURE", vcol: "#FFB36B" } },
     { a: 10.95, b: 15.1, glsl: "moon", p: { ...MO, dist: [3.3, 3.8], orb: [-0.15, 0.1], camy: 1.15, ty: 1.2, arms: [0.8, 0.3], boil: 0.4, swell: [[0, 0], [0.8, 0], [2.6, 1, "ease-out"], [4.15, 1]], steam: [[0, 0], [0.8, 0.3], [2.6, 1]] },
       hud: { cat: "SECOND 5", label: "YOUR BODY SWELLS UP TO", value: "2× size", sub: "SKIN STRETCHES · IT DOESN'T BURST", dot: "#F2C14E" } },
-    { a: 15.1, b: 17.5, glsl: "moon", p: { ...MO, thermal: [[0, 0], [0.35, 1]], dist: [7, 8], orb: [0.3, 0.45], camy: [2.6, 3.0], ty: 0.6, swell: 1, steam: 0.6 },
-      hud: { cat: "THERMAL VIEW · SUNLIT GROUND", label: "SURFACE TEMPERATURE", value: "", sub: "HOT ENOUGH TO BOIL WATER", vcol: "#FFB36B", counter: { at: 0.2, dur: 1.5, from: 20, to: 120, prefix: "+", suffix: " °C", easing: "ease-out" } } },
-    { a: 17.5, b: 19.5, glsl: "moon", p: { ...MO, thermal: 1, dist: 6, orb: [0.9, 1.25], camy: 2.2, ty: 0.3, tx: [0.5, 1.5], swell: 1, steam: 0.5 },
+    { a: 15.1, b: 17.5, glsl: "moon", p: { ...MO, thermal: [[0, 0], [0.35, 1]], dist: [7, 8], orb: [0.3, 0.45], camy: [1.9, 2.2], ty: 1.0, swell: 1, steam: 0.6 },
+      hud: { cat: "THERMAL VIEW · SUNLIT GROUND", label: "SURFACE TEMPERATURE", value: "", sub: "HOT ENOUGH TO BOIL WATER", counter: { at: 0.2, dur: 1.5, from: 20, to: 120, prefix: "+", suffix: " °C", easing: "ease-out" } } },
+    { a: 17.5, b: 19.5, glsl: "moon", p: { ...MO, thermal: 1, dist: 6, orb: [0.9, 1.25], camy: 1.8, ty: 0.8, tx: [0.5, 1.5], swell: 1, steam: 0.5 },
       hud: { cat: "THERMAL VIEW · IN SHADOW", label: "SURFACE TEMPERATURE", value: "", sub: "COLDER THAN ANTARCTICA", vcol: "#5CB8F0", counter: { at: 0.15, dur: 1.4, from: 0, to: -170, suffix: " °C", easing: "ease-out" } } },
     { a: 19.5, b: 23.25, glsl: "moon", p: { ...MO, thermal: [[0, 1], [0.7, 0]], dist: [4.6, 3.8], orb: [1.0, 0.6], camy: 1.2, ty: 1.2, swell: 1, steam: [0.6, 0.3] },
       hud: { cat: "NO AIR", label: "HEAT LEAVES YOUR BODY", value: "Very slowly", sub: "YOU DON'T COOK · YOU DON'T FREEZE", dot: "#5CB8F0" } },
@@ -37,7 +37,7 @@ export default {
     [15.22, 17.2, "The sunlit ground is 120 degrees."], [17.62, 19.3, "In shadow, minus 170."],
     [19.64, 21.5, "But with no air, heat moves slowly."], [21.7, 23.15, "You don't cook, and you don't freeze."],
     [23.38, 25.35, "Second 15: everything goes dark."],
-    [25.66, 27.55, "If someone pulls you inside within 90 seconds,"], [27.58, 28.95, "you'd probably survive."],
+    [25.66, 27.5, "If someone pulls you inside within 90 seconds,"], [27.58, 28.95, "you'd probably survive."],
   ],
   bigs: [{ at: 5.35, dur: 0.95, text: "EXHALE", size: 200 }, { at: 14.15, dur: 0.95, text: "INTACT", size: 200 }],
   flashes: [{ at: 3.2, dur: 0.3 }, { at: 15.12, dur: 0.3 }],
