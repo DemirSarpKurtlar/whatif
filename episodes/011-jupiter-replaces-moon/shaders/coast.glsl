@@ -93,7 +93,7 @@ vec3 skyN(vec3 rd){
   }
   // ---- Jupiter (20.6 deg wide)
   if (u_jup > 0.0) {
-    vec3 jd = normalize(vec3(-0.22, 0.42, -1.0));
+    vec3 jd = normalize(vec3(-0.04, 0.40, -1.0));
     vec3 rgt = normalize(cross(jd, vec3(0.0, 1.0, 0.0))); vec3 upv = cross(rgt, jd);
     float R = 0.18;
     vec2 dq = vec2(dot(rd, rgt), dot(rd, upv))/sin(R);
@@ -112,7 +112,7 @@ vec3 skyN(vec3 rd){
     }
     c += vec3(0.9, 0.8, 0.6)*exp(-max(sqrt(r2) - 1.0, 0.0)*5.0)*0.18*u_night*u_jup*step(1.0, r2);
     // Io and Europa
-    vec3 iod = normalize(vec3(0.35, 0.62, -1.0)), eud = normalize(vec3(0.55, 0.3, -1.0));
+    vec3 iod = normalize(vec3(0.2, 0.66, -1.0)), eud = normalize(vec3(-0.22, 0.2, -1.0));
     float di = acos(clamp(dot(rd, iod), -1.0, 1.0)), de = acos(clamp(dot(rd, eud), -1.0, 1.0));
     c = mix(c, vec3(0.95, 0.82, 0.45), smoothstep(0.0135, 0.0115, di)*u_io);
     c = mix(c, vec3(0.92, 0.9, 0.86), smoothstep(0.0085, 0.007, de)*u_io);
@@ -120,12 +120,12 @@ vec3 skyN(vec3 rd){
   // ---- volcano on the horizon
   if (u_volc > 0.0) {
     float az = atan(rd.x, -rd.z);
-    float mh = 0.075*u_volc*max(0.0, 1.0 - abs(az + 0.32)/0.16) ;
+    float mh = 0.075*u_volc*max(0.0, 1.0 - abs(az - 0.12)/0.16) ;
     mh = min(mh, 0.06*u_volc);
     if (rd.y < mh && rd.y > -0.02) c = mix(vec3(0.06, 0.04, 0.05), vec3(0.18, 0.08, 0.06), u_night*0.3);
-    float pk = exp(-pow((az + 0.32)/0.03, 2.0))*exp(-abs(rd.y - 0.06*u_volc)/0.02);
+    float pk = exp(-pow((az - 0.12)/0.03, 2.0))*exp(-abs(rd.y - 0.06*u_volc)/0.02);
     c += vec3(1.0, 0.35, 0.1)*pk*u_volc*1.5;
-    float plume = exp(-pow((az + 0.32 + 0.3*(rd.y - 0.06))/ (0.03 + 0.4*max(rd.y - 0.06, 0.0)), 2.0))*smoothstep(0.06, 0.1, rd.y)*smoothstep(0.35, 0.1, rd.y);
+    float plume = exp(-pow((az - 0.12 + 0.3*(rd.y - 0.06))/ (0.03 + 0.4*max(rd.y - 0.06, 0.0)), 2.0))*smoothstep(0.06, 0.1, rd.y)*smoothstep(0.35, 0.1, rd.y);
     c = mix(c, vec3(0.25, 0.14, 0.12) + vec3(0.6, 0.18, 0.05)*exp(-(rd.y - 0.06)/0.05), plume*u_volc*0.85);
     c += vec3(0.9, 0.25, 0.05)*exp(-max(rd.y, 0.0)/0.04)*0.25*u_volc;
   }
@@ -154,7 +154,7 @@ vec4 pixel(vec2 uv){
     hit = b; vec3 q = ro + rd*b; kind = seaH(q.xz) > groundH(q.xz) ? 1.0 : 0.0;
   }
   vec3 mo = march(ro, rd, hit > 0.0 ? hit : 80.0, 0.0);
-  vec3 L = normalize(mix(vec3(0.5, 0.8, -0.4), vec3(-0.22, 0.42, -1.0), u_night));
+  vec3 L = normalize(mix(vec3(0.5, 0.8, -0.4), vec3(-0.04, 0.40, -1.0), u_night));
   vec3 key = mix(vec3(1.3,1.15,1.0), vec3(0.22,0.24,0.32)*(0.25 + 0.75*u_moon) + vec3(0.62,0.52,0.4)*u_jup*clamp(1.0 - u_jphase, 0.0, 1.0), u_night);
   vec3 skyF = mix(lin(vec3(0.6,0.72,0.88))*0.6, lin(vec3(0.12,0.15,0.25))*0.25, u_night);
   vec3 hazeD = mix(vec3(173.0,198.0,226.0)/255.0, vec3(24.0,30.0,52.0)/255.0, u_night);

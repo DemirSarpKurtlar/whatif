@@ -2,8 +2,9 @@
 // moon (0..1 moon visible), shake, tilt, panx, wet (0..1 shows old high-tide line)
 float gT = 0.0;
 vec2 gRo = vec2(0.0);
-float curv(vec2 xz){ float R = mix(1e7, 260.0, u_curve); vec2 d = xz - gRo; return dot(d,d)/(2.0*R); }
+float curv(vec2 xz){ float R = mix(1e7, 110.0, u_curve); vec2 d = xz - gRo; return dot(d,d)/(2.0*R); }
 vec2 map(vec3 p){
+  p.y += curv(p.xz);
   vec2 r = vec2(1e9, 0.0);
   // beach huts on the left
   vec3 q = p - vec3(-5.2, 0.0, 0.0);

@@ -76,7 +76,7 @@ vec4 pixel(vec2 uv){
     col = alb*(0.02 + 1.1*dif) + vec3(0.4, 0.6, 1.0)*pow(1.0 - max(dot(n, -rd), 0.0), 3.0)*0.5;
     // Jupiter-shine on the night side
     vec3 toJ = normalize(-E);
-    col += alb*vec3(0.45, 0.4, 0.32)*clamp(dot(n, toJ), 0.0, 1.0)*0.25;
+    col += alb*vec3(0.45, 0.4, 0.32)*clamp(dot(n, toJ), 0.0, 1.0)*0.7;
     if (u_volc > 0.0) {
       vec2 g = vec2(atan(n.z, n.x), asin(n.y))*6.0; vec2 gc = floor(g); vec2 gf = fract(g) - 0.5;
       float on = step(0.6, hash2(gc))*smoothstep(0.5, 0.52, land);

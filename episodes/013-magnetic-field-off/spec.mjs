@@ -1,0 +1,46 @@
+// Episode 013 — What if Earth's magnetic field switched off?
+const MF = { dist: 9.0, orb: 0.0, camy: 0.6, spin: 0, tx: 0, ty: 0, field: 1, wind: 1, aurora: 0, spread: 0, sats: 0, strip: 0, mars: 0 };
+const CP = { needle: 0, wobble: 0, rot: 0, zoom: 1.0, tilt: 0.2 };
+const AU = { aurora: 0, lights: 1, birds: 0, pan: 0, tilt: 0.25, hue: 0 };
+export default {
+  END: 61.2,
+  title: { text: "What if Earth's magnetic field switched off?", end: 3.85 },
+  scenes: [
+    { a: 0, b: 3.85, glsl: "magfield", p: { ...MF, dist: [11, 9.5], spin: [0, 0.2], orb: [0.1, 0.0] } },
+    { a: 3.85, b: 9.65, glsl: "magfield", p: { ...MF, dist: [9.5, 8.0], spin: [0.2, 0.5], orb: [0.0, -0.15] },
+      hud: { cat: "SWIRLING MOLTEN IRON", label: "AN INVISIBLE SHIELD", value: "65,000 km", sub: "REACHES OUT TOWARD THE SUN", dot: "#5CB8F0" } },
+    { a: 9.65, b: 11.6, glsl: "magfield", p: { ...MF, dist: [8.0, 7.6], spin: [0.5, 0.6], orb: -0.15, field: [[0, 1], [0.75, 1], [1.1, 0]] },
+      hud: { at: 0.75, cat: "THEN IT STOPS", label: "FIELD STRENGTH", value: "0 µT", sub: "THE SHIELD IS GONE", vcol: "#FF6B5E" } },
+    { a: 11.6, b: 14.9, glsl: "compass", p: { ...CP, needle: 0.05, wobble: [[0, 0], [0.4, 0], [2.0, 1]], rot: [0, 0.25], zoom: [1.0, 1.25] },
+      hud: { cat: "EVERY COMPASS ON EARTH", label: "NORTH IS", value: "Gone", sub: "THE NEEDLE DRIFTS AIMLESSLY", vcol: "#FF6B5E" } },
+    { a: 14.9, b: 24.45, glsl: "magfield", p: { ...MF, field: 0, dist: [8.0, 4.2], orb: [-0.15, -0.6], spin: [0.6, 1.0], camy: [0.6, 0.3] },
+      hud: { cat: "WITHIN HOURS", label: "THE SOLAR WIND", value: "1.5 million km/h", sub: "HITS THE ATMOSPHERE HEAD-ON", vcol: "#FFC27A" } },
+    { a: 24.45, b: 27.3, glsl: "magfield", p: { ...MF, field: 0, wind: 0.4, dist: [5.6, 4.8], orb: [0.9, 1.2], spin: [1.0, 1.1], camy: 0.2, aurora: 1, spread: [0.2, 1.0] },
+      hud: { cat: "THAT NIGHT", label: "AURORAS SPREAD TO", value: "The equator", sub: "NORMALLY ONLY SEEN NEAR THE POLES", vcol: "#9BE38A" } },
+    { a: 27.3, b: 31.05, glsl: "aurora", p: { ...AU, aurora: [[0, 0.5], [2.0, 1]], pan: [-0.2, 0.15], tilt: [0.2, 0.35], hue: [0, 0.3] },
+      hud: { cat: "0° LATITUDE", label: "OVER TROPICAL CITIES", value: "Beautiful", sub: "AND A WARNING", dot: "#9BE38A" } },
+    { a: 31.05, b: 35.1, glsl: "magfield", p: { ...MF, field: 0, wind: 1, dist: [7.0, 6.2], orb: [1.6, 1.9], spin: [1.2, 1.3], camy: 0.4, sats: 1, aurora: 0.6, spread: 1 },
+      hud: { cat: "IN ORBIT", label: "SATELLITES", value: "10,000+", sub: "HIT FIRST · GPS STARTS TO DRIFT", vcol: "#FFC27A" } },
+    { a: 35.1, b: 40.2, glsl: "aurora", p: { ...AU, aurora: 1, hue: [0.3, 0.6], lights: [[0, 1], [2.2, 1], [2.3, 0.45], [3.2, 0.45], [3.3, 0]], pan: [0.2, 0.45], tilt: [0.3, 0.2] },
+      hud: { cat: "THE NEXT SOLAR STORM", label: "POWER GRIDS", value: "Blackout", sub: "ACROSS ENTIRE CONTINENTS", vcol: "#FF6B5E" } },
+    { a: 40.2, b: 44.95, glsl: "aurora", p: { ...AU, aurora: 0.8, lights: 0, birds: 1, pan: [-0.35, -0.1], tilt: [0.35, 0.45], hue: 0.2 },
+      hud: { cat: "BIRDS · SEA TURTLES · SALMON", label: "THEIR BUILT-IN MAP", value: "Lost", sub: "THEY NAVIGATE BY THE FIELD" } },
+    { a: 44.95, b: 51.2, glsl: "magfield", p: { ...MF, field: 0, wind: 1, dist: [7.0, 6.0], orb: [-0.3, -0.1], spin: [1.4, 1.6], camy: 0.5, strip: [[0, 0], [2.0, 0.3], [6.2, 1]] },
+      hud: { cat: "THE SLOWEST DANGER", label: "OUR ATMOSPHERE", value: "Leaking away", sub: "STRIPPED BY THE SOLAR WIND" } },
+    { a: 51.2, b: 61.2, glsl: "magfield", p: { ...MF, field: 0, wind: 1, dist: [6.0, 6.6], orb: [-0.1, 0.05], spin: [1.6, 1.8], camy: 0.5, strip: 0.7, mars: [[0, 0], [0.4, 0], [2.2, 1]] },
+      hud: { cat: "JUST LIKE MARS", label: "NOT IN DAYS", value: "Millions of years", sub: "MARS LOST ITS SHIELD · THEN ITS AIR", dot: "#E0794A" } },
+  ],
+  captions: [
+    [3.92, 6.6, "Deep below your feet, swirling molten iron"], [6.72, 9.5, "wraps the planet in an invisible shield."],
+    [9.74, 11.3, "Then, it stops."], [11.66, 14.7, "Every compass on Earth starts drifting aimlessly."],
+    [14.96, 17.5, "Within hours, the solar wind,"], [17.6, 22.4, "charged particles racing from the Sun at 1.5 million km/h,"],
+    [22.56, 24.4, "hits our atmosphere head-on."], [24.58, 27.9, "That night, auroras ripple over cities near the equator."],
+    [27.94, 29.2, "Beautiful."], [29.46, 30.9, "And a warning."], [31.16, 32.9, "Satellites take the hits first."],
+    [33.14, 34.9, "GPS starts to drift."], [35.22, 39.9, "When the next big solar storm arrives, power grids could fail across entire continents."],
+    [40.28, 44.7, "Birds, sea turtles and salmon that navigate by the field lose their way home."],
+    [45.06, 47.4, "But the slowest danger matters most."], [47.66, 50.9, "Without the shield, the solar wind slowly strips away our air,"],
+    [51.46, 52.9, "just like it did to Mars."], [53.1, 55.4, "Not in days. Over millions of years."],
+  ],
+  flashes: [{ at: 10.4, dur: 0.4 }, { at: 37.3, dur: 0.2, color: "#000000" }],
+  endCard: { at: 55.5, title: "What if Earth's magnetic field switched off?", small: ["SIMPLIFIED · FOR FUN", "THE REAL FIELD CAN WEAKEN, NOT VANISH OVERNIGHT"], cta: "WHERE WOULD YOU WATCH THE AURORA FROM?" },
+};

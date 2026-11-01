@@ -14,11 +14,11 @@ vec3 stars(vec3 rd){
 }
 vec4 pixel(vec2 uv){
   vec2 p = screenP(uv, 0.0);
-  vec3 ro = vec3(sin(u_orb)*u_dist + u_tx, u_camy, cos(u_orb)*u_dist);
-  vec3 rd = camRay(p, ro, vec3(u_tx, 0.0, 0.0), 1.6);
+  vec3 ro = vec3(sin(u_orb)*u_dist + u_tx, u_camy + u_ty, cos(u_orb)*u_dist);
+  vec3 rd = camRay(p, ro, vec3(u_tx, u_ty, 0.0), 1.6);
   vec3 col = vec3(5.0,6.0,12.0)/255.0 + stars(rd);
   vec3 L = normalize(vec3(-0.8,0.35,0.6));
-  vec3 MC = vec3(u_mx, 0.0, u_mz);
+  vec3 MC = vec3(u_mx, u_my, u_mz);
   float te = sph(ro, rd, vec3(0.0), u_er);
   float tm = sph(ro, rd, MC, 0.273);
   if (tm > 0.0 && (te < 0.0 || tm < te)) {
@@ -58,19 +58,14 @@ vec4 pixel(vec2 uv){
     float tt = max(-b, 0.0); float d = abs(length(ro + rd*tt) - 1.0);
     col = mix(col, vec3(1.0), smoothstep(0.012, 0.004, d)*u_ghost*0.7*step(0.5, fract(atan(cp.y, cp.x)*12.0)));
   }
-  // moon escape path (dashed arc from the old orbit outward)
-  if (u_path > 0.0 && abs(rd.y) > 1e-4) {
-    float tp = -ro.y/rd.y;
-    if (tp > 0.0) {
-      vec3 X = ro + rd*tp;
-      float ang = atan(X.z, X.x);
-      float r0 = 2.2;
-      float spiral = r0 + max(ang + 0.6, 0.0)*0.9*u_path;
-      float dd = abs(length(X.xz) - spiral);
-      float on = step(-0.6, ang)*step(ang, -0.6 + 3.2*u_path);
-      float occ = (te > 0.0 && tp > te) ? 0.0 : 1.0;
-      col = mix(col, vec3(1.0,0.85,0.45), smoothstep(0.006*tp, 0.002*tp, dd)*on*occ*step(0.4, fract(ang*8.0))*0.85);
-    }
+  // moon escape path: dashed line from the old orbit position to the Moon
+  if (u_path > 0.0) {
+    vec3 A = vec3(0.6, 2.0, 0.0), B = MC;
+    vec3 ba = B - A, w0 = ro - A; float Bq = dot(rd,ba), Cq = dot(ba,ba) + 1e-6, Dq = dot(rd,w0), Eq = dot(ba,w0);
+    float uu = clamp((Eq - Bq*Dq)/max(Cq - Bq*Bq,1e-5),0.0,1.0); float sv = max(dot(rd, A + ba*uu - ro), 0.0);
+    float dd = length(ro + rd*sv - (A + ba*uu));
+    float dash = step(0.45, fract(uu*length(ba)*5.0));
+    col = mix(col, vec3(1.0,0.85,0.45), smoothstep(0.004*sv, 0.0015*sv, dd)*dash*u_path*0.85*step(uu*length(ba), length(ba)-0.3));
   }
   return vec4(col, 1.0);
 }
