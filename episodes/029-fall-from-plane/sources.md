@@ -11,3 +11,4 @@
   - after ~1 min you are near 6 km, where the air is thick enough that consciousness can return (TUC at 18,000–22,000 ft is 5–30 min) → "a minute later, you wake up" (hedged: individual, not guaranteed).
 - Safety framing: the script says "That's a record, not a plan." No survival advice is given; Vulović was inside wreckage, not in free fall.
 - Visual simplifications: Earth's curvature exaggerated, fall clock sped up, jumper/airliner/wreckage stylised, snowy forest shown schematically.
+- Note: script.txt spells the name "Vulovich" phonetically so the TTS pronounces it; on-screen text uses "Vulović".

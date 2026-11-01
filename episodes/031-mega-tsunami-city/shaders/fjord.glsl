@@ -12,8 +12,8 @@ float terr(vec2 xz){
   float h = d*1.05 - 0.00012*d*d;
   h = max(h, 0.0);
   float rough = fbm(xz*0.0022);
-  h += (rough - 0.45)*520.0*smoothstep(10.0, 300.0, h);
-  h += 900.0*smoothstep(500.0, 2200.0, d)*fbm(xz*0.0009 + 3.0);
+  h += (rough - 0.45)*300.0*smoothstep(10.0, 300.0, h);
+  h += 1100.0*smoothstep(700.0, 2600.0, d)*fbm(xz*0.0009 + 3.0);
   return h - 6.0;
 }
 vec2 map(vec3 p){ return vec2(1e9, 0.0); }
@@ -58,17 +58,18 @@ vec4 pixel(vec2 uv){
       vec3 n = normalize(vec3(terr(pos.xz - e.xy) - terr(pos.xz + e.xy), 2.0*e.x, terr(pos.xz - e.yx) - terr(pos.xz + e.yx)));
       float slope = 1.0 - n.y;
       float tn = noise2(pos.xz*0.35)*0.5 + noise2(pos.xz*1.3)*0.5;
-      vec3 forest = mix(vec3(0.07, 0.17, 0.09), vec3(0.13, 0.26, 0.13), tn);
+      vec3 forest = mix(vec3(0.05, 0.13, 0.07), vec3(0.12, 0.24, 0.12), tn);
+      forest *= 0.75 + 0.5*step(0.5, noise2(pos.xz*0.9));
       vec3 rock = mix(vec3(0.45, 0.43, 0.4), vec3(0.6, 0.58, 0.54), noise2(pos.xz*0.08));
       vec3 alb = mix(forest, rock, smoothstep(0.55, 0.75, slope + 0.1*tn));
       float tl = 820.0 + 160.0*noise2(pos.xz*0.004);
       alb = mix(alb, rock, smoothstep(tl - 80.0, tl, pos.y));
-      float snow = smoothstep(1050.0 + 150.0*noise2(pos.xz*0.003), 1150.0, pos.y + 120.0*n.y);
+      float snow = smoothstep(1250.0 + 150.0*noise2(pos.xz*0.003), 1350.0, pos.y + 120.0*n.y);
       alb = mix(alb, vec3(0.93, 0.95, 0.98), snow);
       // the 1958 trimline: forest stripped below u_run
       float edge = u_run + 14.0*(noise2(pos.xz*0.02) - 0.5);
       float strip = smoothstep(edge + 3.0, edge - 3.0, pos.y)*step(1.0, u_run);
-      vec3 bare = mix(vec3(0.55, 0.47, 0.38), vec3(0.68, 0.62, 0.52), noise2(vec2(pos.x*0.02, pos.y*0.12)));
+      vec3 bare = mix(vec3(0.62, 0.55, 0.45), vec3(0.78, 0.72, 0.62), noise2(vec2(pos.x*0.03, pos.y*0.08)));
       alb = mix(alb, bare, strip*(1.0 - snow));
       float fo = smoothstep(edge - 60.0, edge - 4.0, pos.y)*strip*u_foam*(0.6 + 0.4*noise2(pos.xz*0.08 + gT*2.0));
       alb = mix(alb, vec3(0.95, 0.97, 0.98), fo);

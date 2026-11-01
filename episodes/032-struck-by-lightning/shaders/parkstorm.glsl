@@ -30,7 +30,7 @@ vec2 people(vec3 p){
   vec2 res = vec2(bnd, 0.0);
   float hh = hash2(cid);
   vec2 cc = cid*2.6+1.3;
-  bool nearTree = length(cc - LT.xz) < 3.6 || length(cc - HP.xz) < 4.2;
+  bool nearTree = length(cc - LT.xz) < 3.6 || (u_you > 0.5 && abs(cc.x - HP.x) < 2.7 && cc.z > -10.0);
   if (hh > 0.72 && !nearTree && abs(cid.x) < 6.0 && cid.y > -8.0 && cid.y < -1.0) {
     vec2 j = (vec2(hash2(cid+7.1), hash2(cid+3.3))-0.5)*1.0;
     vec3 q = vec3(mod(p.x,cs.x)-1.3-j.x, p.y, mod(p.z,cs.y)-1.3-j.y);

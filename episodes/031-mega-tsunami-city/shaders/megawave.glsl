@@ -4,8 +4,8 @@
 //         level (sea level m; negative = drawback, seabed exposed), wh (wave height m), wz (crest z m, negative = offshore),
 //         fish (0..1 stranded fish), dark (0..1 storm light), boat (0/1 stranded boat), spray (0..1 mist over the crest)
 float gT = 0.0;
-const vec3 TW = vec3(-95.0, 0.0, -76.0);   // the 30-storey tower (90 m) on the headland
-float bend(float x){ return 1.4*max(0.0, -x - 25.0) - 0.25*max(0.0, x - 60.0); }
+const vec3 TW = vec3(-95.0, 0.0, -111.0);   // the 30-storey tower (90 m) on the headland
+float bend(float x){ return 2.2*max(0.0, -x - 25.0) - 0.25*max(0.0, x - 60.0); }
 float groundH(vec2 xz){
   float z = xz.y + bend(xz.x);
   float h = 0.035*z;
@@ -46,12 +46,12 @@ vec2 map(vec3 p){
     for (int k = 0; k < 2; k++) {
       float c = cx + float(k) - 0.5;
       float xc = (c + 0.5)*cs;
-      float zs = -bend(xc);
+      float zs = -bend(xc + 16.0);
       float hh = hash2(vec2(c, 7.0));
       for (int row = 0; row < 2; row++) {
         float fr = float(row);
         float ht = (row == 0 ? 14.0 + 34.0*hh*hh : 26.0 + 40.0*hash2(vec2(c, 11.0)));
-        vec3 bp = vec3(xc, ht*0.5, zs + 34.0 + 46.0*fr + 6.0*hash2(vec2(c, 3.0 + fr)));
+        vec3 bp = vec3(xc, ht*0.5, zs + 16.0 + 40.0*fr + 6.0*hash2(vec2(c, 3.0 + fr)));
         if (abs(xc - TW.x) < 30.0 && row == 0) continue;
         float d = sdRoundBox(p - bp, vec3(12.0 + 3.0*hash2(vec2(c, 5.0)), ht*0.5, 11.0), 0.2);
         r = opU(r, vec2(d, 3.0 + 0.1*fr + 0.01*floor(hh*5.0)));
@@ -91,10 +91,11 @@ vec4 pixel(vec2 uv){
   vec3 col = skyM(rd);
   // heightfield: ground / sea
   float t = 0.4, hit = -1.0, tp = 0.0;
+  float maxH = max(2.5, u_level + u_wh*1.15 + 2.5);
   for (int i = 0; i < 170; i++) {
     vec3 q = ro + rd*t;
     if (q.y < max(groundH(q.xz), seaH(q.xz))) { hit = t; break; }
-    if (q.y > 170.0 && rd.y > 0.0) break;
+    if (q.y > maxH && rd.y > 0.0) break;
     tp = t; t += 0.25 + t*0.033;
     if (t > 4500.0) break;
   }
@@ -135,7 +136,7 @@ vec4 pixel(vec2 uv){
       float g0 = groundH(pos.xz);
       float wet = smoothstep(0.6, -0.1, g0);               // below old sea level = seabed
       vec3 sand = mix(vec3(0.88, 0.8, 0.62), vec3(0.8, 0.72, 0.54), noise2(pos.xz*1.7));
-      vec3 bed = mix(vec3(0.42, 0.38, 0.3), vec3(0.32, 0.3, 0.24), noise2(pos.xz*0.6));
+      vec3 bed = mix(vec3(0.5, 0.43, 0.32), vec3(0.36, 0.32, 0.25), noise2(pos.xz*0.6))*(0.85 + 0.3*noise2(pos.xz*3.0));
       float weed = smoothstep(0.62, 0.78, noise2(pos.xz*0.12 + 4.0))*wet;
       bed = mix(bed, vec3(0.16, 0.22, 0.12), weed*0.8);
       float rock = smoothstep(0.72, 0.8, noise2(pos.xz*0.35 + 9.0))*wet;
@@ -145,19 +146,19 @@ vec4 pixel(vec2 uv){
       vec3 n = normalize(vec3(groundH(pos.xz - e.xy) - groundH(pos.xz + e.xy), 0.3, groundH(pos.xz - e.yx) - groundH(pos.xz + e.yx)));
       vec3 c = lin(alb)*(key*clamp(dot(n, L), 0.0, 1.0) + skyF*1.1);
       // glossy wet seabed + puddles reflecting the sky
-      float pud = smoothstep(0.55, 0.62, noise2(pos.xz*0.09 + 2.0))*wet*(1.0 - rock);
+      float pud = smoothstep(0.66, 0.72, noise2(pos.xz*0.22 + 2.0))*wet*(1.0 - rock);
       float fr = 0.04 + 0.96*pow(1.0 - clamp(-rd.y, 0.0, 1.0), 5.0);
       c = mix(c, lin(skyM(reflect(rd, vec3(0.0, 1.0, 0.0)))), clamp(pud*0.85 + wet*fr*0.35, 0.0, 1.0));
       c += key*pow(max(dot(reflect(rd, n), L), 0.0), 40.0)*wet*0.3;
       // stranded fish: small silver slivers that flash as they flap
       if (u_fish > 0.0) {
-        vec2 fc = floor(pos.xz/1.6); vec2 ff = fract(pos.xz/1.6) - 0.5;
+        vec2 fc = floor(pos.xz/1.3); vec2 ff = fract(pos.xz/1.3) - 0.5;
         float hs = hash2(fc + 31.0);
-        if (hs > 0.55) {
+        if (hs > 0.45) {
           float an = hash2(fc + 5.0)*6.283 + 0.4*sin(gT*(9.0 + 6.0*hs) + hs*30.0);
           vec2 o = (vec2(hash2(fc + 1.0), hash2(fc + 2.0)) - 0.5)*0.6;
           vec2 fq = rot(an)*(ff - o);
-          float body = length(fq/vec2(0.22, 0.055)*1.6);
+          float body = length(fq/vec2(0.2, 0.06)*1.3);
           float fm = smoothstep(1.0, 0.7, body)*wet*u_fish*step(g0, -0.3);
           float glint = 0.6 + 0.9*pow(max(sin(gT*(11.0 + 5.0*hs) + hs*40.0), 0.0), 6.0);
           c = mix(c, lin(vec3(0.82, 0.86, 0.9))*(key*0.7 + skyF)*glint, fm);
@@ -180,9 +181,9 @@ vec4 pixel(vec2 uv){
       vec3 fcol = mix(vec3(0.02, 0.1, 0.13), vec3(0.06, 0.26, 0.29), smoothstep(0.1, 0.5, hrel));
       fcol = mix(fcol, vec3(0.16, 0.5, 0.48), smoothstep(0.55, 0.9, hrel)*0.85);
       fcol *= 0.9 + 0.2*noise2(vec2(pos.x*0.04, pos.y*0.3 - gT*0.8));
-      float streak = smoothstep(0.55, 0.9, noise2(vec2(pos.x*0.11, pos.y*0.025 - gT*0.35)))*smoothstep(0.15, 0.6, hrel);
+      float streak = smoothstep(0.6, 0.95, noise2(vec2(pos.x*0.35, pos.y*0.02 - gT*0.35)))*smoothstep(0.2, 0.7, hrel);
       vec3 fc2 = lin(fcol)*(0.55 + 0.6*clamp(dot(n, L), 0.0, 1.0)) + lin(skyM(rf))*fres*0.4;
-      fc2 = mix(fc2, lin(vec3(0.8, 0.86, 0.88))*(key*0.5 + skyF), streak*0.5);
+      fc2 = mix(fc2, lin(vec3(0.8, 0.86, 0.88))*(key*0.5 + skyF), streak*0.35);
       c = mix(c, fc2, face);
       float fn = noise2(vec2(pos.x*0.07, pos.y*0.04 + gT*1.2))*0.6 + noise2(vec2(pos.x*0.25, pos.y*0.15 + gT*2.0))*0.4;
       float foam = smoothstep(0.86, 0.95, hrel + 0.16*(fn - 0.5))*step(0.5, u_wh);
