@@ -6,7 +6,7 @@
 // u_dark 0..1 blackout vignette, u_thermal 0..1 false-colour thermal view, u_shake, u_man person visible (>0.5),
 // u_lander 0..1 lander in the background, u_earth Earth size boost, u_eaz/u_eel Earth azimuth/elevation offsets (rad)
 float gSw = 0.0, gArms = 0.0, gFall = 0.0, gMan = 1.0, gLand = 0.0;
-const vec3 LPOS = vec3(-6.5, 0.0, -9.0);
+const vec3 LPOS = vec3(-4.6, 0.0, -6.5);
 vec3 sunDir(){ return normalize(vec3(-0.75, 0.42, 0.62)); }
 vec3 gE = vec3(0.0, 0.3, -1.0);
 vec3 earthDir(){ return gE; }
