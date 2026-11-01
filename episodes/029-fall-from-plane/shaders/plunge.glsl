@@ -149,32 +149,42 @@ vec3 skyEarth(vec3 rd, vec3 ro, float R, out float hitG){
     alb = mix(alb, vec3(0.97,0.98,1.0), cl*0.9);
     if (u_snow > 0.0) {
       vec2 gs = pos.xz*70.0;                       // ~14 m tree cells
-      float patch = smoothstep(0.32, 0.5, fbm3(vec3(pos.xz*2.2, 3.0)));
+      float patch = smoothstep(0.36, 0.46, fbm3(vec3(pos.xz*1.6, 3.0)));
       float hgt = fbm3(vec3(pos.xz*1.3, 6.0));
       float hgx = fbm3(vec3((pos.xz+vec2(0.03,0.0))*1.3, 6.0));
       float hgz = fbm3(vec3((pos.xz+vec2(0.0,0.03))*1.3, 6.0));
-      float hs = clamp(0.85 + 9.0*((hgx-hgt)*0.6 - (hgz-hgt)*0.75), 0.45, 1.25);
-      vec2 cid = floor(gs), cf = fract(gs) - 0.5;
-      vec2 jit = vec2(hash2(cid), hash2(cid+7.3)) - 0.5;
-      float tsz = 0.22 + 0.16*hash2(cid+4.4);
-      vec2 tc = cf - jit*0.45;
-      float on = step(0.22, hash2(cid+2.1)) * patch;
-      float tr = smoothstep(tsz, tsz*0.55, length(tc)) * on;
-      float shd = smoothstep(tsz*1.1, tsz*0.5, length(tc - vec2(0.17, 0.2))) * on * (1.0 - tr);
+      float hs = clamp(0.95 + 6.0*((hgx-hgt)*0.6 - (hgz-hgt)*0.75), 0.72, 1.12);
+      vec2 cid0 = floor(gs);
+      float tr = 0.0, shd = 0.0, tv = 1.0;
+      for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+        vec2 cid = cid0 + vec2(float(i), float(j));
+        float on = step(0.15, hash2(cid+2.1)) * step(0.5, fbm3(vec3(cid/70.0*1.6, 3.0)) + 0.14);
+        if (on < 0.5) continue;
+        vec2 tc = gs - cid - 0.5 - (vec2(hash2(cid), hash2(cid+7.3)) - 0.5)*0.7;
+        float tsz = 0.3 + 0.22*hash2(cid+4.4);
+        float d = length(tc);
+        float a = atan(tc.y, tc.x);
+        d *= 1.0 + 0.12*sin(a*7.0 + hash2(cid)*6.0);          // star-shaped conifer crown
+        float tt = smoothstep(tsz, tsz*0.7, d);
+        if (tt > tr) { tr = tt; tv = 0.75 + 0.5*hash2(cid+9.0) - 0.35*smoothstep(tsz, 0.0, length(tc + vec2(0.06,0.08))); }
+        shd = max(shd, smoothstep(tsz*1.15, tsz*0.6, length(tc - vec2(0.2, 0.24))));
+      }
+      shd *= 1.0 - tr;
       float px = t*0.0008*70.0;                    // tree cells per pixel
       float far = smoothstep(0.12, 0.45, px);
-      tr = mix(tr, patch*0.5, far); shd = mix(shd, patch*0.25, far);
-      vec3 snowc = vec3(0.96,0.97,1.0)*hs*(1.0 - 0.35*shd);
-      vec3 tree = vec3(0.10,0.17,0.13)*(0.8+0.4*hs);
+      tr = mix(tr, patch*0.6, far); shd = mix(shd, patch*0.2, far);
+      vec3 snowc = vec3(0.97,0.98,1.0)*hs*(1.0 - 0.4*shd) + vec3(-0.08,-0.03,0.04)*shd;
+      vec3 tree = vec3(0.08,0.17,0.11)*(0.75+0.5*hs)*tv;
       vec3 sAlb = mix(snowc, tree, tr);
       sAlb = mix(sAlb, vec3(0.45,0.5,0.55)*hs, smoothstep(0.72, 0.8, hgt)*0.5); // rocky ridges
       alb = mix(alb, sAlb, u_snow);
     }
     float dif = clamp(dot(n, L)*0.6 + 0.55, 0.0, 1.0);
+    dif = mix(dif, 1.12, 0.6*u_snow);
     col = alb*dif;
     float mu = clamp(dot(n, -rd), 0.0, 1.0);
     float haze = clamp(0.1 + 0.9*pow(1.0 - mu, 3.0) + 0.25*(1.0-dark)*(1.0-mu), 0.0, 1.0);
-    col = mix(col, vec3(0.62,0.76,0.95), haze);
+    col = mix(col, vec3(0.62,0.76,0.95), haze*mix(1.0, 0.45, u_snow));
   } else {
     vec3 hor = vec3(0.70,0.82,0.96), zen = vec3(0.22,0.43,0.80);
     float tc = max(-b, 0.0);

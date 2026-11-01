@@ -1,0 +1,22 @@
+# Sources / math — 030 fall into an active volcano
+
+- **Lava is ~2.6-2.9 × denser than you.** Degassed basaltic rock/melt ≈ 2.55-2.8 g/cm³ (dense-rock equivalent 2.75 g/cm³, Lesher & Spera 2015, used by USGS; modelled basalt melt 2.55 g/cm³); popular-science write-ups quote ~3,100 kg/m³. Human body ≈ 0.98-1.07 g/cm³. 2.75 / 1.0 ≈ 2.75 → "nearly three times denser". By Archimedes a free-floating body would sit only ~37 % submerged (1/2.7), and basalt is ~10²-10³ Pa·s (10⁵-10⁶ × water), so you land on the surface instead of sinking like in films.
+  - https://www.sciencebase.gov/catalog/folder/65e8917ad34ed433ba127bc0 (USGS dataset, DRE 2.75 g/cm³)
+  - https://pmc.ncbi.nlm.nih.gov/articles/PMC9731987 (basalt melt 2.55 g/cm³)
+  - https://www.sfu.ca/earth-sciences/courses/ugrad/webpages/OLD/421/Lect_3_Effusive.pdf (basalt viscosity 10²-10³ Pa·s; water 10⁻³)
+  - https://legacy.geog.ucsb.edu/the-right-and-wrong-way-to-die-when-you-fall-into-lava/ (lava ~3× water density, you wouldn't sink)
+  - Caveat (not in the script): the top of Kīlauea's 2008-2018 lava lake was gas-rich foam, ~0.95 ± 0.3 g/cm³ (https://pubs.usgs.gov/publication/70047947), so "you'd land on top" is about degassed lava/crust, not every frothy lake surface.
+- **Crust and 1,100 °C cracks.** Erta Ale thermal imaging: crust plates ~300-500 °C separated by incandescent cracks ~700-1,070 °C; the lake is often > 90 % crusted. Nyiragongo lake ~1,150 °C (2,100 °F, reported). Basalt erupts at ~1,100-1,200 °C.
+  - https://www.earth-prints.org/handle/2122/5536 (Spampinato et al. 2008, Erta Ale)
+  - https://www.science.gov/topicpages/a/ale+lava+lake.html (> 90 % crust)
+  - https://www.insidehook.com/culture/mount-nyiragongos-lava-lake-seen-believed/amp (Nyiragongo > 2,100 °F)
+- **"Eighty times what your skin can stand."** Black-body radiance σT⁴ at 1,100 °C (1,373 K) = 5.67e-8 × 1373⁴ ≈ 202 kW/m² (python). Skin tenability limit for radiant heat ≈ 2.5 kW/m² → 202 / 2.5 ≈ 81×. (Crust at 400 °C ≈ 11.6 kW/m² ≈ 4.7×.)
+  - https://www.scdf.gov.sg/fire-safety-services-listing/cpfprts-2022/table-of-content/chapter-7-mechanical-ventilation-smoke-control-systems/annex-7a---tenable-environment
+  - https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication1102.pdf
+- **Gases get you first.** SO₂ irritates eyes, throat and airways; CO₂ is heavier than air and pools in low ground — > 15-30 % CO₂ quickly causes unconsciousness and death (e.g. 3 ski patrollers at Mammoth Mountain, 2006).
+  - https://www.usgs.gov/natural-hazards/volcano-hazards/volcanic-gases
+  - https://www.usgs.gov/programs/vhp/volcanic-gases-can-be-harmful-health-vegetation-and-infrastructure
+- **Nyiragongo lava lake sits hundreds of metres below the rim.** Summit crater 1.2 km (GVP) to ~2 km wide; lake depth ~600 m before 1977; a later lake formed ~250 m below the 1994 level.
+  - https://volcano.si.edu/volcano.cfm?vn=223030
+  - https://en.wikipedia.org/wiki/Mount_Nyiragongo
+- Visuals are stylized: crater depth, plume and figure scale are artistic; the figure is never shown being harmed (science-first, not gory).
