@@ -30,6 +30,10 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - 📦 Stok kuralı: `posts/media.json`'da yüklü ama paylaşılmamış en az 3 video her zaman hazır olmalı. Altına düşerse yeni üretim her şeyin önüne geçer.
 - Seslendirme (Chatterbox) render ile aynı anda çok yavaş: `bash scripts/pause_render.sh` → TTS → `rm engine/PAUSED; bash scripts/resume.sh`.
 
+## 🤝 Pluginler (sahibin isteği)
+- **Ruflo Ai Team** plugini (beceriler, komutlar, ajanlar) oturumda yüklüyse iş bölme, takip ve hafıza için her turda kullan.
+- **RuFlo Federation** araçlarını (mcp__RuFlo_Federation__*) KULLANMA: herkese açık bir ağ, proje bilgisi oraya gitmemeli.
+
 ## 1. Araştırma ve senaryo
 - WebSearch ile 4-6 sayısal gerçek bul; `episodes/<..>/sources.md` dosyasına kaynak linkleriyle yaz.
 - Senaryo 85-105 kelime (≈30-40 sn). Yapı: kanca sorusu (0-3 sn) → normal an → olay → 3-5 tırmanan vuruş
