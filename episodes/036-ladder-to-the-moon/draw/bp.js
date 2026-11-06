@@ -319,11 +319,11 @@ if (SC === 0 || SC === 1) {
     ctx.strokeRect(-6, -30, 12, 20); ctx.strokeRect(-6, 10, 12, 20); ctx.restore();
   }
   ctx.restore();
-  const ky = kk(1.2, 2.0);
+  const ky = kk(0.8, 1.4);
   if (ky > 0) { ctx.save(); ctx.globalAlpha *= ky; const yy = ey - rG; ctx.strokeStyle = CY; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ex, yy, 14 + 6 * Math.sin(t * 6), 0, TAU); ctx.stroke(); circ(ex, yy, 6, CY); ctx.restore(); }
   lead(ex + 10, ey - rG, 760, 690, "YOU · YEAR 2", "20,200 KM UP", ky, CY);
-  lead(ex + rG * Math.cos(-2.5), ey + rG * Math.sin(-2.5), 150, 620, "GPS", "MEO · 12 H ORBIT", kk(1.0, 1.8));
-  lead(ex + rS * Math.cos(-0.5), ey + rS * Math.sin(-0.5), 900, 1180, "GEO", "35,786 KM", kk(1.4, 2.2));
+  lead(ex + rG * Math.cos(-2.5), ey + rG * Math.sin(-2.5), 150, 620, "GPS", "MEO · 12 H ORBIT", kk(0.6, 1.2));
+  lead(ex + rS * Math.cos(-0.5), ey + rS * Math.sin(-0.5), 900, 1180, "GEO", "35,786 KM", kk(1.0, 1.6));
   chromeBegin(); chrome();
   hero("T + 2 YEARS", "20,200", "KM", "GPS SATELLITE ALTITUDE", cl(lt / 0.3), { size: 168 });
   ctx.restore();

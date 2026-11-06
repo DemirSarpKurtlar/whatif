@@ -11,7 +11,7 @@ export default {
   capY: 1420,
   hot: ["moon", "ladder", "space", "float", "nothing", "snaps", "station"],
   title: { text: "What if you climbed a ladder to the Moon?", end: 2.05, hot: ["ladder", "moon"] },
-  hook: { scene: 5, at: 0.3 },
+  hook: { scene: 11, at: 0.3 }, // scene 11 = ISS pass without the altitude cell, hidden behind the end card
   cover: 13.75,
   scenes: [
     sc(0, 2.05, 0, { h: 0 }),
@@ -24,7 +24,8 @@ export default {
     sc(18.1, 22.45, 7, { alt: 1, f: 2.2 }),
     sc(22.45, 27.2, 8, { th: [[0, -1.3], [0.5, -1.2], [3.25, 0], [4.3, 3.3], [4.75, 3.4]], hh: 1.3, dp: 3.0, da: 3.9 }),
     sc(27.2, 28.55, 9, { snap: 0.4 }),
-    sc(28.55, 30.75, 10, { rej: 1.5 }),
+    sc(28.55, 31.2, 10, { rej: 1.5 }),
+    sc(31.2, 34.6, 5, { iss: 0.05 }),
   ],
   elapsed: { start: 7.95, end: 22.45, label: "ALTITUDE", unit: " km", dec: 0, note: "1 RUNG / S",
     points: [[7.95, 10.5], [9.2, 11], [10.62, 100], [12.46, 408], [16.32, 20200], [18.7, 35786], [22.45, 35786]] },
@@ -49,6 +50,6 @@ export default {
     { at: 6.46, dur: 1.4, text: "40 YEARS", tag: "NON-STOP", y: 1180, size: 150, color: "#E8F4FF", tagBg: "#7FD3FF", tagFg: "#0B2653" },
     { at: 27.6, dur: 0.85, text: "SNAP", y: 640, size: 190, color: "#FF5E5E" },
   ],
-  flashes: [{ at: 11.6, dur: 0.25, color: "#BFE9FF" }, { at: 27.6, dur: 0.3, color: "#FFD9D9" }],
-  endCard: { at: 30.75, title: "What if you climbed a ladder to the Moon?", cta: "HOW FAR WOULD YOU CLIMB?", small: ["NOT TO SCALE · SIMPLIFIED PHYSICS", "FOLLOW FOR MORE WHAT IFS"] },
+  flashes: [{ at: 11.6, dur: 0.2, color: "#BFE9FF" }, { at: 27.6, dur: 0.3, color: "#FFD9D9" }],
+  endCard: { at: 30.75, series: "LADDER TO THE MOON · DWG L-1", title: "How far would you go?", cta: "WHERE WOULD YOU STOP?", small: ["11 KM · 100 KM · 408 KM · 35,786 KM?", "NOT TO SCALE · SIMPLIFIED PHYSICS", "FOLLOW FOR MORE WHAT IFS"] },
 };

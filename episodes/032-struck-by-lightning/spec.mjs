@@ -62,6 +62,7 @@ export default {
     [23.24, 24.76, "And 9 in 10 people survive."],
     [25.26, 27.08, "Roy Sullivan was struck seven times."],
     [27.32, 28.9, "If you hear thunder, you're in range."],
+    [29.32, 30.8, "Would you still stand under that tree?"],
   ],
   bigs: [{ at: 11.82, dur: 1.4, text: "5× SUN", size: 190, color: "#FFD866" }, { at: 23.85, dur: 1.1, text: "9 IN 10", size: 190, color: "#7CE3B8" }, { at: 26.3, dur: 1.0, text: "7×", size: 240 }],
   flashes: [{ at: 5.14, dur: 0.45, color: "#E6ECFF" }, { at: 20.11, dur: 0.35, color: "#E6ECFF" }, { at: 27.68, dur: 0.2, color: "#E6ECFF" }],
