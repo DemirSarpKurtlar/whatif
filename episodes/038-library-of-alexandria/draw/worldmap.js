@@ -173,3 +173,44 @@ function finish(g, edge = 0.55, spl = 1) {
   if (spl) { splatter(g, 60, 1820, 120, 14, 3, INK.ink, 0.7); splatter(g, 1030, 140, 90, 10, 8, INK.ink, 0.6); }
   g.restore();
 }
+frameIn(p);
+const dr = p.draw ?? 1, lose = p.lose || 0;
+const bg = cached("map_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
+  vwash(g, -200, H + 200, "36,34,32", 0.85, 0.95);
+  blob(g, 540, 760, 700, 520, "120,114,104", 0.5);
+});
+ctx.drawImage(bg, -200, -200);
+const X = 80, Y = 440, MW = 920, MH = 640;
+// parchment
+ctx.save(); ctx.fillStyle = "#E4DCC7"; ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = 40; ctx.fillRect(X, Y, MW, MH); ctx.restore();
+ctx.save(); ctx.beginPath(); ctx.rect(X, Y, MW, MH); ctx.clip(); ctx.globalAlpha = 0.5; ctx.drawImage(paperTex(), X - 100, Y - 200); ctx.globalAlpha = 1;
+blob(ctx, X + 200, Y + 400, 300, 200, "150,130,90", 0.25); blob(ctx, X + 700, Y + 120, 260, 160, "150,130,90", 0.2);
+// gold grid (parallels & meridians), main parallel through Rhodes, meridian through Alexandria
+ctx.strokeStyle = `rgba(185,146,58,${0.75 * cl(dr * 2)})`; ctx.lineWidth = 2;
+[150, 240, 310, 420].forEach((y) => { ctx.beginPath(); ctx.moveTo(X + 20, Y + y); ctx.lineTo(X + 20 + (MW - 40) * cl(dr * 1.6), Y + y); ctx.stroke(); });
+[180, 360, 510, 690].forEach((x) => { ctx.beginPath(); ctx.moveTo(X + x, Y + 20); ctx.lineTo(X + x, Y + 20 + (MH - 40) * cl(dr * 1.6)); ctx.stroke(); });
+const M = (a) => a.map((v, i) => i % 2 ? Y + v * MH / 560 : X + v * MW / 900);
+const lands = [
+  [40, 110, 160, 70, 300, 80, 420, 50, 560, 90, 600, 160, 520, 200, 470, 250, 440, 205, 390, 255, 340, 200, 260, 215, 190, 190, 110, 235, 60, 200, 40, 110],
+  [60, 320, 200, 295, 330, 312, 470, 300, 565, 330, 610, 370, 630, 480, 410, 530, 160, 512, 55, 430, 60, 320],
+  [610, 100, 760, 60, 880, 80, 885, 300, 870, 420, 800, 440, 760, 470, 700, 380, 665, 335, 640, 300, 625, 230, 610, 160],
+];
+lands.forEach((L, i) => { const k = cl(dr * 1.3 - i * 0.15); if (k <= 0) return;
+  ctx.save(); ctx.globalAlpha = 0.18 * k; ctx.fillStyle = "#5A544A"; ctx.beginPath(); const P = M(L); ctx.moveTo(P[0], P[1]); for (let j = 2; j < P.length; j += 2) ctx.lineTo(P[j], P[j + 1]); ctx.fill(); ctx.restore();
+  brush(ctx, M(L), 11, INK.ink, 0.92, i * 9 + 3, 0.35, k); });
+// sea hatching (dry brush) in the Mediterranean
+for (let i = 0; i < 5; i++) { const y = 262 + i * 9; brush(ctx, M([120 + i * 30, y, 300 + i * 40, y + 2, 520 - i * 20, y]), 3, INK.ink, 0.35 * cl(dr * 2 - 0.6), i + 40, 0.6); }
+
+// rivers (Nile) and Alexandria marker
+if (dr > 0.7) { brush(ctx, M([600, 360, 590, 420, 605, 470, 595, 520]), 4, INK.ink, 0.8, 4, 0.2, cl((dr - 0.7) * 3.3)); }
+if (dr > 0.85) { const a = cl((dr - 0.85) * 6.6); const ax = X + 600, ay = Y + 335 * MH / 560; ctx.globalAlpha = a; glow(ctx, ax, ay, 70, 0.8); circ2(ctx, ax, ay, 11, "#F2D68A"); circ2(ctx, ax, ay, 5, "#7E5E19"); ctx.globalAlpha = 1; }
+// ink flood over the map
+if (lose > 0) { for (let i = 0; i < 12; i++) { const ex = X + (i % 2 ? MW + 40 : -40), ey = Y + rnd(i * 3.1) * MH, r = lose * (300 + rnd(i * 7) * 500); blob(ctx, ex, ey, r, r * 0.8, "22,21,19", 0.95); }
+  vwash(ctx, Y, Y + MH, "22,21,19", 0.35 * lose, 0.35 * lose); }
+ctx.restore();
+// Eratosthenes' dividers (gold), resting on the map
+if (dr > 0.3) { ctx.save(); ctx.globalAlpha = cl((dr - 0.3) * 3); ctx.translate(840, 1010); ctx.scale(0.62, 0.62); ctx.rotate(-0.35 + 0.04 * Math.sin(t)); goldShape(ctx, (q) => { q.moveTo(-8, -330); q.lineTo(8, -330); q.lineTo(-60, 0); q.lineTo(-74, 0); q.closePath(); q.moveTo(-8, -330); q.lineTo(8, -330); q.lineTo(80, -10); q.lineTo(66, -10); q.closePath(); }, 18); circ2(ctx, 0, -330, 16, INK.ink); ctx.restore(); }
+// rollers
+[X - 22, X + MW + 22].forEach((x) => { ctx.fillStyle = INK.ink; ctx.beginPath(); ctx.roundRect(x - 26, Y - 30, 52, MH + 60, 20); ctx.fill();
+  goldShape(ctx, (q) => { q.ellipse(x, Y - 44, 22, 16, 0, 0, TAU); q.ellipse(x, Y + MH + 44, 22, 16, 0, 0, TAU); }, 16); });
+finish(ctx);
