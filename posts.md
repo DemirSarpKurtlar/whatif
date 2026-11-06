@@ -13,3 +13,4 @@
 | 2026-11-01 21:09 | 013-magnetic-field-off | https://www.instagram.com/reel/DfNqckkEzc6/ |
 | 2026-11-06 14:29 | 022-fall-into-black-hole | https://www.instagram.com/reel/DfZ0m5aEskM/ |
 | 2026-11-06 14:31 | 023-zombie-ep1 | https://www.instagram.com/reel/DfZ04bok9DG/ |
+| 2026-11-06 15:45 | 024-gravity-doubled | https://www.instagram.com/reel/DfZ9XRSDqra/ |
