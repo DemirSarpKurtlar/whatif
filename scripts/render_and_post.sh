@@ -5,7 +5,12 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 slot="${1:-0}"
-python3 -c "import numpy, scipy" 2>/dev/null || pip install -q numpy scipy 2>/dev/null || pip install -q --break-system-packages numpy scipy
+if ! python3 -c "import numpy, scipy" 2>/dev/null; then
+  echo "python: $(command -v python3) $(python3 -V 2>&1)"
+  python3 -m pip install -q numpy scipy 2>&1 | tail -3 || true
+  python3 -c "import numpy, scipy" 2>/dev/null || python3 -m pip install -q --break-system-packages numpy scipy 2>&1 | tail -3 || true
+  python3 -c "import numpy, scipy" 2>/dev/null || python3 -m pip install -q --user --break-system-packages numpy scipy 2>&1 | tail -3 || true
+fi
 python3 -c "import numpy, scipy" || { echo "numpy/scipy missing and could not be installed"; exit 1; }
 python3 scripts/ig_publish.py --posted-titles > /tmp/ig_posted_titles.txt || exit 1
 pending=()
