@@ -31,7 +31,7 @@ export default {
       hud: { at: 0.6, cat: "c. 60 AD · HERO OF ALEXANDRIA", label: "THE AEOLIPILE", value: "Steam power", sub: "A DEMO, NEVER PUT TO WORK", dot: G } },
     { a: 30.55, b: 32.85, draw: "leap", p: { arc: [[0, 0], [0.25, 0], [1.7, 1]], ghost: [[0, 0], [1.5, 0], [1.9, 1]], zoom: [1.0, 1.05] },
       hud: { at: 0.1, cat: "SPECULATION", label: "AN OPEN QUESTION", value: "+1,000 years?", sub: "MANY HISTORIANS SAY IT'S NOT THAT SIMPLE", dot: G, vcol: GL } },
-    { a: 32.85, b: 34.7, draw: "rescue", p: { run: [0.05, 0.6], zoom: [1.0, 1.05] } },
+    { a: 32.85, b: 34.7, draw: "rescue", p: { run: [0.35, 0.95], zoom: [1.0, 1.05] } },
   ],
   captions: [
     [3.38, 4.1, "Here's the twist."], [4.44, 5.9, "It never burned in one night."],

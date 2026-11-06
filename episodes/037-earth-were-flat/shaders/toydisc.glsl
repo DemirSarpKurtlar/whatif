@@ -21,7 +21,8 @@ float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0 - 2.0*f);
 float landMask(vec2 q){
   float n = vn(q*0.85 + vec2(3.1,1.7))*0.62 + vn(q*2.0 + vec2(7.3,2.2))*0.38;
   float r = length(q);
-  return n - 0.47 + 0.12*smoothstep(1.3,0.0,r) - 0.35*smoothstep(2.05,2.6,r);
+  float cape = smoothstep(0.42, 0.12, abs(q.y))*smoothstep(1.2, 1.7, q.x);   // land strip along +x to the rim (walker's path)
+  return n - 0.47 + 0.12*smoothstep(1.3,0.0,r) - 0.35*smoothstep(2.05,2.6,r) + 0.6*cape;
 }
 float sdRoundCone(vec3 p, vec3 a, vec3 b, float r1, float r2){
   vec3 ba=b-a; float l2=dot(ba,ba); float rr=r1-r2; float a2=l2-rr*rr; float il2=1.0/l2;
@@ -68,9 +69,13 @@ vec2 walker(vec3 p){
   res = opU(res, vec2(scarf, 13.0));
   float head = sdSphere(b - vec3(0.0,0.97,0.0), 0.24);
   res = opU(res, vec2(head, 11.0));
-  float hair = max(sdSphere(b - vec3(-0.03,1.02,0.0), 0.245), -(b.x - 0.06) + (b.y - 1.0)*0.4);
+  float hcut = (b.x - 0.02) - (b.y - 0.98)*0.9;
+  float hh = sdSphere(b - vec3(-0.03,1.0,0.0), 0.255);
+  float hair = -smin(-hh, -hcut, 0.04);
   hair = min(hair, sdSphere(b - vec3(-0.04,1.24,0.0), 0.08));
   res = opU(res, vec2(hair, 14.0));
+  vec3 eb = vec3(b.x, b.y, abs(b.z));
+  res = opU(res, vec2(sdSphere(eb - vec3(0.215,0.97,0.085), 0.034), 15.0));
   res.x *= WS;
   return res;
 }
@@ -187,8 +192,7 @@ vec2 map(vec3 p){
   float ds = 1.0 - smoothstep(0.0, 0.3, u_morph);
   if (ds > 0.01) {
     res = opU(res, deco(p, ds));
-    vec2 c = clouds(p / ds); c.x *= ds;
-    res = opU(res, c);
+    if (u_ncl < 0.5) { vec2 c = clouds(p / ds); c.x *= ds; res = opU(res, c); }
   }
   res = opU(res, vec2(arrows(p), 8.0));
   if (u_pv > 0.01) res = opU(res, walker(p));
@@ -251,7 +255,8 @@ vec3 albedo(float m, vec3 p, vec3 n, out float gloss){
   if (m < 11.5) return vec3(0.96,0.79,0.64);
   if (m < 12.5) return vec3(0.22,0.27,0.45);
   if (m < 13.5) return vec3(0.91,0.33,0.24);
-  return vec3(0.42,0.27,0.18);
+  if (m < 14.5) return vec3(0.42,0.27,0.18);
+  return vec3(0.08,0.07,0.1);
 }
 
 vec3 bgCol(vec3 rd, float blur){
