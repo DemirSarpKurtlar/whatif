@@ -275,8 +275,8 @@ vec3 bgCol(vec3 rd, float blur){
   vec3 col = mix(sky, sp, u_space);
   if (u_sun > 0.01) {
     float a = dot(rd, sunDir());
-    col += vec3(1.0,0.85,0.55)*pow(max(a, 0.0), 40.0)*0.6*u_sun;
-    col = mix(col, vec3(1.0,0.93,0.70), smoothstep(0.9965, 0.9975, a)*u_sun);
+    col += vec3(1.0,0.78,0.45)*(pow(max(a, 0.0), 300.0)*0.5 + pow(max(a, 0.0), 30.0)*0.12)*u_sun;
+    col = mix(col, vec3(1.0,0.86,0.45), smoothstep(0.9984 - blur*0.05, 0.9989, a)*u_sun);
   }
   return col;
 }
@@ -357,7 +357,7 @@ vec3 render(vec2 uv, float B){
     col = litCol(pos, n, rd, mat, t, mix(10.0, 2.5, bnorm), true);
   }
   // soft silhouette halo of a nearby object we passed in front of (cone-traced defocus)
-  if (mr < 1.0 && mt < t - 0.03) {
+  if (mr < 1.0 && mt < t - 0.03 && B > 0.002 && (mat < 0.0 || abs(mm - mat) > 0.01)) {
     vec3 pm = ro + rd*mt;
     gBlur = cocK*mt;
     vec3 n2 = nrm(pm, clamp(0.5*cocK*mt, 0.002, 0.02));

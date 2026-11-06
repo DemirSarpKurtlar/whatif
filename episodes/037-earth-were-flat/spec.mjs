@@ -31,7 +31,7 @@ export default {
     { a: 6.45, b: 9.05, glsl: "toydisc", p: { ...D, ...WK([1.15, 1.95], [0.15, 0.5]), cd: [3.0, 2.8], cpit: 0.22, tsh: 0.034 },
       hud: { cat: "WALKING OUTWARD", label: "", value: "10°", sub: "GRAVITY LEANS TOWARD THE CENTRE", dot: "#4FB3E8", counter: { at: 0.3, dur: 2.0, from: 10, to: 28, suffix: "° tilt", easing: "ease-in-out" } } },
     // 4 near the rim: a sixty-degree slope (hook)
-    { a: 9.05, b: 11.45, glsl: "toydisc", p: { ...D, ...WK([2.55, 2.72], [0.9, 1.02]), arw: 1, cd: [3.0, 2.8], cpit: 0.16, tsh: 0.034 },
+    { a: 9.05, b: 11.45, glsl: "toydisc", p: { ...D, ...WK([2.55, 2.72], [0.9, 1.02]), cd: [3.0, 2.8], cpit: 0.16, tsh: 0.034 },
       hud: { at: 0.05, cat: "NEAR THE RIM", value: "Uphill", sub: "FLAT GROUND, STEEP CLIMB", dot: "#FF5A4E" } },
     // 5 the air slides downhill and pools over the middle
     { a: 11.45, b: 13.8, glsl: "toydisc", p: { ...D, air: 1, pool: [[0, 0], [0.4, 0], [2.2, 1]], cslide: [[0, 0], [0.4, 0], [2.2, 1]], cd: [9.4, 8.6], cpit: [0.3, 0.26], cyaw: [0.9, 1.05], ty: 0.2 },
@@ -74,7 +74,7 @@ export default {
     [26.8, 28.35, "Would you race to the edge first?"],
   ],
   bigs: [
-    { at: 10.4, dur: 1.0, text: "60°", tag: "SLOPE", y: 600, color: "#FFD23F" },
+    { at: 10.4, dur: 1.0, text: "60°", tag: "SLOPE", y: 520, x: 700, color: "#FFD23F" },
     { at: 19.24, dur: 0.95, text: "0", tag: "TIME ZONES", y: 600, color: "#FFD23F" },
     { at: 22.68, dur: 1.3, text: "1 HOUR", tag: "TO COLLAPSE", y: 600, size: 170, color: "#FF5A4E" },
   ],
