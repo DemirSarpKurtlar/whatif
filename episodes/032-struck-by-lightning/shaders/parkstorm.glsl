@@ -172,7 +172,7 @@ vec2 segGlow(vec3 ro, vec3 rd, vec3 a, vec3 b, float hitT, float wk){
   float d = raySeg(ro, rd, a, b, tr);
   if (tr > hitT + 0.3) return vec2(0.0);
   float cw = max(0.0024*tr, 0.045)*wk*(1.0+0.8*u_heat);
-  float hw = max(0.028*tr, 0.28)*(1.0+1.6*u_heat);
+  float hw = max(0.028*tr, 0.28)*(1.0+0.7*u_heat);
   return vec2(smoothstep(cw, cw*0.25, d), exp(-d/hw));
 }
 vec3 boltPt(vec3 T, vec3 P, float f, float k, float seed, float sl){
@@ -338,7 +338,7 @@ vec4 pixel(vec2 uv){
   }
   vec2 lg = lightning(ro, rd, hitT);
   vec3 halo = vec3(0.55,0.6,1.0)*(1.0+0.3*u_heat);
-  col += halo*min(lg.y, 2.5)*0.55;
+  col += halo*min(lg.y, 1.8)*0.5;
   col = mix(col, vec3(1.0, 0.98, 1.0), clamp(lg.x*(1.15+0.4*u_heat), 0.0, 1.0));
   // rain streaks (screen space, slanted, 3 layers)
   if (u_rain > 0.0) {

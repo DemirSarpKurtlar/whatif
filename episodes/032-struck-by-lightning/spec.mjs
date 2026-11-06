@@ -23,7 +23,7 @@ export default {
     { a: 5.08, b: 8.86, glsl: "parkstorm", p: { ...ST, hair: 1.1, tilt: [1.0, 1.8], bolt: [[0, 0], [0.1, 1]], flash: [[0, 0], [0.08, 1.0], [0.8, 0.45]], shake: [[0, 0], [0.08, 1.0], [1.2, 0.25]], heat: [0.0, 0.3] },
       hud: { at: 1.68, cat: "ONE LIGHTNING BOLT", label: "VOLTAGE", value: "", sub: "≈ 2.5 MILLION TIMES A WALL SOCKET", vcol: "#BFD4FF", dot: "#7FA8FF", counter: { at: 0.2, dur: 1.0, from: 0, to: 300, suffix: " million V", easing: "ease-out" } } },
     // 3 the heat: look up the channel
-    { a: 8.86, b: 14.04, glsl: "parkstorm", p: { ...ST, hair: 1.1, cam: [0.8, 0.95], tilt: [1.8, 2.6], zoom: [0, 0.35], bolt: 1, flash: 0.45, heat: [0.3, 1.0], shake: 0.2 },
+    { a: 8.86, b: 14.04, glsl: "parkstorm", p: { ...ST, hair: 1.1, cam: 0.8, tilt: [1.8, 2.1], zoom: [0, 0.1], bolt: 1, flash: 0.4, heat: [0.3, 1.0], shake: 0.2 },
       hud: { at: 1.33, cat: "THE AIR AROUND THE BOLT", label: "TEMPERATURE", value: "", sub: "5× HOTTER THAN THE SUN'S SURFACE", vcol: "#FFD866", counter: { at: 0.1, dur: 1.0, from: 0, to: 30000, suffix: " °C", easing: "ease-out" } } },
     // 4 the current flashes over the skin
     { a: 14.04, b: 16.88, glsl: "parkstorm", p: { ...ST, hair: [1.1, 0.6], tilt: [1.2, 0.6], bolt: [[0, 1], [2.08, 0.8], [2.48, 0]], heat: [1.0, 0.4], flash: [0.45, 0.1], glow: [[0, 0.2], [0.4, 1.0], [2.38, 0.9], [2.84, 0.3]], shake: 0.15 },
@@ -40,7 +40,7 @@ export default {
     { a: 25.2, b: 27.26, glsl: "parkstorm", p: { ...ST, you: 0, cam: 0.3, rise: 0.3, tilt: 3.0, yaw: 2.0, bx: 9.0, by: 0, bz: -34, bolt: [[0.1, 0], [0.14, 1], [0.25, 0.15], [0.35, 0], [0.37, 0], [0.41, 1], [0.51, 0.15], [0.62, 0], [0.63, 0], [0.67, 1], [0.78, 0.15], [0.88, 0], [0.9, 0], [0.94, 1], [1.04, 0.15], [1.15, 0], [1.16, 0], [1.2, 1], [1.31, 0.15], [1.42, 0], [1.43, 0], [1.47, 1], [1.57, 0.15], [1.68, 0], [1.69, 0], [1.73, 1], [1.84, 0.15], [1.95, 0]], seed: [[0.09, 2], [0.36, 2], [0.36, 3], [0.63, 3], [0.62, 4], [0.89, 4], [0.89, 5], [1.16, 5], [1.15, 6], [1.42, 6], [1.42, 7], [1.69, 7], [1.68, 8], [1.95, 8]], flash: [[0.1, 0.05], [0.14, 0.55], [0.34, 0.05], [0.37, 0.05], [0.41, 0.55], [0.6, 0.05], [0.63, 0.05], [0.67, 0.55], [0.87, 0.05], [0.9, 0.05], [0.94, 0.55], [1.14, 0.05], [1.16, 0.05], [1.2, 0.55], [1.4, 0.05], [1.43, 0.05], [1.47, 0.55], [1.67, 0.05], [1.69, 0.05], [1.73, 0.55], [1.93, 0.05]] },
       hud: { at: 0.1, cat: "PARK RANGER ROY SULLIVAN", label: "STRUCK BY LIGHTNING", value: "7 times", sub: "1942–1977 · SURVIVED ALL SEVEN", dot: "#F2C14E", vcol: "#FFD866" } },
     // 9 if you hear thunder, you're in range
-    { a: 27.26, b: 28.84, glsl: "parkstorm", p: { ...ST, you: 0, cam: [0.1, 0.3], rise: 0.6, tilt: 2.2, yaw: -3.0, bx: -30, by: 0, bz: -75, seed: 11, bolt: [[0, 0], [0.37, 0], [0.42, 1], [0.77, 0.1], [0.87, 0.9], [1.32, 0]], flash: [[0, 0], [0.42, 0.35], [1.32, 0.03]] },
+    { a: 27.26, b: 28.84, glsl: "parkstorm", p: { ...ST, you: 0, cam: [0.1, 0.3], rise: 0.6, tilt: 2.2, yaw: -3.0, bx: -6, by: 0, bz: -80, seed: 11, bolt: [[0, 0], [0.37, 0], [0.42, 1], [0.77, 0.1], [0.87, 0.9], [1.32, 0]], flash: [[0, 0], [0.42, 0.35], [1.32, 0.03]] },
       hud: { at: 0.1, cat: "IF YOU HEAR THUNDER", label: "LIGHTNING CAN STRIKE", value: "16 km away", sub: "10 MILES · GET INDOORS", vcol: "#FFD866" } },
     // 10 would you still stand under that tree?
     { a: 28.84, b: 33.8, glsl: "parkstorm", p: { ...TREE, cam: [0.25, 0.75], yaw: [-6.4, -5.9], tilt: [2.0, 1.6], rain: 1, flash: [[0, 0], [1.8, 0], [1.9, 0.4], [2.4, 0.02], [4.96, 0]] } },
