@@ -134,12 +134,11 @@ vec3 skyCol(vec3 rd){
   float cl = smoothstep(0.55,0.85,noise2(cp*1.3+vec2(gT*0.02,0.0))*0.65+noise2(cp*3.1)*0.35);
   c = mix(c, vec3(0.93,0.95,0.98), cl*0.55*smoothstep(0.02,0.2,rd.y));
   c *= 1.0 - 0.2*u_dim*smoothstep(-0.02,0.3,rd.y);
-  vec3 sd = normalize(vec3(0.12,0.6,-0.79));
+  vec3 sd = normalize(vec3(0.04,0.55,-0.83));
   float sa = max(dot(rd, sd), 0.0);
-  c += vec3(1.0,0.97,0.9)*(smoothstep(0.9993,0.9997,sa)*2.0 + pow(sa,60.0)*0.35 + pow(sa,6.0)*0.08);
-  // unfiltered UV: harsh violet glare around the sun
-  c += vec3(0.6,0.45,1.0)*u_uv*(pow(sa,24.0)*0.9 + pow(sa,5.0)*0.12);
-  c += vec3(1.0)*u_uv*pow(sa,200.0)*1.5;
+  c += vec3(1.0,0.97,0.9)*(smoothstep(0.99955,0.9998,sa)*1.6 + pow(sa,400.0)*0.6 + pow(sa,40.0)*0.18 + pow(sa,6.0)*0.05);
+  // unfiltered UV: violet halo around the sun
+  c += vec3(0.55,0.4,1.0)*u_uv*(pow(sa,60.0)*0.45 + pow(sa,8.0)*0.1);
   return c;
 }
 vec3 skyline(vec3 rd, vec3 base, out float hit){
@@ -221,6 +220,7 @@ vec4 pixel(vec2 uv){
       col = fc*fl*1.25;
     } else {
       col = shade(pos, n, rd, alb, L, key, skyF, bnc, gl);
+      if (id > 9.5 && id < 10.5 && pos.y > 0.86) col += vec3(1.0,0.32,0.06)*u_smoke*0.55*(0.4+0.6*noise2(pos.xz*14.0 + gT*0.8));
       if (id > 7.5 && id < 8.5) col += lin(vec3(0.85,0.92,1.0))*0.25*pow(clamp(1.0+dot(n,rd),0.0,1.0),2.0);
       // warm firelight on nearby objects
       float fl = 0.0;
@@ -295,20 +295,20 @@ vec4 pixel(vec2 uv){
       float hy = pp.y;
       if (hy > -0.1 && hy < 3.2) {
         float sway = 0.25*sin(hy*2.2 - gT*1.6 + float(i)) * clamp(hy,0.0,1.0);
-        float wid = 0.08 + 0.16*hy;
+        float wid = 0.1 + 0.22*hy;
         float d = abs(pp.x - sway + pp.z*0.0);
         float den = smoothstep(wid, 0.0, d) * smoothstep(3.2, 0.6, hy) * (0.55 + 0.45*noise2(vec2(pp.x*5.0, hy*3.0 - gT*2.5)));
-        col = mix(col, vec3(0.78,0.78,0.8), den*u_smoke*0.75);
+        col = mix(col, mix(vec3(0.42,0.42,0.45), vec3(0.62,0.62,0.65), clamp(hy/3.0,0.0,1.0)), den*u_smoke*0.85);
       }
     }
   }
   // UV overexposure: violet-white harshness
-  col = mix(col, col*vec3(1.1,1.06,1.18) + vec3(0.05,0.03,0.09), u_uv*0.3);
+  col = mix(col, col*vec3(1.04,1.0,1.12) + vec3(0.02,0.01,0.05), u_uv*0.3);
   if (u_uv > 0.0) {
     // invisible-made-visible: violet UV streaks raining down from the sun
     vec2 sp = vec2(uv.x*1.0 - uv.y*0.32, uv.y);
     float st = smoothstep(0.82, 0.98, noise2(vec2(sp.x*70.0, sp.y*1.5 - u_time*2.4)));
-    col += vec3(0.55,0.3,1.0)*st*u_uv*0.22;
+    col += vec3(0.55,0.3,1.0)*st*u_uv*0.18;
   }
   // ear-pop: pressure wave ring
   if (u_pop > 0.0) {

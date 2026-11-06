@@ -24,7 +24,7 @@ vec2 cars(vec3 p){
     float fi = float(i);
     float x0 = (i == 0 || i == 3) ? -2.2 : 2.2;
     if (i == 4) x0 = -2.2;
-    float z0 = -9.0 - fi*7.5 - u_drive*(0.8 + 0.3*hash2(vec2(fi, 6.0)));
+    float z0 = -5.0 - fi*7.5 - u_drive*(0.8 + 0.3*hash2(vec2(fi, 6.0)));
     vec3 q = p - vec3(x0, 0.75, z0);
     float bb = length(q) - 2.6;
     if (bb > 0.5) { res = opU(res, vec2(bb, 0.0)); continue; }
