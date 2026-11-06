@@ -177,7 +177,7 @@ frameIn(p);
 const arc = p.arc ?? 1, ghost = p.ghost ?? 1;
 const bg = cached("leap_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
   vwash(g, -200, 620, "36,34,32", 0.9, 0);
-  vwash(g, 1120, H + 200, "30,29,27", 0, 1);
+  vwash(g, 1110, 1260, "30,29,27", 0, 0.85); vwash(g, 1260, H + 200, "30,29,27", 0.85, 1);
   blob(g, 540, 880, 640, 380, "240,234,218", 0.35);
   // timeline brush stroke
   brush(g, [-60, 1000, 300, 996, 700, 1004, 1140, 998], 20, INK.ink, 0.95, 7, 0.35);

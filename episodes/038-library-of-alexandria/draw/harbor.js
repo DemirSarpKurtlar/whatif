@@ -185,7 +185,7 @@ const bg = cached("harbor_bg", W + 400, H + 400, (g) => { g.translate(200, 200);
   temple(g, 330, 1064, 0.32, 6, "rgba(70,66,60,0.95)"); g.beginPath(); g.arc(120, 990, 46, Math.PI, 0); g.fill();
   g.filter = "none";
   // sea body
-  vwash(g, 1060, H + 200, "58,56,52", 0.5, 0.95);
+  vwash(g, 1060, H + 200, "40,38,35", 0.7, 1);
   for (let i = 0; i < 14; i++) { const y = 1080 + Math.pow(i / 13, 1.6) * 820; const k = i / 13; brush(g, [-50, y, 300, y + 3, 700, y - 2, 1130, y + 2], 2 + 5 * k, "rgba(20,19,18,1)", 0.35 + 0.3 * k, i * 3 + 1, 0.8); }
 });
 ctx.drawImage(bg, -200, -200);
@@ -196,7 +196,7 @@ goldDisc(ctx, 430, sy, 205, 1);
 ctx.save(); ctx.globalAlpha = 0.75; brush(ctx, [120, sy - 40, 400, sy - 52, 760, sy - 44], 16, INK.ink, 0.8, 4, 0.7); brush(ctx, [260, sy + 70, 520, sy + 64, 640, sy + 70], 9, INK.ink, 0.7, 9, 0.8); ctx.restore();
 // horizon cut so sun sits behind the sea
 ctx.fillStyle = "rgba(78,75,70,1)"; ctx.fillRect(-300, 1064, W + 600, 30);
-vwash(ctx, 1064, 1300, "70,67,62", 1, 0.0);
+vwash(ctx, 1064, 1300, "62,59,55", 1, 0.0);
 // gold reflections
 for (let i = 0; i < 22; i++) { const y = 1080 + i * 18 + i * i * 0.9, wv = (180 - i * 5) * (0.6 + 0.4 * Math.sin(t * 2 + i * 1.7)); const x = 430 + Math.sin(i * 2.1 + t * 0.8) * 30;
   ctx.fillStyle = `rgba(242,214,138,${0.75 - i * 0.025})`; ctx.fillRect(x - wv / 2, y, wv, 3 + i * 0.25); }

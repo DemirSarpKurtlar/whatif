@@ -180,6 +180,7 @@ const bg = cached("shelves_bg", W + 1400, H + 1400, (g) => { g.translate(700, 70
 ctx.drawImage(bg, -700, -700);
 const fill = p.fill ?? 1;
 for (let r = -2; r < 4; r++) for (let c = -2; c < 3; c++) shelf(ctx, -40 + c * 420, -120 + r * 640, 380, 600, 4, 6, fill, 20 + r * 5 + c, 0.18);
+vwash(ctx, -400, 520, "18,17,16", 0.75, 0);
 // gold light from above
 ctx.save(); ctx.globalCompositeOperation = "screen"; glow(ctx, 540, 500, 900, 0.3); ctx.restore();
 goldDust(ctx, 50, -200, -200, 1500, 2300, 13, 0.8, 18);

@@ -18,6 +18,7 @@
 028-moon-without-spacesuit
 031-mega-tsunami-city
 034-fall-into-jupiter
+032-struck-by-lightning
 023-zombie-ep1
 035-internet-down-worldwide
 009-no-friction
