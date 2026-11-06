@@ -281,7 +281,7 @@ if (S === 0) { // ---------------- survey feed: a faint moving dot
     const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, R); rg.addColorStop(0, "rgba(255,59,59,0.55)"); rg.addColorStop(0.7, "rgba(255,59,59,0.22)"); rg.addColorStop(1, "rgba(255,59,59,0.0)");
     ctx.fillStyle = rg; ctx.fillRect(cx - R, cy - R, 2 * R, 2 * R);
     for (let k = 0; k < 3; k++) { const rr2 = R * (0.4 + 0.3 * k); ctx.strokeStyle = `rgba(255,59,59,${0.9 - k * 0.25})`; ctx.lineWidth = 3 - k * 0.6; ctx.beginPath(); ctx.arc(cx, cy, rr2, 0, TAU); ctx.stroke(); }
-    if (bt < 0.25) { ctx.fillStyle = `rgba(255,240,235,${0.8 * (1 - bt / 0.25)})`; ctx.fillRect(A.x, A.y, A.w, A.h); }
+    if (bt < 0.08) { ctx.fillStyle = `rgba(255,190,180,${0.55 * (1 - bt / 0.08)})`; ctx.fillRect(A.x, A.y, A.w, A.h); }
   }
   corners(cx - 26, cy - 26, 52, 52, 12, K.red, 3); circ(cx, cy, 5, K.red);
   ctx.restore();
@@ -326,7 +326,7 @@ if (S === 0) { // ---------------- survey feed: a faint moving dot
   M(out2 > 0.5 ? "NO HAZARD" : "MERITS ATTENTION", B.x + 780, B.y + 230, 18, out2 > 0.5 ? K.lab : K.amb, "left", 700, 1);
   M("HIGHEST ODDS NASA HAD EVER LOGGED FOR A ROCK THIS BIG", B.x + 34, B.y + 330, 19, K.lab, "left", 600, 0.5);
 } else if (S === 6) { // ---------------- deflection with years of warning
-  const k = eio((lt - (p.tPush || 0.5)) / 2.2);
+  const k = eio((lt - (p.tPush || 0.5)) / (p.kd || 2.2));
   panel(A.x, A.y, A.w, A.h, "DEF-13", "DEFLECTION PLAN · KINETIC IMPACTOR", k > 0.6 ? "MISS" : "PLANNING", k > 0.6 ? K.txt : K.amb, clk);
   const ex = A.x + 820, ey = A.y + 380, er = 70;
   circ(ex, ey, er, "#1C2329"); ctx.strokeStyle = "rgba(160,190,215,0.6)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ex, ey, er, 0, TAU); ctx.stroke();
@@ -373,7 +373,7 @@ if (S === 0) { // ---------------- survey feed: a faint moving dot
   M("BEFORE", B.x + 34, B.y + 100, 18, K.lab, "left", 700, 1); M("11 H 55 M", B.x + 34, B.y + 160, 50, post ? K.lab : K.txt, "left", 500);
   if (post) { line(B.x + 30, B.y + 145, B.x + 34 + 300 * ease(pk), B.y + 145, K.red, 3);
     ctx.globalAlpha = pk; M("AFTER", B.x + 34, B.y + 230, 18, K.lab, "left", 700, 1); M("11 H 23 M", B.x + 34, B.y + 290, 50, K.txt, "left", 500); ctx.globalAlpha = 1;
-    glow("−" + Math.round(32 * ease(pk)) + " MIN", B.x + 966, B.y + 260, 128, K.red, "right", 400, 26); }
+    if (pk > 0.04) glow("−" + Math.max(1, Math.round(32 * ease(pk))) + " MIN", B.x + 966, B.y + 260, 128, K.red, "right", 400, 26); }
 } else if (S === 8 || S === 9) { // ---------------- evacuation / full-wall alert
   const ev = cl(lt / Math.max(0.1, p.evDur || 4));
   panel(A.x, A.y, A.w, A.h, "EVC-17", "IMPACT CORRIDOR · CIVIL DEFENSE", "EVACUATE", K.red, clk);
