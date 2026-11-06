@@ -77,7 +77,10 @@ function sunD(x, y, r, rot = t * 0.4, face = 0) {
 }
 function hill(y, col = C.grass, col2 = C.grass2) {
   ctx.beginPath(); ctx.moveTo(-W, y + 70); ctx.quadraticCurveTo(W / 2, y - 80, W * 2, y + 70); ctx.lineTo(W * 2, H * 3); ctx.lineTo(-W, H * 3); ctx.closePath(); fs(col, 8);
-  for (let i = 0; i < 9; i++) { const x = 60 + i * 120 + rnd(i) * 40, yy = y + 90 + rnd(i * 3) * 140; oe(x, yy, 18, 9, 0, col2, 0); }
+  for (let i = 0; i < 9; i++) { const x = 60 + i * 120 + rnd(i) * 40, yy = y + 80 + rnd(i * 3) * 60; oe(x, yy, 18, 9, 0, col2, 0); }
+  // soil cross-section under the grass (darker band so the captions stay readable)
+  const sy = y + 175; orr(-W, sy, W * 3, H * 2, 0, "#7A4A2A", 8);
+  for (let i = 0; i < 26; i++) { const x = rnd(i * 5.3) * W, yy = sy + 40 + rnd(i * 9.1) * 420; oe(x, yy, 14 + rnd(i) * 16, 9 + rnd(i * 2) * 8, rnd(i * 4) * 3, "#5E361C", 4); }
 }
 // sparkles (4-point stars)
 function spark(x, y, r, col = "#FFFFFF") {
@@ -246,7 +249,7 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
   cam(W / 2, 960, p.zoom || 1);
   navy(9);
   label("100 UNITS OF SUNLIGHT", 540, 300, 64, C.sun, p.head || 0);
-  const n = 10, cs = 58, gap = 8, gw = n * cs + (n - 1) * gap, x0 = W / 2 - gw / 2, y0 = 390;
+  const n = 10, cs = 58, gap = 8, gw = n * cs + (n - 1) * gap, x0 = W / 2 - gw / 2, y0 = 450;
   for (let i = 0; i < 100; i++) {
     const r = Math.floor(i / n), c = i % n, food = i === 44 || i === 45;
     const order = rnd(i * 1.7 + 3); const waste = cl((p.waste || 0) * 1.25 - order * 0.25 * 1);
@@ -258,8 +261,8 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
     const cx = x0 + c * (cs + gap) + cs / 2, cy = y0 + r * (cs + gap) + cs / 2, hs = (cs / 2) * e * pul;
     orr(cx - hs, cy - hs, hs * 2, hs * 2, 10 * e, col, 5);
   }
-  label("HEAT", 870, 1110, 60, "#9AA6E0", cl((p.waste || 0) * 2 - 0.6), 0.06);
-  if ((p.food || 0) > 0) { label("FOOD", 560, 1110, 64, C.green, p.food, -0.06); oline([560, 1060, 560, 720], 8, C.green, 5); arrowHead(560, 712, -Math.PI / 2, 26, C.green); }
+  label("HEAT", 870, 1170, 60, "#9AA6E0", cl((p.waste || 0) * 2 - 0.6), 0.06);
+  if ((p.food || 0) > 0) { label("FOOD", 560, 1170, 64, C.green, p.food, -0.06); oline([560, 1120, 560, 780], 8, C.green, 5); arrowHead(560, 772, -Math.PI / 2, 26, C.green); }
   pot(110, 1330, 0.7);
   hero(275, 1330, 0.5, { g: 1, sprout: 1, mouth: "smile" });
 } else if (k === 6) { // a whole day of sun: 50-90 kcal vs 2,000 needed
@@ -312,11 +315,11 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
   label("×20", 860, 455, 170, C.sun, cl(n / 20 * 1.2 - 0.2), -0.08);
 } else if (k === 9) { // would you still eat lunch?
   cam(W / 2, 960, p.zoom || 1);
-  day(); sunD(170, 420, 80, t * 0.4, 1);
+  grad(C.sky1, C.sky2); cloud(260, 560, 0.7); sunD(880, 330, 80, t * 0.4, 1);
   hill(1230);
   hero(540, 1270, 1.25, { g: 1, sprout: 1, pose: "hold", mouth: "o", worry: 1, look: 1 });
   burger(540, 1270 - 300 * 1.25 + 30, 0.95);
   const q = cl(p.q || 0);
-  label("?", 830, 520 + Math.sin(t * 4) * 12, 220, C.sun, q, 0.15);
-  label("?", 250, 600 + Math.sin(t * 4 + 1) * 12, 140, "#FFFFFF", cl(q * 1.5 - 0.3), -0.2);
+  label("?", 840, 640 + Math.sin(t * 4) * 12, 220, C.sun, q, 0.15);
+  label("?", 230, 760 + Math.sin(t * 4 + 1) * 12, 140, "#FFFFFF", cl(q * 1.5 - 0.3), -0.2);
 }
