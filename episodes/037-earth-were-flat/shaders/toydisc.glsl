@@ -281,8 +281,8 @@ vec3 bgCol(vec3 rd, float blur){
   return col;
 }
 
-float shadowT(vec3 ro, vec3 rd, float k){ float res = 1.0, t = 0.015;
-  for (int i = 0; i < 20; i++) { float h = map(ro + rd*t).x; res = min(res, k*h/t); t += clamp(h, 0.03, 0.35); if (h < 0.001 || t > 5.0) break; }
+float shadowT(vec3 ro, vec3 rd, float k){ float res = 1.0, t = 0.05;
+  for (int i = 0; i < 20; i++) { float h = map(ro + rd*t).x; res = min(res, k*h/t); t += clamp(h, 0.04, 0.35); if (h < 0.001 || t > 5.0) break; }
   return clamp(res, 0.0, 1.0); }
 float aoT(vec3 p, vec3 n){ float o = 0.0;
   o += (0.03 - map(p + n*0.03).x); o += (0.08 - map(p + n*0.08).x)*0.6; o += (0.16 - map(p + n*0.16).x)*0.35;
@@ -292,7 +292,7 @@ vec3 litCol(vec3 pos, vec3 n, vec3 rd, float mat, float t, float softK, bool sha
   float gloss; vec3 alb = albedo(mat, pos, n, gloss);
   vec3 L = keyDir();
   float sh = 1.0, ao = 1.0;
-  if (shadows) { gSec = 1.0; sh = shadowT(pos + n*(0.012 + 0.0015*t), L, softK); ao = aoT(pos, n); gSec = 0.0; }
+  if (shadows) { gSec = 1.0; sh = shadowT(pos + n*(0.02 + 0.0015*t), L, softK)*smoothstep(-0.15, 0.25, dot(n, L)) + (1.0 - smoothstep(-0.15, 0.25, dot(n, L)))*0.0; ao = aoT(pos, n); gSec = 0.0; }
   sh = mix(0.42, 1.0, sh);
   float dif = clamp((dot(n, L) + 0.25)/1.25, 0.0, 1.0)*sh;
   float lit = mix(1.0, smoothstep(-0.08, 0.12, L.y), u_sun);

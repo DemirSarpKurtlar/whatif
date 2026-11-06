@@ -194,22 +194,22 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
 } else if (k === 2) { // light spectrum: red + blue eaten, green bounced
   cam(W / 2, 960, p.zoom || 1);
   navy(5);
-  const sx = 230, sy = 470; sunD(sx, sy, 110);
-  const lx = 690, ly = 1000; leafShape(lx, ly, 330, 470, -0.45, C.leaf, 9, 1);
-  // red, green, blue beams (fanned out from the sun)
-  beam(sx + 110, sy + 60, 560, 900, p.beam, C.red);
-  beam(sx + 115, sy, 760, 860, p.beam, C.green);
-  beam(sx + 70, sy + 100, 640, 1110, p.beam, C.blue);
-  // absorbed bursts on the leaf
-  if (p.eat > 0) { for (const [ax, ay, col] of [[560, 900, C.red], [640, 1110, C.blue]]) { const r = 30 + 50 * cl(p.eat); ctx.save(); ctx.globalAlpha = 1 - 0.6 * cl(p.eat); oc(ax, ay, r, col, 6); ctx.restore(); spark(ax + 50, ay - 50, 22 * cl(p.eat * 2), "#FFF6A0"); } }
-  // green bounces back to the viewer's eye
-  if (p.bounce > 0) beam(760, 860, 330, 1230, p.bounce, C.green);
-  if (p.bounce > 0) { const e = E.back(cl(p.bounce * 1.6)); oe(250, 1290, 90 * e, 56 * e, 0, "#FFFFFF", 8); oc(262, 1290, 34 * e, "#3E7A2F", 6); circ(272, 1280, 9 * e, "#FFFFFF"); }
-  label("RED", 330, 760, 70, C.red, cl(p.beam * 2 - 0.4), -0.1);
-  label("BLUE", 470, 1110, 70, C.blue, cl(p.beam * 2 - 0.6), 0.05);
-  label("GREEN", 620, 700, 70, C.green, cl(p.beam * 2 - 0.5), -0.05);
-  label("EATEN!", 830, 1260, 92, C.sun, p.eat || 0, -0.06);
-  label("BOUNCED", 250, 1160, 64, "#FFFFFF", cl((p.bounce || 0) * 1.5 - 0.4), 0.05);
+  leafShape(690, 1010, 330, 470, -0.45, C.leaf, 9, 1);
+  // parallel sunbeams: red, green, blue
+  const G = [640, 880], R = [740, 814], B = [540, 946], d = [0.55, 0.835], L = 520;
+  const st = (P) => [P[0] - d[0] * L, P[1] - d[1] * L];
+  beam(...st(R), ...R, p.beam, C.red); beam(...st(B), ...B, p.beam, C.blue); beam(...st(G), ...G, p.beam, C.green);
+  sunD(330, 370, 115);
+  if (p.eat > 0) for (const [ax, ay, col] of [[R[0], R[1], C.red], [B[0], B[1], C.blue]]) {
+    const e = cl(p.eat); ctx.save(); ctx.globalAlpha = 1 - 0.7 * e; oc(ax, ay, 26 + 60 * e, col, 6); ctx.restore();
+    for (let i = 0; i < 4; i++) { const a = i * 1.57 + 0.6 + t * 2; spark(ax + Math.cos(a) * 70 * e, ay + Math.sin(a) * 70 * e, 18 * e, "#FFF6A0"); }
+  }
+  if (p.bounce > 0) beam(G[0], G[1], 330, 1220, p.bounce, C.green);
+  if (p.bounce > 0) { const e = E.back(cl(p.bounce * 1.6)); oe(235, 1290, 95 * e, 58 * e, 0, "#FFFFFF", 8); oc(250, 1290, 36 * e, "#3E7A2F", 6); circ(262, 1278, 10 * e, "#FFFFFF"); }
+  label("RED", 800, 560, 74, C.red, cl(p.beam * 2 - 0.4), -0.08);
+  label("BLUE", 210, 780, 74, C.blue, cl(p.beam * 2 - 0.6), -0.05);
+  label("EATEN!", 860, 1255, 96, C.sun, p.eat || 0, -0.06);
+  label("GREEN", 530, 1255, 70, C.green, cl((p.bounce || 0) * 1.5 - 0.3), 0.04);
 } else if (k === 3) { // step into the sun: 250 W per m²
   cam(W / 2, 960, p.zoom || 1);
   day("#5BC2F5", "#C2EBFF");
@@ -258,17 +258,17 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
     const cx = x0 + c * (cs + gap) + cs / 2, cy = y0 + r * (cs + gap) + cs / 2, hs = (cs / 2) * e * pul;
     orr(cx - hs, cy - hs, hs * 2, hs * 2, 10 * e, col, 5);
   }
-  label("HEAT", 860, 1100, 60, "#9AA6E0", cl((p.waste || 0) * 2 - 0.6), 0.06);
-  if ((p.food || 0) > 0) { label("FOOD", 250, 1100, 64, C.green, p.food, -0.06); }
-  pot(130, 1330, 0.75);
-  hero(965, 1330, 0.5, { g: 1, sprout: 1, mouth: "smile" });
+  label("HEAT", 870, 1110, 60, "#9AA6E0", cl((p.waste || 0) * 2 - 0.6), 0.06);
+  if ((p.food || 0) > 0) { label("FOOD", 560, 1110, 64, C.green, p.food, -0.06); oline([560, 1060, 560, 720], 8, C.green, 5); arrowHead(560, 712, -Math.PI / 2, 26, C.green); }
+  pot(110, 1330, 0.7);
+  hero(275, 1330, 0.5, { g: 1, sprout: 1, mouth: "smile" });
 } else if (k === 6) { // a whole day of sun: 50-90 kcal vs 2,000 needed
   cam(W / 2, 960, p.zoom || 1);
   const d = cl(p.day || 0);
   const top = d < 0.5 ? mixc("#FF9E7A", C.sky1, d * 2) : mixc(C.sky1, "#4A3C8F", (d - 0.5) * 2);
   const bot = d < 0.5 ? mixc("#FFE0A6", C.sky2, d * 2) : mixc(C.sky2, "#FF9A6A", (d - 0.5) * 2);
   grad(top, bot); cloud(200, 380, 0.75);
-  sunD(110 + 640 * d, 900 - 560 * Math.sin(Math.PI * d), 80, t * 0.6, 1);
+  sunD(110 + 560 * d, 900 - 560 * Math.sin(Math.PI * d), 80, t * 0.6, 1);
   hill(1220);
   hero(380, 1250, 1.0, { g: 1, sprout: 1, pose: (p.need || 0) > 0.3 ? "shrug" : "up", mouth: (p.need || 0) > 0.3 ? "o" : "grin", worry: (p.need || 0) > 0.3, sweat: (p.need || 0) > 0.5 });
   // food meter
@@ -276,8 +276,8 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
   orr(bx - bw / 2, bt, bw, bb - bt, 26, "#FFFFFF", 8);
   if (fh > 1) { ctx.save(); ctx.beginPath(); ctx.roundRect(bx - bw / 2, bt, bw, bb - bt, 26); ctx.clip(); ctx.fillStyle = C.green; ctx.fillRect(bx - bw / 2, bb - fh, bw, fh + 10); ctx.restore(); orr(bx - bw / 2, bt, bw, bb - bt, 26, null, 8); }
   for (let i = 1; i < 10; i++) { ctx.fillStyle = "rgba(20,20,42,0.25)"; ctx.fillRect(bx - bw / 2 + 10, bt + i * (bb - bt) / 10, 30, 5); }
-  label(Math.round(kc) + " kcal", bx - 120, bb - fh - 50, 52, "#FFFFFF", cl(kc / 10), 0, "right");
-  if (kc > 30) apple(bx - 300, bb - fh - 50, 34);
+  label(Math.round(kc) + " kcal", bx - 95, bb - fh - 40, 54, "#FFFFFF", cl(kc / 10), 0, "right");
+  if (kc > 30) { ctx.font = "54px LHeavy"; const tw2 = ctx.measureText(Math.round(kc) + " kcal").width; apple(bx - 95 - tw2 - 55, bb - fh - 44, 32 * E.back(cl((kc - 30) / 20))); }
   label("2,000 kcal", bx - 40, bt - 50, 62, C.red, p.need || 0, -0.03);
   label("NEEDED", bx + 10, bt + 20, 40, "#FFFFFF", p.need || 0, -0.03);
 } else if (k === 7) { // tennis court from above, 40 m² of leaf-skin
@@ -299,22 +299,17 @@ if (k === 0) { // intro: Sol on a sunny hill, waving
   if (lk > 0) leafShape(hx0, hy0, la * lk, lc * lk, -0.12, C.leaf, 6, 1);
   hero(hx0, hy0 + 40, 0.115 * 1.0, { g: 1, sprout: 1, pose: "spread", mouth: "grin" });
   label("TENNIS COURT · 261 m²", 540, cy - chh / 2 - 60, 46, "#FFFFFF", p.court || 0);
-  if ((p.cmp || 0) > 0) { ctx.save(); ctx.globalAlpha = cl(p.cmp); ctx.setLineDash([16, 12]); ctx.strokeStyle = C.sun; ctx.lineWidth = 6; ctx.strokeRect(cx - 52 * 0.5 * 1.2, cy - 380, 60, 60); ctx.restore(); }
 } else if (k === 8) { // twenty times your skin
   cam(W / 2, 960, p.zoom || 1);
   navy(13);
+  const sheet = (x, y, sc, col, col2, e) => { if (e <= 0) return; ctx.save(); ctx.translate(x, y); ctx.scale(sc * e, sc * e);
+    orr(-70, -80, 140, 160, 22, col, 6); oc(0, -38, 26, col2, 5); oline([-34, 22, 34, 22], 10, col2, 0); ctx.restore(); };
+  sheet(190, 470, 1.0, C.skin, C.skinD, E.back(cl(p.lab || 0)));
+  label("YOUR SKIN", 300, 420, 50, "#FFFFFF", p.lab || 0, 0, "left");
+  label("1.8 m²", 300, 492, 50, C.sun, p.lab || 0, 0, "left");
   const n = p.n || 0;
-  for (let i = 0; i < 20; i++) {
-    const r = Math.floor(i / 5), c = i % 5, x = 540 + (c - 2) * 180, y = 760 + r * 190;
-    const e = E.back(cl(n - i)); if (e <= 0) continue;
-    ctx.save(); ctx.translate(x, y); ctx.scale(e, e);
-    // a "skin sheet": the body outline unfolded, 1.8 m² each
-    orr(-70, -80, 140, 160, 22, i === 0 ? mixc(C.skin, C.leaf, cl(p.g0 || 0)) : C.leaf, 6);
-    oc(0, -40, 26, i === 0 ? mixc(C.skinD, C.leaf2, cl(p.g0 || 0)) : C.leaf2, 5);
-    oline([-34, 20, 34, 20], 10, i === 0 ? mixc(C.skinD, C.leaf2, cl(p.g0 || 0)) : C.leaf2, 0);
-    ctx.restore();
-  }
-  label("YOUR SKIN = 1.8 m²", 540, 590, 54, "#FFFFFF", p.lab || 0);
+  for (let i = 0; i < 20; i++) { const r = Math.floor(i / 5), c = i % 5; sheet(540 + (c - 2) * 172, 730 + r * 168, 0.85, C.leaf, C.leaf2, E.back(cl(n - i))); }
+  label("×20", 860, 455, 170, C.sun, cl(n / 20 * 1.2 - 0.2), -0.08);
 } else if (k === 9) { // would you still eat lunch?
   cam(W / 2, 960, p.zoom || 1);
   day(); sunD(170, 420, 80, t * 0.4, 1);
