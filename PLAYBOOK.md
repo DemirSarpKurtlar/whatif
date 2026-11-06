@@ -52,6 +52,13 @@ Görsel stil: Higgsfield "Park Skyline" referansı (bkz. `episodes/001-gravity-o
 - Higgsfield Content Factory stil kataloğundaki (get_preset_instructions /content-factory) stillerden konuya en uygun olanı seç
   (ör. Toy Planet, Pixel Night, Ink & Gold, Blueprint Line...). Görsel dili uyarla, referans videoların içeriğini/karakterlerini kopyalama.
 
+## 🏭 Render + yayın mimarisi (2026-11-06)
+- Ana oturumun konteyneri boşta kalınca kapanıyor → render orada yarım kalıyordu. Artık **3 zamanlanmış işçi** (slot 0/1/2,
+  her biri 3 saatte bir, :30) kendi temiz sunucusunda `scripts/render_and_post.sh <slot>` çalıştırır: sıradaki bekleyen bölümü
+  (posts/schedule.txt sırası, Instagram'da olmayan) render eder ve doğrudan Instagram'a yükler (resumable upload).
+- Bunun için her bölümde `voice.mp3` repoda olmalı (wav git'e girmez). Yeni bölüm = script/spec/sfx/words/voice.mp3 commit + schedule.txt'e ekle.
+- media.json'da URL'si olan bölümler render edilmeden direkt paylaşılır.
+
 ## 🤝 Pluginler (sahibin isteği)
 - **Ruflo Ai Team** plugini (beceriler, komutlar, ajanlar) oturumda yüklüyse iş bölme, takip ve hafıza için her turda kullan.
 - **RuFlo Federation** araçlarını (mcp__RuFlo_Federation__*) KULLANMA: herkese açık bir ağ, proje bilgisi oraya gitmemeli.
