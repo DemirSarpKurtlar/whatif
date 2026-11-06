@@ -213,7 +213,7 @@ if (SC === 0 || SC === 1) {
   ladV(690, 120, H, 44, 18, scroll * 1.125);
   climber(690, 760, 1.25, t);
   // airliner (side view, facing left), drawn in front of the ladder
-  const px = lerp(1480, -480, (lt - (p.plane || 0.2)) / 3.4), py = 1050, s = 1.15;
+  const px = lerp(1300, -500, (lt - (p.plane || 0)) / 4.0), py = 1050, s = 1.15;
   ctx.save(); ctx.translate(px, py); ctx.scale(s, s);
   const fus = [[-232, 0], [-224, -14], [-205, -24], [-170, -27], [140, -27], [232, -34], [236, -26], [232, -20], [150, 12], [-170, 22], [-212, 16], [-228, 8]];
   ctx.fillStyle = "rgba(14,43,88,0.92)"; ctx.beginPath(); fus.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.closePath(); ctx.fill();
@@ -227,7 +227,7 @@ if (SC === 0 || SC === 1) {
   sl(-150, -24, -150, 10, 1 / s, INK3); sl(110, -24, 110, 10, 1 / s, INK3);
   for (const yy of [30, 36]) sl(98, yy, 98 + 700, yy - 20, 1 / s, "rgba(200,225,255,0.22)", [14, 10]);
   ctx.restore();
-  lead(px + 120, py - 70, px + 300, py - 200, "AIRLINER", "CRUISE ≈ 11 KM · 900 KM/H", px < 700 && px > -200 ? 1 : 0);
+  lead(px + 120, py - 70, Math.min(px + 300, 740), py - 200, "AIRLINER", "CRUISE ≈ 11 KM · 900 KM/H", px < 700 && px > -200 ? 1 : 0);
   dim(160, 760, 160, 1250, "11 KM", kk(0.3, 1.1));
   sl(160, 760, 650, 760, 1, INK3, [6, 6]); mt("GROUND ↓", 160, 1290, 17, INK2, "center", 3);
   chromeBegin(); chrome();
@@ -374,7 +374,7 @@ if (SC === 0 || SC === 1) {
   globe(m[0], m[1], 40, { tilt: 0.2, spin: t * 0.1, lat: 4, lon: 8, w: 2, craters: [[0.3, 0.2, 0.2], [-0.3, -0.5, 0.15]] });
   // velocity arrow
   const m2 = pt(th + 0.18); arr(m[0], m[1], m[0] + (m2[0] - m[0]) * 1.6, m[1] + (m2[1] - m[1]) * 1.6, INK2, 2, 16);
-  const lx = Math.min(870, Math.max(210, m[0])), ly = m[1] + (m[1] > ey - 5 ? 96 : -70);
+  const lx = Math.min(870, Math.max(210, m[0])), ly = m[1] > ey - 5 && m[1] + 126 < 1310 ? m[1] + 96 : m[1] - 100;
   mt(fmt(Math.round(km / 100) * 100) + " KM", lx, ly, 24, col, "center", 3, 700);
   if (Math.abs(st) > 0.15) mt(st < 0 ? "COMPRESSION · BUCKLES" : "TENSION · TEARS", lx, ly + 30, 18, col, "center", 3, 600);
   dim(ex - a * (1 - e), ey + 60, ex, ey + 60, "363,300", kk(p.dp ?? 0.4, (p.dp ?? 0.4) + 0.6));
