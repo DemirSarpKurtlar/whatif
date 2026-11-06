@@ -46,7 +46,10 @@ hp = lambda x, f, o=2: flt(x, f, "high", o)
 bp = lambda x, f1, f2, o=2: flt(x, [f1, f2], "band", o)
 def add(buf, t, x, g=1.0):
     i = T(t)
-    if i >= N: return
+    if i >= N or len(x) == 0: return
+    if i < 0:  # event starts before 0 (e.g. after time-warp): drop the part before the start
+        x = x[-i:]; i = 0
+        if len(x) == 0: return
     j = min(N, i + len(x)); buf[i:j] += x[: j - i] * g
 def brown(n):
     x = np.cumsum(rng.standard_normal(n)); x = hp(x, 20); return x / (np.max(np.abs(x)) + 1e-9)

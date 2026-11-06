@@ -106,9 +106,12 @@ def check():
 def upload_file(path, cid_uri):
     size = os.path.getsize(path)
     req = urllib.request.Request(cid_uri, data=open(path, "rb").read(), method="POST", headers={
-        "Authorization": "OAuth " + TOKEN, "offset": "0", "file_size": str(size)})
-    with urllib.request.urlopen(req, timeout=600) as r:
-        return json.loads(r.read())
+        "Authorization": "OAuth " + TOKEN, "offset": "0", "file_size": str(size), "Content-Type": "application/octet-stream"})
+    try:
+        with urllib.request.urlopen(req, timeout=900) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"upload failed {e.code}: {e.read().decode(errors='replace')[:300]}")
 
 
 def publish(video_url, caption, thumb_ms, video_file=None, first_comment=None, cover_url=None):
@@ -120,10 +123,19 @@ def publish(video_url, caption, thumb_ms, video_file=None, first_comment=None, c
         params["upload_type"] = "resumable"
     else:
         params["video_url"] = video_url
-    c = call("POST", f"{uid}/media", **params)
-    cid = c["id"]
-    if video_file:
-        print("upload", upload_file(video_file, c["uri"]), flush=True)
+    for attempt in range(3):  # a resumable upload can fail transiently: retry with a fresh container
+        c = call("POST", f"{uid}/media", **params)
+        cid = c["id"]
+        if not video_file:
+            break
+        try:
+            print("upload", upload_file(video_file, c["uri"]), flush=True)
+            break
+        except RuntimeError as e:
+            print(f"attempt {attempt + 1}: {e}", flush=True)
+            time.sleep(20)
+    else:
+        sys.exit("upload failed 3 times")
     print("container", cid, flush=True)
     for _ in range(90):  # up to ~15 min
         st = call("GET", cid, fields="status_code,status")
