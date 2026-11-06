@@ -308,8 +308,9 @@ function sBsod() {
   blit();
   card({ tag: "FLASHBACK", title: "JULY 2024", sub: "ONE BAD SOFTWARE UPDATE", col: K.orange, icon: "warn" });
   const n = Math.round(8500000 * E["ease-out"](clamp(p.cnt ?? 0)));
-  big(n.toLocaleString("en-US"), 300, 11, K.yellow, 0.15);
-  if (lt < tB) big("WINDOWS PCS CRASHED", 410, 4, "#FFFFFF", 0.3);
+  const tC = p.tCnt ?? 0.15;
+  big(n.toLocaleString("en-US"), 300, 11, K.yellow, tC);
+  if (lt < tB) big("WINDOWS PCS CRASHED", 410, 4, "#FFFFFF", tC + 0.15);
   else { big("THOUSANDS OF FLIGHTS", 410, 4, K.orange, tB); big("GROUNDED", 450, 4, K.orange, tB + 0.05); }
 }
 function sBoard() {
@@ -364,7 +365,7 @@ function sHospital() {
   blit();
   if (UI) TXT(ctx, "OFFLINE", hx(82), hy(101), hu(2), K.red, { align: "center" });
   hourCard(6, "PATIENT RECORDS: PAPER", K.cyan, lt > tP ? K.yellow : K.cyan);
-  big("PEN + PAPER", 330, 8, K.yellow, tP + 0.2, { panel: K.yellow });
+  big("PEN + PAPER", 860, 8, K.yellow, tP + 0.2, { panel: K.yellow });
 }
 function sStocks() {
   const tH = p.tHalt ?? 0.4, halt = lt >= tH;
@@ -422,7 +423,7 @@ function sPhone() {
 }
 function sGps() {
   skyNight(250); stars(90, 200, 11);
-  const sx = 70 + lt * 3, sy = 92;
+  const sx = 70 + lt * 3, sy = 116;
   for (let i = 0; i < 4; i++) { const r = ((lt * 30 + i * 22) % 88); g.globalAlpha = 1 - r / 88; ring(sx + 4, sy + 4, r, K.lime, 0.35, Math.PI - 0.35); g.globalAlpha = 1; }
   R(sx - 14, sy + 1, 12, 6, "#2B4BB8"); R(sx + 10, sy + 1, 12, 6, "#2B4BB8"); for (let i = 0; i < 3; i++) { R(sx - 14 + i * 4, sy + 1, 1, 6, "#8AA8F0"); R(sx + 10 + i * 4, sy + 1, 1, 6, "#8AA8F0"); }
   R(sx - 2, sy + 3, 12, 2, "#9A96C8"); R(sx, sy, 8, 8, "#D8A84A"); R(sx, sy, 8, 2, "#F8D88A"); R(sx + 3, sy + 8, 2, 3, "#9A96C8");
@@ -434,6 +435,7 @@ function sGps() {
   blit();
   card({ tag: "STILL WORKING", title: "GPS", sub: "SATELLITES, NOT INTERNET", col: K.lime, icon: "sat" });
   big("SIGNAL OK", 330, 7, K.lime, p.tOk ?? 0.4);
+  big("NO WIFI NEEDED", 440, 5, "#FFFFFF", p.tSat ?? 1.6);
 }
 function sOcean() {
   const dark = clamp(p.dark ?? 0);
@@ -461,8 +463,17 @@ function sOcean() {
     if (live > 0.02) for (let k = 0; k < 4; k++) { const x = Math.round(((lt * 40 + k * 47 + ci * 15) % 200) - 10); g.globalAlpha = live; R(x, yAt(x) - 1, 4, 4, "#FFFFFF"); g.globalAlpha = 1; }
   });
   blit();
+  if (p.hp) { // cold-open game HUD: the world's "internet HP" drains as the cables die
+    const hp = 1 - dark, x = 90, y = 470, w = 900, segs = 20;
+    ctx.fillStyle = K.ink; ctx.fillRect(x - 12, y - 12, w + 24, 250); ctx.fillStyle = hp > 0.5 ? K.cyan : K.red; ctx.fillRect(x - 6, y - 6, w + 12, 238);
+    ctx.fillStyle = K.ink; ctx.fillRect(x, y, w, 226); ctx.fillStyle = "#17143F"; ctx.fillRect(x + 6, y + 6, w - 12, 214);
+    TXT(ctx, "PLAYER: EARTH", x + 30, y + 24, 4, "#A9A4E0");
+    TXT(ctx, hp > 0.02 ? "INTERNET" : "OFFLINE", x + 30, y + 64, 9, hp > 0.02 ? "#FFFFFF" : K.red, { sh: "#000000" });
+    TXT(ctx, Math.round(hp * 100) + "%", x + w - 30, y + 64, 9, hp > 0.5 ? K.lime : K.red, { align: "right", sh: "#000000" });
+    for (let i = 0; i < segs; i++) { const on = i < hp * segs; ctx.fillStyle = on ? (hp > 0.5 ? K.lime : K.red) : "#2E2A6A"; ctx.fillRect(x + 30 + i * ((w - 60) / segs), y + 150, (w - 60) / segs - 8, 40); }
+  }
   if (!UI) return;
-  hourCard(12, dark > 0.5 ? "UNDERSEA CABLES: DARK" : "UNDERSEA CABLES: SILENT", K.cyan, dark > 0.5 ? K.red : K.cyan);
+  hourCard(12, dark > 0.5 ? "UNDERSEA CABLES: DARK" : "UNDERSEA CABLES: LIVE", K.cyan, dark > 0.5 ? K.red : K.cyan);
   big("99%", 330, 20, K.yellow, p.tBig ?? 0.3);
   big("OF DATA BETWEEN CONTINENTS", 500, 4, "#FFFFFF", (p.tBig ?? 0.3) + 0.15);
   big("RUNS THROUGH THESE CABLES", 540, 4, "#FFFFFF", (p.tBig ?? 0.3) + 0.2);

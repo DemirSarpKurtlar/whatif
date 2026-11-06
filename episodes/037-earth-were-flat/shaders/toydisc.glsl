@@ -303,8 +303,8 @@ vec3 litCol(vec3 pos, vec3 n, vec3 rd, float mat, float t, float softK, bool sha
   vec3 bgc = mix(mix(vec3(0.85,0.86,0.9), vec3(0.06,0.07,0.14), u_space), vec3(0.06,0.07,0.15), u_night);
   return mix(col, bgc, clamp((t - u_cd*1.4)*0.05, 0.0, 0.35));
 }
-vec3 nrm(vec3 p, float e){ vec2 k = vec2(e, 0.0);
-  return normalize(vec3(map(p+k.xyy).x-map(p-k.xyy).x, map(p+k.yxy).x-map(p-k.yxy).x, map(p+k.yyx).x-map(p-k.yyx).x)); }
+vec3 nrm(vec3 p, float e){ vec2 k = vec2(1.0, -1.0);
+  return normalize(k.xyy*map(p + k.xyy*e).x + k.yyx*map(p + k.yyx*e).x + k.yxy*map(p + k.yxy*e).x + k.xxx*map(p + k.xxx*e).x); }
 
 vec3 render(vec2 uv, float B){
   vec2 sp = screenP(uv, 0.0);

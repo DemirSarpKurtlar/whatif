@@ -1,3 +1,0 @@
-const names = ["harbor","fire","hall","serapeum","shelves","dialogue","worldmap","helio","steam","leap","rescue"];
-const P = { harbor:{}, fire:{burn:1}, hall:{fill:0.7}, serapeum:{crack:0.8, fall:0.4}, shelves:{zoom:1.2}, dialogue:{lose:0.3}, worldmap:{draw:1, lose:0}, helio:{rings:1}, steam:{spin:3}, leap:{arc:1, ghost:1}, rescue:{run:0.4} };
-export default { END: 33, accent: "#F2D68A", hook: false, scenes: names.map((n,i)=>({a:i*3,b:i*3+3,draw:n,p:P[n]})), captions: [[1.0,2.9,"It may have held forty thousand scrolls."]], huds: [{at:3.5,dur:2,cat:"48 BC · CAESAR'S FIRE",label:"THE HARBOUR",value:"Burning",sub:"PART OF THE COLLECTION IS DAMAGED",dot:"#C9A64B"}] };
