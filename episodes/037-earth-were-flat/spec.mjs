@@ -76,5 +76,5 @@ export default {
     { at: 22.68, dur: 1.3, text: "1 HOUR", tag: "TO COLLAPSE", y: 600, size: 170, color: "#FF5A4E" },
   ],
   flashes: [{ at: 22.58, dur: 0.25 }],
-  endCard: { at: 28.4, title: "What if Earth were actually flat?", cta: "WOULD YOU RACE TO THE EDGE?", small: ["SIMPLIFIED PHYSICS · TOY MODEL", "EARTH'S MASS AS A 20,000 KM-WIDE DISC"] },
+  endCard: { at: 28.4, title: "What if Earth were actually flat?", cta: "WOULD YOU RACE TO THE EDGE?", small: ["SIMPLIFIED PHYSICS · TOY MODEL", "EARTH'S MASS AS A DISC 40,000 KM ACROSS"] },
 };

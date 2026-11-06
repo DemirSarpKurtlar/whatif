@@ -465,12 +465,12 @@ function sOcean() {
   blit();
   if (p.hp) { // cold-open game HUD: the world's "internet HP" drains as the cables die
     const hp = 1 - dark, x = 90, y = 470, w = 900, segs = 20;
-    ctx.fillStyle = K.ink; ctx.fillRect(x - 12, y - 12, w + 24, 250); ctx.fillStyle = hp > 0.5 ? K.cyan : K.red; ctx.fillRect(x - 6, y - 6, w + 12, 238);
+    ctx.fillStyle = K.ink; ctx.fillRect(x - 12, y - 12, w + 24, 250); ctx.fillStyle = hp > 0.6 ? K.cyan : K.red; ctx.fillRect(x - 6, y - 6, w + 12, 238);
     ctx.fillStyle = K.ink; ctx.fillRect(x, y, w, 226); ctx.fillStyle = "#17143F"; ctx.fillRect(x + 6, y + 6, w - 12, 214);
     TXT(ctx, "PLAYER: EARTH", x + 30, y + 24, 4, "#A9A4E0");
     TXT(ctx, hp > 0.02 ? "INTERNET" : "OFFLINE", x + 30, y + 64, 9, hp > 0.02 ? "#FFFFFF" : K.red, { sh: "#000000" });
-    TXT(ctx, Math.round(hp * 100) + "%", x + w - 30, y + 64, 9, hp > 0.5 ? K.lime : K.red, { align: "right", sh: "#000000" });
-    for (let i = 0; i < segs; i++) { const on = i < hp * segs; ctx.fillStyle = on ? (hp > 0.5 ? K.lime : K.red) : "#2E2A6A"; ctx.fillRect(x + 30 + i * ((w - 60) / segs), y + 150, (w - 60) / segs - 8, 40); }
+    TXT(ctx, Math.round(hp * 100) + "%", x + w - 30, y + 64, 9, hp > 0.6 ? K.lime : K.red, { align: "right", sh: "#000000" });
+    for (let i = 0; i < segs; i++) { const on = i < hp * segs; ctx.fillStyle = on ? (hp > 0.6 ? K.lime : K.red) : "#2E2A6A"; ctx.fillRect(x + 30 + i * ((w - 60) / segs), y + 150, (w - 60) / segs - 8, 40); }
   }
   if (!UI) return;
   hourCard(12, dark > 0.5 ? "UNDERSEA CABLES: DARK" : "UNDERSEA CABLES: LIVE", K.cyan, dark > 0.5 ? K.red : K.cyan);

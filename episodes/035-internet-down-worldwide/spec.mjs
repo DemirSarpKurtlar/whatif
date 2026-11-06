@@ -29,7 +29,7 @@ export default {
     sc(9, 24.2, 29.6, { tBig: 1.0, dark: [[0, 0], [4.45, 0], [4.85, 1]], tDark: 4.6 }),          // 9 hour 12: undersea cables go dark
     sc(10, 29.6, 33.1, { tBill: 1.2 }),                                                           // 10 hour 24: globe + $40B
     sc(11, 33.1, 37.6, { z: [1.25, 1.4], fx: 88, fy: 175 }),                                      // 11 rooftop question
-    sc(9, 100, 106, { ui: 0, hp: 1, dark: [[0, 0], [2.3, 0], [2.6, 1]] }),                               // 12 hook only (off-timeline)
+    sc(9, 100, 106, { ui: 0, hp: 1, dark: [[0, 0], [0.4, 0.05], [2.55, 1]] }),                               // 12 hook only (off-timeline)
   ],
   captions: [
     [3.02, 4.45, "Hour one: card machines freeze."],
@@ -61,8 +61,8 @@ export default {
     { at: 28.75, dur: 0.25, color: "#000000" },
   ],
   endCard: {
-    at: 34.75, series: "WHAT IF · PIXEL NIGHT", title: "What's the first thing you'd do?",
-    choices: [{ k: "A", text: "Hunt down some cash" }, { k: "B", text: "Go outside and enjoy it" }],
+    at: 34.75, series: "WHAT IF · PIXEL NIGHT", title: "Your first move?",
+    choices: [{ k: "A", text: "Hunt for cash" }, { k: "B", text: "Enjoy the quiet" }],
     cta: "A OR B? TELL US BELOW", small: ["SAVE THIS FOR PART 2", "FOLLOW FOR MORE WHAT IFS"],
   },
 };
