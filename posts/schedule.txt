@@ -11,6 +11,7 @@
 022-fall-into-black-hole
 025-jump-from-space
 024-gravity-doubled
+042-zombie-ep2
 027-sun-becomes-black-hole
 026-mariana-trench
 030-fall-into-volcano
