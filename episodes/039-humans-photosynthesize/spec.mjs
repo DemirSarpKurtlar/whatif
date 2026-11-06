@@ -54,5 +54,5 @@ export default {
     { at: 29.3, dur: 1.0, cat: "SOLAR LUNCH", value: "≈ 1 APPLE", sub: "PER SUNNY DAY", dot: "#3FBF4A" },
   ],
   flashes: [{ at: 3.1, dur: 0.3, color: "#C9FF8A" }, { at: 23.52, dur: 0.2, color: "#FFFFFF" }],
-  endCard: { at: 30.2, title: "Would you still eat lunch?", cta: "COMMENT YES OR NO", small: ["SAVE THIS FOR PART 2", "FOLLOW FOR MORE WHAT IFS"] },
+  endCard: { at: 30.9, title: "Would you still eat lunch?", cta: "COMMENT YES OR NO", small: ["SAVE THIS FOR PART 2", "FOLLOW FOR MORE WHAT IFS"] },
 };
