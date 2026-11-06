@@ -2,9 +2,9 @@
 // ash (falling ash density), cover (ash on roofs/ground 0..1), plume (Fuji plume 0..1), lab (1 EDO→TOKYO | 2 +2 HOURS | 3 STAY/RUN), labk, sid
 const z = p.zoom || 1, cy = p.cy || 960, mo = p.morph || 0, gr = p.grey || 0, cov = p.cover || 0;
 const GY = 1170; // ground line
-const sky = cached("citySky", 1300, 1400, (g) => { g.translate(110, 140); skyDay(g, GY + 20); ridge(g, GY - 40, 50, 3.3, K.mtnL, "rgba(27,34,51,0.45)", 0, 0.8); fuji(g, 190, GY - 30, 230, 260, { lw: 2.5, snow: 0.38 }); });
+const skyC = cached("citySky", 1300, 1400, (g) => { g.translate(110, 140); skyDay(g, GY + 20); ridge(g, GY - 40, 50, 3.3, K.mtnL, "rgba(27,34,51,0.45)", 0, 0.8); fuji(g, 190, GY - 30, 230, 260, { lw: 2.5, snow: 0.38 }); });
 ctx.save(); cam(540, cy, z, p.shake || 0);
-ctx.drawImage(sky, -110, -140);
+ctx.drawImage(skyC, -110, -140);
 if (p.plume) plume(ctx, 225, GY - 205, 520, p.plume, 0.45, 0.45, 9, 0);
 // ash front: sky darkens from the west (left) and a wall of billows rolls across
 if (gr > 0) {

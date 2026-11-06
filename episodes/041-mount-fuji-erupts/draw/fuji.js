@@ -20,15 +20,15 @@ function eback(x) { x = cl(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 
 function paperTex() {
   return cached("paper", 1080, 1920, (g, w, h) => {
     const R = prng(41); g.fillStyle = "#F4ECDC"; g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 70; i++) { const x = R() * w, y = R() * h, r = 80 + R() * 340; const rg = g.createRadialGradient(x, y, 0, x, y, r);
+    for (let i = 0; i < 160; i++) { const x = R() * w, y = R() * h, r = 40 + R() * 300; const rg = g.createRadialGradient(x, y, 0, x, y, r);
       rg.addColorStop(0, R() < 0.6 ? `rgba(150,130,100,${0.05 + R() * 0.07})` : `rgba(255,255,250,${0.1 + R() * 0.1})`); rg.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = rg; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
     g.lineCap = "round";
     for (let i = 0; i < 900; i++) { const x = R() * w, y = R() * h, l = 6 + R() * 30, a = R() * TAU; g.strokeStyle = `rgba(120,100,70,${0.05 + R() * 0.08})`;
       g.lineWidth = 0.5 + R(); g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }
-    const id = g.getImageData(0, 0, w, h), d = id.data; for (let i = 0; i < d.length; i += 4) { const n = (R() - 0.5) * 26; d[i] += n; d[i + 1] += n; d[i + 2] += n; } g.putImageData(id, 0, 0);
+    const id = g.getImageData(0, 0, w, h), d = id.data; for (let i = 0; i < d.length; i += 4) { const n = (R() - 0.5) * 34; d[i] += n; d[i + 1] += n; d[i + 2] += n; } g.putImageData(id, 0, 0);
   });
 }
-function printOver(g, a = 1) { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = "multiply"; g.globalAlpha = a; g.drawImage(paperTex(), 0, 0); g.restore(); }
+function printOver(g, a = 0.8) { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = "multiply"; g.globalAlpha = a; g.drawImage(paperTex(), 0, 0); g.restore(); }
 
 // ---- sky (bokashi), sea, waves ----
 function bokashi(g, y0, y1, stops) { const lg = g.createLinearGradient(0, y0, 0, y1); stops.forEach(([k, c]) => lg.addColorStop(k, c)); g.fillStyle = lg; g.fillRect(-400, y0, W + 800, y1 - y0); }
@@ -58,7 +58,7 @@ function bubbles(g, pts, r = 7, a = 1) { g.save(); g.globalAlpha *= a; g.fillSty
 // ---- mountains ----
 // Fuji cone: base centre cx, base y yb, half width hw, height h. erupt flank vent returned.
 function fuji(g, cx, yb, hw, h, opts = {}) {
-  const top = yb - h, tw = hw * 0.12; // summit plateau half width
+  const top = yb - h, tw = hw * 0.075; // summit plateau half width
   const L = (u) => [cx - tw - (hw - tw) * Math.pow(u, 0.75), top + h * u]; // left profile u 0..1
   const Rr = (u) => [cx + tw + (hw - tw) * Math.pow(u, 0.75), top + h * u];
   const path = () => { g.beginPath(); let p0 = L(1); g.moveTo(p0[0], p0[1]); for (let u = 1; u >= 0; u -= 0.05) { const q = L(u); g.lineTo(q[0], q[1]); }
@@ -90,21 +90,22 @@ function band(g, x, y, w, h = 70, col = K.cream, a = 1) { g.save(); g.globalAlph
 
 // ---- ash plume (stylised woodblock billows) ----
 // from vent (vx,vy) up to height hgt; k = growth 0..1; lean = drift to the right per unit height
+function billow(g, x, y, r, dark) { // two-tone woodblock cloud puff with key line
+  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.stroke();
+  g.fillStyle = dark ? "#6B655B" : "#C7BFAE"; g.beginPath(); g.arc(x - r * 0.18, y - r * 0.2, r * 0.74, 0, TAU); g.fill();
+  g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 2; g.beginPath(); g.arc(x - r * 0.1, y - r * 0.05, r * 0.42, Math.PI * 0.9, Math.PI * 1.9); g.stroke(); g.strokeStyle = K.ink; g.lineWidth = 2.6;
+}
 function plume(g, vx, vy, hgt, k = 1, lean = 0.35, wid = 1, seed = 5, dark = 0) {
-  if (k <= 0) return; const n = 26; const top = vy - hgt * k;
-  g.save(); g.lineWidth = 2.5; g.strokeStyle = K.ink;
-  // column + spreading umbrella; draw back to front
+  if (k <= 0) return; const n = 15; const top = vy - hgt * k;
+  g.save(); g.lineWidth = 2.6; g.strokeStyle = K.ink;
+  // umbrella cap first (behind), spreading downwind (right)
+  if (k > 0.55) { const kk = eout((k - 0.55) / 0.45), cx = vx + hgt * k * lean; for (let j = 6; j >= -3; j--) { const r = (85 + 30 * rnd(j + 9)) * kk * wid;
+    billow(g, cx + j * 95 * kk * wid + Math.sin(t * 0.7 + j) * 6, top + 40 + j * j * 4 + Math.abs(j) * 10, r, dark); } }
   for (let i = n - 1; i >= 0; i--) {
-    const u = i / (n - 1); if (u > k + 0.02) continue; const y = vy - hgt * u; const x = vx + (vy - y) * lean + Math.sin(u * 7 + t * 0.6 + seed) * 18;
-    const r = (30 + 140 * Math.pow(u, 1.3)) * wid * (0.85 + 0.25 * rnd(i + seed)) * (1 + 0.05 * Math.sin(t * 1.3 + i));
-    for (let j = -1; j <= 1; j++) { const bx = x + j * r * 0.75, by = y + Math.abs(j) * r * 0.25; const c = (i + j + 9) % 3; g.fillStyle = dark ? ["#4A463F", "#5B564E", "#3D3A35"][c] : [K.ashL, K.ash, "#A39B8C"][c];
-      g.beginPath(); g.arc(bx, by, r * (j ? 0.62 : 0.8), 0, TAU); g.fill(); g.stroke(); }
-    // scroll curl detail
-    if (i % 3 === 0) { g.strokeStyle = "rgba(27,34,51,0.55)"; g.lineWidth = 2; g.beginPath(); g.arc(x - r * 0.2, y + r * 0.1, r * 0.3, Math.PI * 0.2, Math.PI * 1.6); g.stroke(); g.strokeStyle = K.ink; g.lineWidth = 2.5; }
+    const u = i / (n - 1); if (u > k) continue; const y = vy - hgt * u; const x = vx + (vy - y) * lean + Math.sin(u * 6 + t * 0.5 + seed) * 14;
+    const r = (34 + 120 * Math.pow(u, 1.2)) * wid * (0.9 + 0.2 * rnd(i + seed)) * (1 + 0.04 * Math.sin(t * 1.3 + i));
+    billow(g, x + r * 0.45, y + r * 0.1, r * 0.7, dark); billow(g, x - r * 0.45, y + r * 0.15, r * 0.66, dark); billow(g, x, y, r * 0.82, dark);
   }
-  // umbrella cap
-  if (k > 0.7) { const kk = (k - 0.7) / 0.3, cx = vx + hgt * lean; for (let j = -4; j <= 4; j++) { const r = 70 + 30 * rnd(j + 9); g.fillStyle = dark ? "#4F4A43" : (j % 2 ? K.ashL : "#A39B8C");
-    g.beginPath(); g.arc(cx + j * 85 * kk * wid + Math.sin(t + j) * 6, top + 30 + Math.abs(j) * 14, r * kk * wid, 0, TAU); g.fill(); g.stroke(); } }
   g.restore();
 }
 // glowing lava/bombs at vent
@@ -163,7 +164,7 @@ function capPlaque(g) {
   g.strokeStyle = K.cream; g.lineWidth = 3.5; g.strokeRect(W / 2 - wid / 2 + 2, y1 + 2, wid - 4, y2 - y1 - 4); g.lineWidth = 1.4; g.strokeRect(W / 2 - wid / 2 + 10, y1 + 10, wid - 20, y2 - y1 - 20);
   g.restore();
 }
-function finish(g) { printOver(g, 0.55); capPlaque(g); }
+function finish(g) { printOver(g, 0.8); capPlaque(g); }
 
 // ---- scene ----
 // Fuji over Suruga Bay, woodblock print. p: zoom, cy, erupt (plume growth 0..1), dark (ash-dark sky 0..1), wave (foreground great wave 0..1),
@@ -175,7 +176,7 @@ const bg = cached("fujiBg", 1300, 2200, (g) => {
   skyDay(g, 1260);
   // pale far ranges
   ridge(g, 1180, 120, 2.0, K.mtnL, "rgba(27,34,51,0.5)");
-  fuji(g, 540, 1240, 640, 640, { lw: 3.5 });
+  fuji(g, 540, 1240, 540, 600, { lw: 3.5, snow: 0.3 });
   ridge(g, 1260, 70, 4.1, "#7E9DBB", "rgba(27,34,51,0.6)", 0, 1.3);
   ridge(g, 1330, 90, 7.3, K.forest, K.ink, 0.5, 1.1);
   ridge(g, 1400, 60, 9.9, K.forestD, K.ink, 0.6, 1.6);
@@ -188,7 +189,7 @@ if (dk > 0) { ctx.save(); ctx.globalAlpha = dk * 0.75; bokashi(ctx, -300, 1250, 
 band(ctx, -260 + Math.sin(t * 0.2) * 40 + lt * 12, 1105, 560, 46, K.cream, 0.95);
 band(ctx, 640 - lt * 10, 1175, 640, 40, K.cream, 0.9);
 // eruption from the SE flank (Hōei crater) — vent at the right flank
-if (er > 0) { const vx = 540 + 205, vy = 1240 - 640 * 0.7 + 10; vent(ctx, vx, vy, cl(er * 3)); plume(ctx, vx, vy, 980, er, 0.28, 1.05, 3, dk > 0.5 ? 1 : 0); }
+if (er > 0) { const vx = 540 + 150, vy = 1240 - 600 * 0.66; vent(ctx, vx, vy, cl(er * 3)); plume(ctx, vx, vy, 900, er, 0.3, 1.0, 3, 0); }
 // sea
 sea(ctx, 1400, 2300, K.indigo2, K.indigo0, 70, 4);
 band(ctx, 700 + Math.sin(t * 0.3) * 30, 1470, 420, 34, K.cream2, 0.8);
