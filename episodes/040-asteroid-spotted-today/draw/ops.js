@@ -218,22 +218,23 @@ if (S === 0) { // ---------------- survey feed: a faint moving dot
 } else if (S === 2) { // ---------------- orbit crosses Earth + Torino scale
   const hit = cl((lt - (p.tHit || 1.0)) / 0.4);
   panel(A.x, A.y, A.w, A.h, "ORB-05", "ORBIT SOLUTION · HELIOCENTRIC", hit > 0 ? "EARTH IMPACT" : "COMPUTING", hit > 0 ? K.red : K.lab, clk);
-  const cx = A.x + 480, cy = A.y + 350;
+  const cx = A.x + 400, cy = A.y + 320;
   circ(cx, cy, 16, "#E8EAEC"); ctx.save(); ctx.globalAlpha = 0.25; circ(cx, cy, 30, "#E8EAEC"); ctx.restore();
   ctx.strokeStyle = "rgba(220,225,230,0.45)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(cx, cy, 250, 230, 0, 0, TAU); ctx.stroke();
-  // asteroid ellipse, drawn on
+  // crossing point P on Earth's orbit; the asteroid ellipse has its left vertex exactly at P
+  const ang = 2.8, px = cx + Math.cos(ang) * 250, py = cy + Math.sin(ang) * 230;
+  const arx = 400, ary = 170, acx = px + arx, acy = py;
   const dr = ease(cl(lt / 0.9)); ctx.strokeStyle = K.red; ctx.lineWidth = 2.5; ctx.setLineDash([10, 8]);
-  ctx.beginPath(); ctx.ellipse(cx + 140, cy - 40, 420, 205, -0.25, 0, TAU * dr); ctx.stroke(); ctx.setLineDash([]);
-  // crossing point (where both orbits meet)
-  const ang = -2.2; const px = cx + Math.cos(ang) * 250, py = cy + Math.sin(ang) * 230;
-  const ea = ang - 0.55 * (1 - cl(lt / 2.4)); circ(cx + Math.cos(ea) * 250, cy + Math.sin(ea) * 230, 11, "#9FB4C8");
-  M("EARTH", cx + Math.cos(ea) * 250 - 26, cy + Math.sin(ea) * 230 + 40, 17, K.lab, "left", 700, 1);
-  const k2 = cl(lt / 2.4); const aa = 0.9 + (-0.2) * k2; // asteroid dot approaching along its own ellipse
-  const ax = px + (1 - k2) * 150, ay = py + (1 - k2) * 120; circ(ax, ay, 6, K.red);
+  ctx.beginPath(); ctx.ellipse(acx, acy, arx, ary, 0, 0, TAU * dr); ctx.stroke(); ctx.setLineDash([]);
+  const k2 = cl(lt / Math.max(0.5, (p.tHit || 1.0) + 0.3));
+  const ea = ang - 0.7 * (1 - k2), exx = cx + Math.cos(ea) * 250, eyy = cy + Math.sin(ea) * 230;
+  circ(exx, eyy, 12, "#9FB4C8"); M("EARTH", exx - 20, eyy + 40, 17, K.lab, "right", 700, 1);
+  const th2 = Math.PI + 0.75 * (1 - k2); circ(acx + Math.cos(th2) * arx, acy + Math.sin(th2) * ary, 7, K.red);
   if (hit > 0) { const r = 60 - 30 * ease(hit); corners(px - r, py - r, 2 * r, 2 * r, 14, K.red, 3.5);
-    if (blink(2.5)) { ctx.strokeStyle = K.red; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, py, 46, 0, TAU); ctx.stroke(); } }
-  M("MIN. ORBIT INTERSECTION", A.x + 40, A.y + 100, 18, K.lab, "left", 700, 1);
-  glow(hit > 0 ? "0.0000 AU" : (0.05 * (1 - cl(lt / 1.0))).toFixed(4) + " AU", A.x + 40, A.y + 170, 56, hit > 0 ? K.red : K.txt, "left", 400, hit > 0 ? 18 : 0);
+    if (blink(2.5)) { ctx.strokeStyle = K.red; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, py, 46, 0, TAU); ctx.stroke(); }
+    ctx.fillStyle = "rgba(20,4,4,0.85)"; ctx.fillRect(px - 120, py + 70, 240, 44); box(px - 120, py + 70, 240, 44, K.red, 2); M("ORBITS CROSS", px, py + 100, 20, K.red, "center", 800, 2); }
+  M("MIN. ORBIT INTERSECTION", A.x + 960, A.y + 100, 18, K.lab, "right", 700, 1);
+  glow(hit > 0 ? "0.0000 AU" : (0.05 * (1 - cl(lt / 1.0))).toFixed(4) + " AU", A.x + 960, A.y + 170, 56, hit > 0 ? K.red : K.txt, "right", 400, hit > 0 ? 18 : 0);
   M("SUN", cx, cy + 56, 16, K.lab, "center", 700, 1);
   panel(B.x, B.y, B.w, B.h, "RSK-06", "TORINO IMPACT HAZARD SCALE", "LEVEL " + Math.round(p.tor || 0), (p.tor || 0) >= 5 ? K.red : K.amb);
   const lv = p.tor || 0;
@@ -354,13 +355,13 @@ if (S === 0) { // ---------------- survey feed: a faint moving dot
   const cx = A.x + 480, cy = A.y + 370;
   ctx.strokeStyle = "rgba(255,255,255,0.20)"; ctx.lineWidth = 1.5; ctx.setLineDash([6, 8]); ctx.beginPath(); ctx.ellipse(cx, cy, 330, 120, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
   if (post) { ctx.strokeStyle = "rgba(255,59,59,0.7)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(cx, cy, 300, 108, 0, 0, TAU); ctx.stroke(); }
-  // Didymos
-  ctx.fillStyle = "#3A3F44"; ctx.beginPath(); ctx.ellipse(cx, cy, 110, 100, 0.2, 0, TAU); ctx.fill(); ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 2; ctx.stroke();
-  M("DIDYMOS", cx, cy + 150, 18, K.lab, "center", 700, 1);
-  const ang = 0.4 + lt * 0.55, dx = cx + Math.cos(ang) * (post ? 300 : 330), dy = cy + Math.sin(ang) * (post ? 108 : 120);
+  // Didymos + Dimorphos (moon passes behind when its orbit angle is on the far side)
+  const ang = -0.35 + lt * 0.32, dx = cx + Math.cos(ang) * (post ? 300 : 330), dy = cy + Math.sin(ang) * (post ? 108 : 120);
   const front = Math.sin(ang) > 0;
-  if (!front) { ctx.fillStyle = "#3A3F44"; ctx.beginPath(); ctx.ellipse(cx, cy, 110, 100, 0.2, 0, TAU); ctx.fill(); }
-  circ(dx, dy, 26, "#6A7076"); ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(dx, dy, 26, 0, TAU); ctx.stroke();
+  const didy = () => { ctx.fillStyle = "#3A3F44"; ctx.beginPath(); ctx.ellipse(cx, cy, 110, 100, 0.2, 0, TAU); ctx.fill(); ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 2; ctx.stroke(); };
+  const dimo = () => { circ(dx, dy, 26, "#6A7076"); ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(dx, dy, 26, 0, TAU); ctx.stroke(); };
+  if (front) { didy(); dimo(); } else { dimo(); didy(); }
+  M("DIDYMOS", cx, cy + 150, 18, K.lab, "center", 700, 1);
   M("DIMORPHOS", dx, dy - 40, 17, K.txt, "center", 700, 1);
   if (!post) { const k = cl(lt / th); const sx = A.x + 980 - (980 - (dx - A.x)) * k, sy = A.y + 80 + (dy - A.y - 80) * k; line(sx + 60, sy - 30, sx, sy, K.red, 3); circ(sx, sy, 6, K.red); M("DART", sx + 16, sy - 16, 18, K.red, "left", 800, 1); }
   else { const e = cl((lt - th) / 1.4); for (let i = 0; i < 16; i++) { const a = -2.4 + i * 0.12 + rnd(i) * 0.1, L = (30 + rnd(i + 4) * 110) * ease(e);
