@@ -37,12 +37,12 @@ if ((p.spin || 0) > 0.1) { for (let i = 0; i < 26; i++) { const ph = (t * 1.6 + 
 ashFall(ctx, p.ash || 0, -200, -200, 1500, 2400, 17, 130, "rgba(60,56,50,0.8)");
 ctx.restore();
 // depth gauge (diagram scale) right side
-const gx = 960, g0 = 1080, g1 = 560, val = dp * 10;
-ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 4; ctx.fillRect(gx - 50, g1 - 40, 100, g0 - g1 + 80); ctx.strokeRect(gx - 50, g1 - 40, 100, g0 - g1 + 80);
-ctx.fillStyle = "#8D877C"; const fy = lerp(g0, g1, dp); ctx.fillRect(gx - 38, fy, 30, g0 - fy);
-ctx.fillStyle = K.ink; ctx.font = "26px LSerif"; ctx.textAlign = "left"; ctx.lineWidth = 2;
+const gx = 945, g0 = 1090, g1 = 520, val = dp * 10;
+ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 4; ctx.fillRect(gx - 60, g1 - 50, 135, g0 - g1 + 90); ctx.strokeRect(gx - 60, g1 - 50, 135, g0 - g1 + 90);
+ctx.fillStyle = "#8D877C"; const fy = lerp(g0, g1, dp); ctx.fillRect(gx - 46, fy, 36, g0 - fy);
+ctx.fillStyle = K.ink; ctx.font = "36px LSerif"; ctx.textAlign = "left"; ctx.lineWidth = 2;
 for (let c = 0; c <= 10; c++) { const y = lerp(g0, g1, c / 10); ctx.beginPath(); ctx.moveTo(gx - 6, y); ctx.lineTo(gx + (c % 5 ? 6 : 14), y); ctx.stroke(); if (c % 5 === 0) ctx.fillText(String(c), gx + 18, y + 9); }
-ctx.font = "22px LSerif"; ctx.fillText("cm", gx + 6, g1 - 12);
+ctx.font = "28px LSerif"; ctx.fillText("cm", gx + 14, g1 - 16);
 ctx.strokeStyle = K.red; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(gx - 46, fy); ctx.lineTo(gx + 46, fy); ctx.stroke();
 plaque(ctx, 470, 140, [{ t: (val >= 9.95 ? "10" : val.toFixed(1)) + " cm", s: 120, c: K.red }, { t: "OF ASH · CARS STUCK", s: 30, sp: 6 }], p.labk || 0, { minW: 520 });
 finish(ctx);

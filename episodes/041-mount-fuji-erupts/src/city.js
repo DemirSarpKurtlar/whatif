@@ -35,7 +35,7 @@ if (mo < 1) {
 if (mo > 0) {
   ctx.save(); ctx.beginPath(); ctx.rect(-300, -300, W + 600, GY + 300 + 4); ctx.clip();
   const lit = cl((gr - 0.45) * 3);
-  const B = [[-40, 120, 300], [70, 90, 420], [150, 130, 360], [380, 110, 520], [470, 140, 640], [600, 90, 460], [680, 120, 560], [790, 100, 380], [880, 140, 500], [1010, 110, 330], [290, 80, 260], [560, 70, 240]];
+  const B = [[-40, 110, 120], [60, 90, 90], [140, 120, 150], [250, 100, 120], [350, 110, 260], [420, 120, 380], [610, 110, 520], [700, 130, 640], [820, 90, 460], [880, 120, 340], [1000, 110, 420], [560, 80, 220]];
   const cols = ["#C9C2B0", "#8FA7BF", "#A7B6C4", "#B9AE98", "#7F95AE"];
   B.forEach(([x, w, h], i) => { const k = eout(cl((mo - i * 0.035) / 0.5)); if (k <= 0) return; const hh = h * k, y = GY - hh;
     ctx.fillStyle = cols[i % 5]; ctx.fillRect(x, y, w, hh + 4); ctx.strokeStyle = K.ink; ctx.lineWidth = 2.5; ctx.strokeRect(x, y, w, hh + 4);
@@ -45,7 +45,7 @@ if (mo > 0) {
       ctx.fillStyle = on ? `rgba(255,214,120,${0.35 + 0.6 * lit})` : "rgba(27,34,51,0.35)"; ctx.fillRect(c, r, 10, 12); }
     if (cov > 0) { ctx.fillStyle = K.ashL; ctx.fillRect(x - 3, y - 10 * cov, w + 6, 10 * cov + 2); } });
   // Tokyo Tower (red/white lattice)
-  const k2 = eout(cl((mo - 0.25) / 0.5)), th = 600 * k2, tx = 245, base = GY;
+  const k2 = eout(cl((mo - 0.25) / 0.5)), th = 560 * k2, tx = 545, base = GY;
   if (k2 > 0) { ctx.save(); ctx.strokeStyle = K.red; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(tx - 70, base); ctx.quadraticCurveTo(tx - 20, base - th * 0.5, tx - 4, base - th); ctx.moveTo(tx + 70, base); ctx.quadraticCurveTo(tx + 20, base - th * 0.5, tx + 4, base - th); ctx.stroke();
     ctx.lineWidth = 3; for (let k = 1; k < 10; k++) { const yy = base - th * k / 10, hw = lerp(70, 6, Math.pow(k / 10, 0.6)); ctx.strokeStyle = k % 2 ? K.red : K.cream; ctx.beginPath(); ctx.moveTo(tx - hw, yy); ctx.lineTo(tx + hw, yy); ctx.stroke(); }
     ctx.fillStyle = K.cream; ctx.fillRect(tx - 30, base - th * 0.42, 60, 18); ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.strokeRect(tx - 30, base - th * 0.42, 60, 18); ctx.fillRect(tx - 18, base - th * 0.68, 36, 12); ctx.restore(); }

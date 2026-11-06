@@ -52,6 +52,20 @@ function claw(g, x, y, s, dir = 1, a = 1) {
 // big curling wave crest along a curve: from (x0,y0) rising to crest (xc,yc); foam claws along top
 function foamRow(g, x0, y0, x1, y1, n, s = 1, dir = 1, k = 1) { for (let i = 0; i < n * k; i++) { const u = i / Math.max(1, n - 1); const x = lerp(x0, x1, u), y = lerp(y0, y1, u) + Math.sin(i * 1.7 + t * 2) * 3;
   claw(g, x, y, s * (0.8 + 0.3 * rnd(i)), dir); } }
+// Great-wave crest (screen coords): rises from bottom-left, curls right; k = rise 0..1
+function greatWave(g, k = 1) {
+  if (k <= 0) return; g.save(); g.translate(0, (1 - eout(k)) * 700); const sw = Math.sin(t * 0.9) * 8;
+  g.lineWidth = 3; g.strokeStyle = K.ink;
+  g.fillStyle = K.indigo; g.beginPath(); g.moveTo(-120, 1960); g.bezierCurveTo(-60, 1700, 80, 1480, 300 + sw, 1420); g.bezierCurveTo(430 + sw, 1385, 540 + sw, 1430, 575 + sw, 1505);
+  g.bezierCurveTo(520 + sw, 1470, 450, 1475, 420, 1520); g.bezierCurveTo(395, 1580, 470, 1700, 640, 1780); g.lineTo(760, 1960); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = K.indigo2; g.beginPath(); g.moveTo(60, 1960); g.bezierCurveTo(90, 1760, 180, 1580, 330 + sw, 1470); g.bezierCurveTo(300, 1580, 360, 1720, 560, 1860); g.lineTo(600, 1960); g.closePath(); g.fill();
+  g.strokeStyle = "rgba(240,234,220,0.8)"; g.lineWidth = 2.5; for (let i = 0; i < 8; i++) { g.beginPath(); g.moveTo(40 + i * 40, 1950); g.bezierCurveTo(90 + i * 30, 1750, 170 + i * 22, 1560 + i * 8, 300 + i * 14 + sw, 1450 + i * 12); g.stroke(); }
+  // foam: claws along the crest and the curling lip
+  const cr = [[120, 1560], [170, 1505], [225, 1465], [280, 1438], [335, 1424], [390, 1420], [445, 1430], [495, 1450], [540, 1478]];
+  cr.forEach(([x, y], i) => claw(g, x + sw, y + Math.sin(t * 2 + i) * 2, 1.05 + 0.15 * rnd(i), 1));
+  bubbles(g, [575 + sw, 1520, 590 + sw, 1550, 600, 1585, 612, 1620, 640, 1650, 560, 1500], 7);
+  g.restore();
+}
 function bubbles(g, pts, r = 7, a = 1) { g.save(); g.globalAlpha *= a; g.fillStyle = K.cream; g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 1.2;
   for (let i = 0; i < pts.length; i += 2) { g.beginPath(); g.arc(pts[i], pts[i + 1], r * (0.6 + 0.5 * rnd(i)), 0, TAU); g.fill(); g.stroke(); } g.restore(); }
 
@@ -91,7 +105,7 @@ function band(g, x, y, w, h = 70, col = K.cream, a = 1) { g.save(); g.globalAlph
 // ---- ash plume (stylised woodblock billows) ----
 // from vent (vx,vy) up to height hgt; k = growth 0..1; lean = drift to the right per unit height
 function billow(g, x, y, r, dark) { // two-tone woodblock cloud puff with key line
-  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.stroke();
+  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); for (let i = 0; i <= 12; i++) { const a = i / 12 * TAU, rr2 = r * (1 + 0.07 * Math.sin(a * 5 + x * 0.01)); i ? g.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2) : g.moveTo(x + rr2, y); } g.closePath(); g.fill(); g.stroke();
   g.fillStyle = dark ? "#6B655B" : "#C7BFAE"; g.beginPath(); g.arc(x - r * 0.18, y - r * 0.2, r * 0.74, 0, TAU); g.fill();
   g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 2; g.beginPath(); g.arc(x - r * 0.1, y - r * 0.05, r * 0.42, Math.PI * 0.9, Math.PI * 1.9); g.stroke(); g.strokeStyle = K.ink; g.lineWidth = 2.6;
 }
@@ -123,7 +137,7 @@ function rain(g, dens = 1, seed = 2) { g.save(); g.strokeStyle = "rgba(230,236,2
 // ---- label plaques (cream paper, double border, serif) ----
 // lines: [{t: text, s: size, c: color, sp: letterspacing}] ; x centre, y top ; k appear 0..1
 function plaque(g, x, y, lines, k = 1, opt = {}) {
-  if (k <= 0) return; const pad = opt.pad || 34; g.save(); g.textAlign = "center"; g.textBaseline = "alphabetic";
+  if (k <= 0 || isHook()) return; const pad = opt.pad || 34; g.save(); g.textAlign = "center"; g.textBaseline = "alphabetic";
   let wMax = 0, hTot = 0; for (const L of lines) { g.font = `${L.s}px LSerif`; g.letterSpacing = (L.sp || 0) + "px"; wMax = Math.max(wMax, g.measureText(L.t).width); hTot += L.s * (L.lh || 1.12); }
   const w = Math.max(opt.minW || 0, wMax + pad * 2), h = hTot + pad * 1.2; const kk = eback(k);
   g.translate(x, y + h / 2); g.scale(0.9 + 0.1 * kk, kk); g.globalAlpha = cl(k * 2);
@@ -143,6 +157,11 @@ function vplaque(g, x, y, text, s = 46, k = 1) { if (k <= 0) return; const ch = 
 function realTime() {
   if (!window.__fujiPatched && typeof window.frame === "function") { const f = window.frame; window.frame = (T) => { window.__fujiT = T; return f(T); }; window.__fujiPatched = 1; return undefined; }
   return window.__fujiT;
+}
+function isHook() {
+  if (typeof SPEC === "undefined") return false; let T = realTime(); const hk = SPEC.hook, hs = hk && SPEC.scenes[hk.scene];
+  if (T === undefined) { const me = SPEC.scenes[p.sid | 0]; return !!(hs && me === hs && SPEC.title && t >= hs.a + (hk.at || 0) && t < hs.a + (hk.at || 0) + SPEC.title.end); }
+  return Math.abs(T - t) > 0.02 && !!SPEC.title && T < SPEC.title.end;
 }
 function capPlaque(g) {
   if (typeof SPEC === "undefined" || !SPEC.captions) return;
@@ -204,7 +223,7 @@ if (mo < 1) {
 if (mo > 0) {
   ctx.save(); ctx.beginPath(); ctx.rect(-300, -300, W + 600, GY + 300 + 4); ctx.clip();
   const lit = cl((gr - 0.45) * 3);
-  const B = [[-40, 120, 300], [70, 90, 420], [150, 130, 360], [380, 110, 520], [470, 140, 640], [600, 90, 460], [680, 120, 560], [790, 100, 380], [880, 140, 500], [1010, 110, 330], [290, 80, 260], [560, 70, 240]];
+  const B = [[-40, 110, 120], [60, 90, 90], [140, 120, 150], [250, 100, 120], [350, 110, 260], [420, 120, 380], [610, 110, 520], [700, 130, 640], [820, 90, 460], [880, 120, 340], [1000, 110, 420], [560, 80, 220]];
   const cols = ["#C9C2B0", "#8FA7BF", "#A7B6C4", "#B9AE98", "#7F95AE"];
   B.forEach(([x, w, h], i) => { const k = eout(cl((mo - i * 0.035) / 0.5)); if (k <= 0) return; const hh = h * k, y = GY - hh;
     ctx.fillStyle = cols[i % 5]; ctx.fillRect(x, y, w, hh + 4); ctx.strokeStyle = K.ink; ctx.lineWidth = 2.5; ctx.strokeRect(x, y, w, hh + 4);
@@ -214,7 +233,7 @@ if (mo > 0) {
       ctx.fillStyle = on ? `rgba(255,214,120,${0.35 + 0.6 * lit})` : "rgba(27,34,51,0.35)"; ctx.fillRect(c, r, 10, 12); }
     if (cov > 0) { ctx.fillStyle = K.ashL; ctx.fillRect(x - 3, y - 10 * cov, w + 6, 10 * cov + 2); } });
   // Tokyo Tower (red/white lattice)
-  const k2 = eout(cl((mo - 0.25) / 0.5)), th = 600 * k2, tx = 245, base = GY;
+  const k2 = eout(cl((mo - 0.25) / 0.5)), th = 560 * k2, tx = 545, base = GY;
   if (k2 > 0) { ctx.save(); ctx.strokeStyle = K.red; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(tx - 70, base); ctx.quadraticCurveTo(tx - 20, base - th * 0.5, tx - 4, base - th); ctx.moveTo(tx + 70, base); ctx.quadraticCurveTo(tx + 20, base - th * 0.5, tx + 4, base - th); ctx.stroke();
     ctx.lineWidth = 3; for (let k = 1; k < 10; k++) { const yy = base - th * k / 10, hw = lerp(70, 6, Math.pow(k / 10, 0.6)); ctx.strokeStyle = k % 2 ? K.red : K.cream; ctx.beginPath(); ctx.moveTo(tx - hw, yy); ctx.lineTo(tx + hw, yy); ctx.stroke(); }
     ctx.fillStyle = K.cream; ctx.fillRect(tx - 30, base - th * 0.42, 60, 18); ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.strokeRect(tx - 30, base - th * 0.42, 60, 18); ctx.fillRect(tx - 18, base - th * 0.68, 36, 12); ctx.restore(); }

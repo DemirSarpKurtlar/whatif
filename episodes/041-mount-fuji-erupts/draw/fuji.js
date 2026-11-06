@@ -52,6 +52,20 @@ function claw(g, x, y, s, dir = 1, a = 1) {
 // big curling wave crest along a curve: from (x0,y0) rising to crest (xc,yc); foam claws along top
 function foamRow(g, x0, y0, x1, y1, n, s = 1, dir = 1, k = 1) { for (let i = 0; i < n * k; i++) { const u = i / Math.max(1, n - 1); const x = lerp(x0, x1, u), y = lerp(y0, y1, u) + Math.sin(i * 1.7 + t * 2) * 3;
   claw(g, x, y, s * (0.8 + 0.3 * rnd(i)), dir); } }
+// Great-wave crest (screen coords): rises from bottom-left, curls right; k = rise 0..1
+function greatWave(g, k = 1) {
+  if (k <= 0) return; g.save(); g.translate(0, (1 - eout(k)) * 700); const sw = Math.sin(t * 0.9) * 8;
+  g.lineWidth = 3; g.strokeStyle = K.ink;
+  g.fillStyle = K.indigo; g.beginPath(); g.moveTo(-120, 1960); g.bezierCurveTo(-60, 1700, 80, 1480, 300 + sw, 1420); g.bezierCurveTo(430 + sw, 1385, 540 + sw, 1430, 575 + sw, 1505);
+  g.bezierCurveTo(520 + sw, 1470, 450, 1475, 420, 1520); g.bezierCurveTo(395, 1580, 470, 1700, 640, 1780); g.lineTo(760, 1960); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = K.indigo2; g.beginPath(); g.moveTo(60, 1960); g.bezierCurveTo(90, 1760, 180, 1580, 330 + sw, 1470); g.bezierCurveTo(300, 1580, 360, 1720, 560, 1860); g.lineTo(600, 1960); g.closePath(); g.fill();
+  g.strokeStyle = "rgba(240,234,220,0.8)"; g.lineWidth = 2.5; for (let i = 0; i < 8; i++) { g.beginPath(); g.moveTo(40 + i * 40, 1950); g.bezierCurveTo(90 + i * 30, 1750, 170 + i * 22, 1560 + i * 8, 300 + i * 14 + sw, 1450 + i * 12); g.stroke(); }
+  // foam: claws along the crest and the curling lip
+  const cr = [[120, 1560], [170, 1505], [225, 1465], [280, 1438], [335, 1424], [390, 1420], [445, 1430], [495, 1450], [540, 1478]];
+  cr.forEach(([x, y], i) => claw(g, x + sw, y + Math.sin(t * 2 + i) * 2, 1.05 + 0.15 * rnd(i), 1));
+  bubbles(g, [575 + sw, 1520, 590 + sw, 1550, 600, 1585, 612, 1620, 640, 1650, 560, 1500], 7);
+  g.restore();
+}
 function bubbles(g, pts, r = 7, a = 1) { g.save(); g.globalAlpha *= a; g.fillStyle = K.cream; g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 1.2;
   for (let i = 0; i < pts.length; i += 2) { g.beginPath(); g.arc(pts[i], pts[i + 1], r * (0.6 + 0.5 * rnd(i)), 0, TAU); g.fill(); g.stroke(); } g.restore(); }
 
@@ -91,7 +105,7 @@ function band(g, x, y, w, h = 70, col = K.cream, a = 1) { g.save(); g.globalAlph
 // ---- ash plume (stylised woodblock billows) ----
 // from vent (vx,vy) up to height hgt; k = growth 0..1; lean = drift to the right per unit height
 function billow(g, x, y, r, dark) { // two-tone woodblock cloud puff with key line
-  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.stroke();
+  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); for (let i = 0; i <= 12; i++) { const a = i / 12 * TAU, rr2 = r * (1 + 0.07 * Math.sin(a * 5 + x * 0.01)); i ? g.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2) : g.moveTo(x + rr2, y); } g.closePath(); g.fill(); g.stroke();
   g.fillStyle = dark ? "#6B655B" : "#C7BFAE"; g.beginPath(); g.arc(x - r * 0.18, y - r * 0.2, r * 0.74, 0, TAU); g.fill();
   g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 2; g.beginPath(); g.arc(x - r * 0.1, y - r * 0.05, r * 0.42, Math.PI * 0.9, Math.PI * 1.9); g.stroke(); g.strokeStyle = K.ink; g.lineWidth = 2.6;
 }
@@ -123,7 +137,7 @@ function rain(g, dens = 1, seed = 2) { g.save(); g.strokeStyle = "rgba(230,236,2
 // ---- label plaques (cream paper, double border, serif) ----
 // lines: [{t: text, s: size, c: color, sp: letterspacing}] ; x centre, y top ; k appear 0..1
 function plaque(g, x, y, lines, k = 1, opt = {}) {
-  if (k <= 0) return; const pad = opt.pad || 34; g.save(); g.textAlign = "center"; g.textBaseline = "alphabetic";
+  if (k <= 0 || isHook()) return; const pad = opt.pad || 34; g.save(); g.textAlign = "center"; g.textBaseline = "alphabetic";
   let wMax = 0, hTot = 0; for (const L of lines) { g.font = `${L.s}px LSerif`; g.letterSpacing = (L.sp || 0) + "px"; wMax = Math.max(wMax, g.measureText(L.t).width); hTot += L.s * (L.lh || 1.12); }
   const w = Math.max(opt.minW || 0, wMax + pad * 2), h = hTot + pad * 1.2; const kk = eback(k);
   g.translate(x, y + h / 2); g.scale(0.9 + 0.1 * kk, kk); g.globalAlpha = cl(k * 2);
@@ -143,6 +157,11 @@ function vplaque(g, x, y, text, s = 46, k = 1) { if (k <= 0) return; const ch = 
 function realTime() {
   if (!window.__fujiPatched && typeof window.frame === "function") { const f = window.frame; window.frame = (T) => { window.__fujiT = T; return f(T); }; window.__fujiPatched = 1; return undefined; }
   return window.__fujiT;
+}
+function isHook() {
+  if (typeof SPEC === "undefined") return false; let T = realTime(); const hk = SPEC.hook, hs = hk && SPEC.scenes[hk.scene];
+  if (T === undefined) { const me = SPEC.scenes[p.sid | 0]; return !!(hs && me === hs && SPEC.title && t >= hs.a + (hk.at || 0) && t < hs.a + (hk.at || 0) + SPEC.title.end); }
+  return Math.abs(T - t) > 0.02 && !!SPEC.title && T < SPEC.title.end;
 }
 function capPlaque(g) {
   if (typeof SPEC === "undefined" || !SPEC.captions) return;
@@ -189,23 +208,11 @@ if (dk > 0) { ctx.save(); ctx.globalAlpha = dk * 0.75; bokashi(ctx, -300, 1250, 
 band(ctx, -260 + Math.sin(t * 0.2) * 40 + lt * 12, 1105, 560, 46, K.cream, 0.95);
 band(ctx, 640 - lt * 10, 1175, 640, 40, K.cream, 0.9);
 // eruption from the SE flank (Hōei crater) — vent at the right flank
-if (er > 0) { const vx = 540 + 150, vy = 1240 - 600 * 0.66; vent(ctx, vx, vy, cl(er * 3)); plume(ctx, vx, vy, 900, er, 0.3, 1.0, 3, 0); }
+if (er > 0) { const vx = 540 + 150, vy = 1240 - 600 * 0.66; vent(ctx, vx, vy, cl(er * 3)); plume(ctx, vx, vy, 950, er, 0.36, 1.2, 3, 0); }
 // sea
 sea(ctx, 1400, 2300, K.indigo2, K.indigo0, 70, 4);
 band(ctx, 700 + Math.sin(t * 0.3) * 30, 1470, 420, 34, K.cream2, 0.8);
-// foreground great wave (left) with foam claws
-const wv = p.wave || 0;
-if (wv > 0) {
-  ctx.save(); ctx.translate(-80, 2050 - 560 * eout(wv)); const sw = Math.sin(t * 0.9) * 10;
-  ctx.fillStyle = K.indigo; ctx.strokeStyle = K.ink; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(-100, 400); ctx.bezierCurveTo(60, 200, 160, -60, 360 + sw, -150); ctx.bezierCurveTo(470 + sw, -190, 560 + sw, -120, 540 + sw, -40);
-  ctx.bezierCurveTo(470, -110, 400, -70, 400, 10); ctx.bezierCurveTo(420, 120, 560, 200, 760, 240); ctx.lineTo(900, 400); ctx.closePath(); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = K.indigo2; ctx.beginPath(); ctx.moveTo(40, 400); ctx.bezierCurveTo(140, 220, 220, 60, 330, -40); ctx.bezierCurveTo(300, 80, 320, 200, 520, 300); ctx.lineTo(600, 400); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(240,234,220,0.8)"; ctx.lineWidth = 2.5; for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(60 + i * 30, 380); ctx.quadraticCurveTo(180 + i * 25, 120 - i * 10, 340 + i * 12 + sw, -100 + i * 22); ctx.stroke(); }
-  foamRow(ctx, 330 + sw, -150, 560 + sw, -60, 8, 1.15, 1); foamRow(ctx, 120, 160, 340 + sw, -140, 7, 1.0, 1);
-  bubbles(ctx, [560, -20, 590, 10, 620, 30, 655, 52, 690, 70], 8);
-  ctx.restore();
-}
+ctx.restore(); ctx.save(); greatWave(ctx, p.wave || 0); ctx.restore(); ctx.save(); cam(540, cy, z, p.shake || 0);
 // ash fall when erupting
 if (er > 0.25) ashFall(ctx, cl((er - 0.25) * 1.5) * (0.5 + dk), -200, -200, 1500, 2400, 3, 140);
 ctx.restore();
@@ -218,5 +225,5 @@ if (p.lab === 1) {
 } else if (p.lab === 2) {
   plaque(ctx, 540, 150, [{ t: "SILENT SINCE 1707", s: 34, sp: 6 }, { t: "319 YEARS", s: 96, c: K.red, sp: 2 }], lk);
 }
-if (p.what) vplaque(ctx, 960, 620, "WHATIF", 44, p.what);
+if (p.what && !isHook()) vplaque(ctx, 960, 620, "WHATIF", 44, p.what);
 finish(ctx);

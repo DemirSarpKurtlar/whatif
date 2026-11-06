@@ -20,23 +20,11 @@ if (dk > 0) { ctx.save(); ctx.globalAlpha = dk * 0.75; bokashi(ctx, -300, 1250, 
 band(ctx, -260 + Math.sin(t * 0.2) * 40 + lt * 12, 1105, 560, 46, K.cream, 0.95);
 band(ctx, 640 - lt * 10, 1175, 640, 40, K.cream, 0.9);
 // eruption from the SE flank (Hōei crater) — vent at the right flank
-if (er > 0) { const vx = 540 + 150, vy = 1240 - 600 * 0.66; vent(ctx, vx, vy, cl(er * 3)); plume(ctx, vx, vy, 900, er, 0.3, 1.0, 3, 0); }
+if (er > 0) { const vx = 540 + 150, vy = 1240 - 600 * 0.66; vent(ctx, vx, vy, cl(er * 3)); plume(ctx, vx, vy, 950, er, 0.36, 1.2, 3, 0); }
 // sea
 sea(ctx, 1400, 2300, K.indigo2, K.indigo0, 70, 4);
 band(ctx, 700 + Math.sin(t * 0.3) * 30, 1470, 420, 34, K.cream2, 0.8);
-// foreground great wave (left) with foam claws
-const wv = p.wave || 0;
-if (wv > 0) {
-  ctx.save(); ctx.translate(-80, 2050 - 560 * eout(wv)); const sw = Math.sin(t * 0.9) * 10;
-  ctx.fillStyle = K.indigo; ctx.strokeStyle = K.ink; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(-100, 400); ctx.bezierCurveTo(60, 200, 160, -60, 360 + sw, -150); ctx.bezierCurveTo(470 + sw, -190, 560 + sw, -120, 540 + sw, -40);
-  ctx.bezierCurveTo(470, -110, 400, -70, 400, 10); ctx.bezierCurveTo(420, 120, 560, 200, 760, 240); ctx.lineTo(900, 400); ctx.closePath(); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = K.indigo2; ctx.beginPath(); ctx.moveTo(40, 400); ctx.bezierCurveTo(140, 220, 220, 60, 330, -40); ctx.bezierCurveTo(300, 80, 320, 200, 520, 300); ctx.lineTo(600, 400); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(240,234,220,0.8)"; ctx.lineWidth = 2.5; for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(60 + i * 30, 380); ctx.quadraticCurveTo(180 + i * 25, 120 - i * 10, 340 + i * 12 + sw, -100 + i * 22); ctx.stroke(); }
-  foamRow(ctx, 330 + sw, -150, 560 + sw, -60, 8, 1.15, 1); foamRow(ctx, 120, 160, 340 + sw, -140, 7, 1.0, 1);
-  bubbles(ctx, [560, -20, 590, 10, 620, 30, 655, 52, 690, 70], 8);
-  ctx.restore();
-}
+ctx.restore(); ctx.save(); greatWave(ctx, p.wave || 0); ctx.restore(); ctx.save(); cam(540, cy, z, p.shake || 0);
 // ash fall when erupting
 if (er > 0.25) ashFall(ctx, cl((er - 0.25) * 1.5) * (0.5 + dk), -200, -200, 1500, 2400, 3, 140);
 ctx.restore();
@@ -49,5 +37,5 @@ if (p.lab === 1) {
 } else if (p.lab === 2) {
   plaque(ctx, 540, 150, [{ t: "SILENT SINCE 1707", s: 34, sp: 6 }, { t: "319 YEARS", s: 96, c: K.red, sp: 2 }], lk);
 }
-if (p.what) vplaque(ctx, 960, 620, "WHATIF", 44, p.what);
+if (p.what && !isHook()) vplaque(ctx, 960, 620, "WHATIF", 44, p.what);
 finish(ctx);
