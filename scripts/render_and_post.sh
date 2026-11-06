@@ -5,7 +5,8 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 slot="${1:-0}"
-python3 -c "import numpy, scipy" 2>/dev/null || pip install -q numpy scipy
+python3 -c "import numpy, scipy" 2>/dev/null || pip install -q numpy scipy 2>/dev/null || pip install -q --break-system-packages numpy scipy
+python3 -c "import numpy, scipy" || { echo "numpy/scipy missing and could not be installed"; exit 1; }
 python3 scripts/ig_publish.py --posted-titles > /tmp/ig_posted_titles.txt || exit 1
 pending=()
 for ep in $(grep -v '^#' posts/schedule.txt); do
