@@ -27,6 +27,7 @@
 037-earth-were-flat
 039-humans-photosynthesize
 040-asteroid-spotted-today
+041-mount-fuji-erupts
 009-no-friction
 010-asteroid-hits-ocean
 018-rain-for-a-year

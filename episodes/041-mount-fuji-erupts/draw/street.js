@@ -229,7 +229,7 @@ ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 4; ctx.fillRec
 ctx.fillStyle = "#8D877C"; const fy = lerp(g0, g1, dp); ctx.fillRect(gx - 46, fy, 36, g0 - fy);
 ctx.fillStyle = K.ink; ctx.font = "36px LSerif"; ctx.textAlign = "left"; ctx.lineWidth = 2;
 for (let c = 0; c <= 10; c++) { const y = lerp(g0, g1, c / 10); ctx.beginPath(); ctx.moveTo(gx - 6, y); ctx.lineTo(gx + (c % 5 ? 6 : 14), y); ctx.stroke(); if (c % 5 === 0) ctx.fillText(String(c), gx + 18, y + 9); }
-ctx.font = "28px LSerif"; ctx.fillText("cm", gx + 14, g1 - 16);
+ctx.font = "28px LSerif"; ctx.fillText("cm", gx - 46, g1 - 16);
 ctx.strokeStyle = K.red; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(gx - 46, fy); ctx.lineTo(gx + 46, fy); ctx.stroke();
 plaque(ctx, 470, 140, [{ t: (val >= 9.95 ? "10" : val.toFixed(1)) + " cm", s: 120, c: K.red }, { t: "OF ASH · CARS STUCK", s: 30, sp: 6 }], p.labk || 0, { minW: 520 });
 finish(ctx);

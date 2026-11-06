@@ -35,3 +35,6 @@ date(1708,1,1) - date(1707,12,16) = 16 days
 1.7e9 / 1.24e6 = 1371
 ```
 Note: en.wikipedia.org and bousai.go.jp could not be fetched from this container (network allowlist); Cabinet Office quotes were taken from search-result excerpts of those PDFs.
+- Cube visual: 1.7e9 m³ → cube side = 1.7e9^(1/3) ≈ 1,193 m ("1.2 km"); Tokyo Skytree = 634 m (drawn to the same scale, src/volume.js).
+- Car wheel visual: ash depth drawn at true scale vs a ~32 cm tyre radius; the gauge shows the value.
+- Voice: Chatterbox, 33.93 s (words.json last word ends 33.3 s).
