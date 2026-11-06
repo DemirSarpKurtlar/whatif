@@ -40,7 +40,7 @@ export default {
     { a: 13.8, b: 15.55, glsl: "toydisc", p: { ...D, ...WK(2.74, 1.02), walk: 0.3, space: 1, helm: [[0, 0], [0.5, 0], [0.9, 1]], air: 1, pool: 1, cslide: 1, cd: [2.6, 2.9], cpit: 0.18, tsh: 0.03 },
       hud: { at: 0.05, cat: "AT THE RIM", value: "No air", sub: "HIGHER THAN ANY MOUNTAIN", vcol: "#FF5A4E", dot: "#FF5A4E" } },
     // 7 sunrise: the whole disc lights up at once
-    { a: 15.55, b: 17.55, glsl: "toydisc", p: { ...D, ...SUN, night: [[0, 1], [0.35, 1], [1.6, 0]], sunel: [[0, -0.12], [1.7, 0.13, "ease-out"]], cd: 9.6, cyaw: [0.0, 0.1], cpit: 0.1, ty: 0.75 },
+    { a: 15.55, b: 17.55, glsl: "toydisc", p: { ...D, ...SUN, night: [[0, 1], [0.35, 1], [1.6, 0]], sunel: [[0, -0.1], [1.7, 0.07, "ease-out"]], cd: 9.6, cyaw: [0.0, 0.1], cpit: 0.1, ty: 0.75 },
       hud: { at: 0.3, cat: "THE SUN RISES", value: "All at once", sub: "EVERY TOWN, SAME MOMENT", vcol: "#FFD23F", dot: "#F2A93B" } },
     // 8 same sunrise for everyone, no time zones (low glide over the village)
     { a: 17.55, b: 20.2, glsl: "toydisc", p: { ...D, ...SUN, sunel: 0.3, space: 0, ncl: 1, cd: [3.4, 3.0], cyaw: [0.15, 0.45], cpit: [0.42, 0.36], tx: 0.6, tz: 0.4, ty: 0.05 },

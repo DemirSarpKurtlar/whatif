@@ -275,7 +275,7 @@ vec3 bgCol(vec3 rd, float blur){
   vec3 col = mix(sky, sp, u_space);
   if (u_sun > 0.01) {
     float a = dot(rd, sunDir());
-    col += vec3(1.0,0.78,0.45)*(pow(max(a, 0.0), 300.0)*0.5 + pow(max(a, 0.0), 30.0)*0.12)*u_sun;
+    col += vec3(1.0,0.72,0.38)*(pow(max(a, 0.0), 400.0)*0.6 + pow(max(a, 0.0), 60.0)*0.06*(1.0 - u_space*0.5))*u_sun;
     col = mix(col, vec3(1.0,0.86,0.45), smoothstep(0.9984 - blur*0.05, 0.9989, a)*u_sun);
   }
   return col;
@@ -292,10 +292,10 @@ vec3 litCol(vec3 pos, vec3 n, vec3 rd, float mat, float t, float softK, bool sha
   float gloss; vec3 alb = albedo(mat, pos, n, gloss);
   vec3 L = keyDir();
   float sh = 1.0, ao = 1.0;
-  if (shadows) { gSec = 1.0; sh = shadowT(pos + n*(0.02 + 0.0015*t), L, softK)*smoothstep(-0.15, 0.25, dot(n, L)) + (1.0 - smoothstep(-0.15, 0.25, dot(n, L)))*0.0; ao = aoT(pos, n); gSec = 0.0; }
+  if (shadows) { gSec = 1.0; sh = shadowT(pos + n*(0.02 + 0.0015*t), L, softK)*smoothstep(-0.15, 0.25, dot(n, L)); ao = aoT(pos, n); gSec = 0.0; }
   sh = mix(0.42, 1.0, sh);
   float dif = clamp((dot(n, L) + 0.25)/1.25, 0.0, 1.0)*sh;
-  float lit = mix(1.0, smoothstep(-0.08, 0.12, L.y), u_sun);
+  float lit = mix(1.0, smoothstep(-0.05, 0.07, L.y), u_sun);
   vec3 key = mix(vec3(0.20,0.24,0.45)*0.35, vec3(1.0,0.92,0.80)*1.1, day)*lit;
   vec3 skyc = mix(vec3(0.14,0.18,0.36), vec3(0.62,0.68,0.84), day);
   if (mat > 6.5 && mat < 7.5) { dif = 0.55 + 0.45*dif; }
