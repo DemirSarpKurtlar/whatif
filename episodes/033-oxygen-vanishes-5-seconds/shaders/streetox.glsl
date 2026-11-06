@@ -39,7 +39,7 @@ vec2 cars(vec3 p){
         float fk = float(k);
         float ph = fract(gT*1.3 + fk/3.0 + fi*0.21);
         vec3 c = vec3(0.5, -0.38 + ph*0.5, 2.15 + ph*1.4);
-        res = opU(res, vec2(sdSphere(q - c, (0.12 + 0.45*ph)*u_exh), 8.0));
+        res = opU(res, vec2(sdSphere(q - c, (0.06 + 0.26*ph)*u_exh), 8.0));
       }
     }
   }

@@ -134,11 +134,11 @@ vec3 skyCol(vec3 rd){
   float cl = smoothstep(0.55,0.85,noise2(cp*1.3+vec2(gT*0.02,0.0))*0.65+noise2(cp*3.1)*0.35);
   c = mix(c, vec3(0.93,0.95,0.98), cl*0.55*smoothstep(0.02,0.2,rd.y));
   c *= 1.0 - 0.2*u_dim*smoothstep(-0.02,0.3,rd.y);
-  vec3 sd = normalize(vec3(0.04,0.55,-0.83));
+  vec3 sd = normalize(vec3(0.04,0.42,-0.9));
   float sa = max(dot(rd, sd), 0.0);
-  c += vec3(1.0,0.97,0.9)*(smoothstep(0.99955,0.9998,sa)*1.6 + pow(sa,400.0)*0.6 + pow(sa,40.0)*0.18 + pow(sa,6.0)*0.05);
+  c += vec3(1.0,0.97,0.9)*(smoothstep(0.99955,0.9998,sa)*1.6 + pow(sa,600.0)*0.5 + pow(sa,90.0)*0.12 + pow(sa,8.0)*0.03);
   // unfiltered UV: violet halo around the sun
-  c += vec3(0.55,0.4,1.0)*u_uv*(pow(sa,60.0)*0.45 + pow(sa,8.0)*0.1);
+  c += vec3(0.55,0.4,1.0)*u_uv*(pow(sa,120.0)*0.4 + pow(sa,14.0)*0.12);
   return c;
 }
 vec3 skyline(vec3 rd, vec3 base, out float hit){
