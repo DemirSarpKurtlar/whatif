@@ -19,6 +19,7 @@
 031-mega-tsunami-city
 034-fall-into-jupiter
 032-struck-by-lightning
+033-oxygen-vanishes-5-seconds
 023-zombie-ep1
 035-internet-down-worldwide
 036-ladder-to-the-moon
