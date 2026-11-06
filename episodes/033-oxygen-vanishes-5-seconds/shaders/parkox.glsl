@@ -134,7 +134,7 @@ vec3 skyCol(vec3 rd){
   float cl = smoothstep(0.55,0.85,noise2(cp*1.3+vec2(gT*0.02,0.0))*0.65+noise2(cp*3.1)*0.35);
   c = mix(c, vec3(0.93,0.95,0.98), cl*0.55*smoothstep(0.02,0.2,rd.y));
   c *= 1.0 - 0.2*u_dim*smoothstep(-0.02,0.3,rd.y);
-  vec3 sd = normalize(vec3(0.32,0.62,-0.72));
+  vec3 sd = normalize(vec3(0.12,0.6,-0.79));
   float sa = max(dot(rd, sd), 0.0);
   c += vec3(1.0,0.97,0.9)*(smoothstep(0.9993,0.9997,sa)*2.0 + pow(sa,60.0)*0.35 + pow(sa,6.0)*0.08);
   // unfiltered UV: harsh violet glare around the sun
