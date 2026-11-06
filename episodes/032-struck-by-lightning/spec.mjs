@@ -31,11 +31,11 @@ export default {
     // 5 the heart
     { a: 16.88, b: 19.9, glsl: "parkstorm", p: { ...ST, hair: 0.4, cam: [0.8, 0.7], tilt: [0.2, -0.3], glow: [0.25, 0], dark: [[0, 0.2], [0.5, 0.7], [1.1, 0.7], [1.6, 0.15, "ease-out"], [3.02, 0.05]] } },
     // 6 most strikes aren't direct: the lone tree
-    { a: 19.9, b: 23.18, glsl: "parkstorm", p: { ...TREE, tilt: [2.6, 2.0], cam: [0.0, 0.25], bolt: [[0, 0], [0.12, 0], [0.2, 1], [1.72, 0.9], [3.34, 0.6], [3.28, 0.0]], flash: [[0, 0], [0.12, 0], [0.2, 0.9], [1.0, 0.35], [3.28, 0.15]],
-      side: [[0, 0], [1.82, 0], [1.9, 1.0], [2.8200000000000003, 0.6], [3.12, 0]], rings: [[0, 0], [2.52, 0], [2.72, 1.0], [3.28, 0.8]], ripple: [[0, 0], [2.52, 0.05], [3.28, 0.8, "ease-out"]], shake: [[0, 0], [0.18, 0.7], [1.0, 0.1]] } },
+    { a: 19.9, b: 23.4, glsl: "parkstorm", p: { ...TREE, tilt: [2.6, 2.0], cam: [0.0, 0.25], bolt: [[0, 0], [0.12, 0], [0.2, 1], [1.72, 0.9], [3.34, 0.6], [3.5, 0.0]], flash: [[0, 0], [0.12, 0], [0.2, 0.9], [1.0, 0.35], [3.5, 0.15]],
+      side: [[0, 0], [1.82, 0], [1.9, 1.0], [2.8200000000000003, 0.6], [3.12, 0]], rings: [[0, 0], [2.52, 0], [2.72, 1.0], [3.5, 0.8]], ripple: [[0, 0], [2.52, 0.05], [3.5, 0.8, "ease-out"]], shake: [[0, 0], [0.18, 0.7], [1.0, 0.1]] } },
     // 7 nine in ten survive
-    { a: 23.18, b: 25.2, glsl: "parkstorm", p: { ...ST, cam: [0.55, 0.4], rise: [0.3, 0.45], tilt: -0.4, rain: 0.55, hair: 0, flash: [[0, 0.15], [0.4, 0]] },
-      hud: { at: 0.31999999999999995, cat: "THE GOOD NEWS", label: "PEOPLE STRUCK WHO SURVIVE", value: "", sub: "THE REST · MOSTLY CARDIAC ARREST", vcol: "#7CE3B8", dot: "#4FD1A5", counter: { at: 0.1, dur: 0.9, from: 0, to: 90, suffix: "%", easing: "ease-out" } } },
+    { a: 23.4, b: 25.2, glsl: "parkstorm", p: { ...ST, cam: [0.55, 0.4], rise: [0.3, 0.45], tilt: -0.4, rain: 0.55, hair: 0, flash: [[0, 0.15], [0.4, 0]] },
+      hud: { at: 0.1, cat: "THE GOOD NEWS", label: "PEOPLE STRUCK WHO SURVIVE", value: "", sub: "THE REST · MOSTLY CARDIAC ARREST", vcol: "#7CE3B8", dot: "#4FD1A5", counter: { at: 0.1, dur: 0.9, from: 0, to: 90, suffix: "%", easing: "ease-out" } } },
     // 8 Roy Sullivan: seven strikes
     { a: 25.2, b: 27.26, glsl: "parkstorm", p: { ...ST, you: 0, cam: 0.3, rise: 0.3, tilt: 3.0, yaw: 2.0, bx: 9.0, by: 0, bz: -34, bolt: [[0.1, 0], [0.14, 1], [0.25, 0.15], [0.35, 0], [0.37, 0], [0.41, 1], [0.51, 0.15], [0.62, 0], [0.63, 0], [0.67, 1], [0.78, 0.15], [0.88, 0], [0.9, 0], [0.94, 1], [1.04, 0.15], [1.15, 0], [1.16, 0], [1.2, 1], [1.31, 0.15], [1.42, 0], [1.43, 0], [1.47, 1], [1.57, 0.15], [1.68, 0], [1.69, 0], [1.73, 1], [1.84, 0.15], [1.95, 0]], seed: [[0.09, 2], [0.36, 2], [0.36, 3], [0.63, 3], [0.62, 4], [0.89, 4], [0.89, 5], [1.16, 5], [1.15, 6], [1.42, 6], [1.42, 7], [1.69, 7], [1.68, 8], [1.95, 8]], flash: [[0.1, 0.05], [0.14, 0.55], [0.34, 0.05], [0.37, 0.05], [0.41, 0.55], [0.6, 0.05], [0.63, 0.05], [0.67, 0.55], [0.87, 0.05], [0.9, 0.05], [0.94, 0.55], [1.14, 0.05], [1.16, 0.05], [1.2, 0.55], [1.4, 0.05], [1.43, 0.05], [1.47, 0.55], [1.67, 0.05], [1.69, 0.05], [1.73, 0.55], [1.93, 0.05]] },
       hud: { at: 0.1, cat: "PARK RANGER ROY SULLIVAN", label: "STRUCK BY LIGHTNING", value: "7 times", sub: "1942–1977 · SURVIVED ALL SEVEN", dot: "#F2C14E", vcol: "#FFD866" } },
@@ -50,7 +50,7 @@ export default {
     { at: 17.93, dur: 1.95, cat: "THEN", label: "YOUR HEART", value: "Restarts", sub: "ITS OWN PACEMAKER KICKS BACK IN", dot: "#4FD1A5", vcol: "#7CE3B8" },
     { at: 20.0, dur: 1.52, cat: "HOW PEOPLE GET HIT", label: "DIRECT STRIKES", value: "Only 3–5%", sub: "OF LIGHTNING INJURIES", dot: "#F2C14E" },
     { at: 21.57, dur: 0.88, cat: "SIDE FLASH", label: "LIGHTNING JUMPS FROM A TREE", value: "20–30%", sub: "OF LIGHTNING INJURIES", dot: "#7FA8FF" },
-    { at: 22.47, dur: 0.69, cat: "GROUND CURRENT", label: "SPREADS THROUGH THE GROUND", value: "40–50%", sub: "THE MOST COMMON WAY", dot: "#7FA8FF", vcol: "#BFD4FF" },
+    { at: 22.47, dur: 0.91, cat: "GROUND CURRENT", label: "SPREADS THROUGH THE GROUND", value: "40–50%", sub: "THE MOST COMMON WAY", dot: "#7FA8FF", vcol: "#BFD4FF" },
   ],
   captions: [
     [1.6, 3.98, "You're out in an open field, and your hair stands on end."],
