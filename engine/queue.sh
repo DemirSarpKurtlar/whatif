@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 run() {
   local d=$1
   echo "$(date +%T) START $d" >> engine/queue.log
-  if node engine/render.mjs "$d/spec.mjs" --out "$d/video.mp4" --workers 2 > "$d/render.log" 2>&1 \
+  if node engine/render.mjs "$d/spec.mjs" --out "$d/video.mp4" --workers 2 --chunk 24 > "$d/render.log" 2>&1 \
      && bash engine/finish.sh "$d" >> "$d/render.log" 2>&1; then
     touch "$d/DONE"; rm -f "$d/REDO"; echo "$(date +%T) DONE $d" >> engine/queue.log
   else
