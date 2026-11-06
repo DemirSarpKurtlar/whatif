@@ -212,14 +212,14 @@ vec3 terrainCol(vec3 p, vec3 n){
     col = mix(water, vec3(0.97,0.99,1.0), smoothstep(-0.03 - w, -0.005 + w*0.3, lm)*0.8);
     col = mix(col, sand, smoothstep(-0.005 - w*0.5, 0.01 + w*0.5, lm));
     col = mix(col, grass, smoothstep(0.03 - w*0.5, 0.06 + w, lm));
-    col = mix(col, vec3(0.97,0.98,1.0), smoothstep(RD - 0.24 - w, RD - 0.17 + w, r));
+    col = mix(col, vec3(0.97,0.98,1.0), smoothstep(RD - 0.13 - w, RD - 0.09 + w, r));
   } else {
-    float y = p.y + 0.02*sin(atan(p.z, p.x)*9.0);
+    float ang = atan(p.z, p.x);
+    float y = p.y + 0.015*sin(ang*9.0) + 0.01*sin(ang*23.0 + 1.0);
     vec3 soil = vec3(0.80,0.56,0.36);
-    col = mix(vec3(0.55,0.78,0.36), soil, smoothstep(-0.02, -0.05, y));
-    col = mix(col, vec3(0.62,0.40,0.26), smoothstep(0.02, 0.0, abs(y + 0.17) - 0.03));
-    col = mix(col, vec3(0.70,0.62,0.58), smoothstep(-0.27, -0.33, y));
-    col *= 0.9 + 0.2*noise2(vec2(atan(p.z, p.x)*12.0, y*30.0));
+    col = mix(vec3(0.97,0.98,1.0), soil, smoothstep(-0.03, -0.06, y));
+    col = mix(col, vec3(0.64,0.42,0.28), smoothstep(0.015, 0.0, abs(y + 0.18) - 0.035));
+    col = mix(col, vec3(0.66,0.60,0.58), smoothstep(-0.28, -0.32, y));
   }
   if (u_morph > 0.001) {
     vec3 d = normalize(p - sphC());
@@ -408,7 +408,6 @@ vec4 pixel(vec2 uv){
   float l = dot(col, vec3(0.299,0.587,0.114));
   col = mix(vec3(l), col, 1.12);
   vec2 v = uv - 0.5; col *= 1.0 - 0.25*dot(v, v);
-  col += (hash2(uv*u_resolution + fract(u_time)*91.0) - 0.5)*0.012;
   if (!(col.r >= 0.0 && col.g >= 0.0 && col.b >= 0.0)) col = vec3(0.5);
   return vec4(clamp(col, 0.0, 1.0), 1.0);
 }

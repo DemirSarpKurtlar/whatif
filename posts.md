@@ -10,3 +10,4 @@
 | 2026-11-01 21:01 | 011-jupiter-replaces-moon | https://www.instagram.com/reel/DfNpiInDaW7/ |
 | 2026-11-01 21:04 | 005-moon-disappears | https://www.instagram.com/reel/DfNp6LDEWKD/ |
 | 2026-11-01 21:07 | 007-saturn-rings | https://www.instagram.com/reel/DfNqK23juEr/ |
+| 2026-11-01 21:09 | 013-magnetic-field-off | https://www.instagram.com/reel/DfNqckkEzc6/ |
