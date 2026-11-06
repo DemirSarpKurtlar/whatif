@@ -61,6 +61,13 @@ sea(ctx, GY + 24, 1660, K.indigo2, K.indigo, 40, 8);
 ctx.fillStyle = gr > 0 ? `rgb(${Math.round(lerp(217, 150, cov))},${Math.round(lerp(192, 144, cov))},${Math.round(lerp(143, 132, cov))})` : K.sand; ctx.fillRect(-300, 1660, W + 600, 700);
 ctx.strokeStyle = K.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-300, 1660); ctx.lineTo(W + 300, 1660); ctx.stroke();
 for (let i = 0; i < 9; i++) pine(ctx, 40 + i * 125 + rnd(i) * 30, 1665, 60 + rnd(i * 3) * 30, K.forestD);
+// river boat (yakatabune) drifting
+{ const bx = ((lt * 22 + 640) % 1500) - 300, by = 1530 + Math.sin(t * 1.2) * 4; ctx.fillStyle = K.wood; ctx.strokeStyle = K.ink; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(bx - 150, by - 20); ctx.lineTo(bx + 170, by - 20); ctx.lineTo(bx + 130, by + 22); ctx.lineTo(bx - 130, by + 22); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = K.cream2; ctx.fillRect(bx - 110, by - 80, 220, 60); ctx.strokeRect(bx - 110, by - 80, 220, 60); ctx.fillStyle = K.red; for (let k = 0; k < 4; k++) { ctx.beginPath(); ctx.ellipse(bx - 80 + k * 55, by - 66, 9, 12, 0, 0, TAU); ctx.fill(); }
+  ctx.fillStyle = K.roof; ctx.beginPath(); ctx.moveTo(bx - 130, by - 78); ctx.lineTo(bx - 100, by - 104); ctx.lineTo(bx + 100, by - 104); ctx.lineTo(bx + 130, by - 78); ctx.closePath(); ctx.fill(); ctx.stroke();
+  if (cov > 0) { ctx.fillStyle = K.ashL; ctx.fillRect(bx - 100, by - 108 - 6 * cov, 200, 6 * cov + 2); }
+  ctx.strokeStyle = "rgba(240,234,220,0.7)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx - 190, by + 30); ctx.lineTo(bx - 140, by + 26); ctx.moveTo(bx + 150, by + 30); ctx.lineTo(bx + 210, by + 28); ctx.stroke(); }
 band(ctx, -200 + lt * 14, 1010, 520, 40, K.cream, 0.9 * (1 - gr));
 // ash fall
 if (p.ash) ashFall(ctx, p.ash, -200, -200, 1500, 2400, 5, 110);

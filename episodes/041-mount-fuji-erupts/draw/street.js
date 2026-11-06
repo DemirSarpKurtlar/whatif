@@ -105,9 +105,8 @@ function band(g, x, y, w, h = 70, col = K.cream, a = 1) { g.save(); g.globalAlph
 // ---- ash plume (stylised woodblock billows) ----
 // from vent (vx,vy) up to height hgt; k = growth 0..1; lean = drift to the right per unit height
 function billow(g, x, y, r, dark) { // two-tone woodblock cloud puff with key line
-  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); for (let i = 0; i <= 12; i++) { const a = i / 12 * TAU, rr2 = r * (1 + 0.07 * Math.sin(a * 5 + x * 0.01)); i ? g.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2) : g.moveTo(x + rr2, y); } g.closePath(); g.fill(); g.stroke();
-  g.fillStyle = dark ? "#6B655B" : "#C7BFAE"; g.beginPath(); g.arc(x - r * 0.18, y - r * 0.2, r * 0.74, 0, TAU); g.fill();
-  g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 2; g.beginPath(); g.arc(x - r * 0.1, y - r * 0.05, r * 0.42, Math.PI * 0.9, Math.PI * 1.9); g.stroke(); g.strokeStyle = K.ink; g.lineWidth = 2.6;
+  g.fillStyle = dark ? "#4A463F" : "#8F887B"; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.stroke();
+  g.fillStyle = dark ? "#6B655B" : "#C9C1B0"; g.beginPath(); g.arc(x - r * 0.16, y - r * 0.18, r * 0.76, 0, TAU); g.fill();
 }
 function plume(g, vx, vy, hgt, k = 1, lean = 0.35, wid = 1, seed = 5, dark = 0) {
   if (k <= 0) return; const n = 15; const top = vy - hgt * k;
@@ -118,7 +117,7 @@ function plume(g, vx, vy, hgt, k = 1, lean = 0.35, wid = 1, seed = 5, dark = 0) 
   for (let i = n - 1; i >= 0; i--) {
     const u = i / (n - 1); if (u > k) continue; const y = vy - hgt * u; const x = vx + (vy - y) * lean + Math.sin(u * 6 + t * 0.5 + seed) * 14;
     const r = (34 + 120 * Math.pow(u, 1.2)) * wid * (0.9 + 0.2 * rnd(i + seed)) * (1 + 0.04 * Math.sin(t * 1.3 + i));
-    billow(g, x + r * 0.45, y + r * 0.1, r * 0.7, dark); billow(g, x - r * 0.45, y + r * 0.15, r * 0.66, dark); billow(g, x, y, r * 0.82, dark);
+    const o1 = rnd(i * 3.1 + seed), o2 = rnd(i * 5.7 + seed); billow(g, x + r * (0.4 + 0.2 * o1), y + r * (0.05 + 0.2 * o2), r * (0.6 + 0.15 * o2), dark); billow(g, x - r * (0.4 + 0.2 * o2), y + r * (0.1 + 0.2 * o1), r * (0.58 + 0.15 * o1), dark); billow(g, x + r * 0.1 * (o1 - 0.5), y - r * 0.1 * o2, r * (0.78 + 0.1 * o1), dark);
   }
   g.restore();
 }
