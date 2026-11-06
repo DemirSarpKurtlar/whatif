@@ -9,6 +9,7 @@ const neg = (v) => (Array.isArray(v) ? v.map((x) => -x) : -v);
 const WK = (r, a) => ({ pv: 1, pa: 0, pr: r, lean: neg(a), roll: a, tx: r, ty: 0.16, tz: 0, cyaw: 0, walk: 1, space: 0 });
 const SUN = { sun: 1, sunaz: -1.77 };
 export default {
+  gl: "720x1280",
   END: 31.2,
   style: "flat",
   bg: "#0B0E1F",

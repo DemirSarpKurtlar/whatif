@@ -7,6 +7,7 @@ const IN = { cx: 0, cy: 26, cz: 34, tx: 0, ty: 0, tz: -28, water: 4.5, front: 0,
 const FJ = { cx: 0, cy: 450, cz: 2500, tx: 0, ty: 250, tz: -3000, run: 0, foam: 0, mark: 0, shake: 0 };
 const IM = { dist: 90, orb: 0.4, camh: 30, rock: 0, flash: 0, cav: 0, col: 0, ring: 15, wave: 1, shake: 0 };
 export default {
+  gl: "720x1280",
   END: 34.4,
   title: { text: "What if a 100-metre tsunami hit your city?", end: 1.8 },
   hook: { scene: 10, at: 0.3 },

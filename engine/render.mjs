@@ -16,7 +16,7 @@ const specPath = resolve(args[0]);
 const opt = (k, d) => { const i = args.indexOf("--" + k); return i >= 0 ? args[i + 1] : d; };
 const spec = (await import(pathToFileURL(specPath).href)).default;
 const fps = +opt("fps", 30);
-const [glW, glH] = opt("gl", "810x1440").split("x").map(Number);
+const [glW, glH] = opt("gl", spec.gl || "810x1440").split("x").map(Number); // spec.gl lets heavy episodes render the 3D layer smaller
 const lib = readFileSync(join(ENGINE, "shaders/lib.glsl"), "utf8");
 const shaders = {};
 for (const s of spec.scenes) {
