@@ -22,13 +22,13 @@ export default {
     sc(2, 6.42, 8.8, { cnt: [[0, 0], [1.62, 1]], tImp: 1.62 }),                                   // 2 CME crossing space, T+17:36, impact
     sc(3, 8.8, 10.95, { tLat: 0.15, z: [1.0, 1.05] }),                                           // 3 aurora over an 1859 town, latitude -> Cuba
     sc(4, 10.95, 12.75, { tBig: 0.4, z: [1.0, 1.06], fy: 150 }),                                 // 4 reading a newspaper by aurora light
-    sc(5, 12.75, 16.55, { tZap: 0.6, tNoBat: 1.3, z: [1.2, 1.32], fx: 88, fy: 168 }),           // 5 sparking telegraph, batteries unplugged
+    sc(5, 12.75, 16.55, { tZap: 0.6, tNoBat: 1.3, z: [1.1, 1.2], fx: 92, fy: 166 }),           // 5 sparking telegraph, batteries unplugged
     sc(6, 16.55, 18.82, { z: [1.0, 1.05] }),                                                      // 6 1859 > TODAY: grid surging
     sc(7, 18.82, 22.55, { heat: [[0, 0], [1.1, 1]], tBoom: 1.2, tWait: 1.9 }),                   // 7 transformer overheats, burns out, 12+ months
     sc(8, 22.55, 23.7, { glit: [[0, 0.1], [0.45, 1]], tG: 0.35 }),                               // 8 GPS drift (tractor, May 2024)
     sc(9, 23.7, 25.6, { tHit: 0.3, tFact: 0.62 }),                                                // 9 satellites glitch, 2022 Starlink loss
     sc(10, 25.6, 28.6, { cnt: [[0, 0], [0.2, 0], [1.95, 1]], tRange: 2.15 }),                    // 10 the bill: up to $2.6 trillion
-    sc(11, 28.6, 32.15, { tCme: 0.25, tMiss: 2.1, z: [1.0, 1.06], fy: 150 }),                    // 11 July 2012 near miss
+    sc(11, 28.6, 32.15, { tCme: 0.25, tMiss: 2.1, fy: 168 }),                    // 11 July 2012 near miss
     sc(12, 32.15, 35.8, { tMay: 0.3, z: [1.2, 1.32], fx: 88, fy: 170 }),                         // 12 rooftop question under the aurora
     sc(6, 100, 106, { ui: 0, hp: 1, drain: [[0, 0], [0.45, 0.04], [2.7, 1]] }),                   // 13 hook only (off-timeline)
   ],

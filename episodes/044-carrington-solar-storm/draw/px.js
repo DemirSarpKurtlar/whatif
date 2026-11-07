@@ -321,6 +321,7 @@ function sFlare() {
   }
   SHK = lt >= tF && since(tF) < 0.5 ? 1.5 : 0;
   blit();
+  if (UI) { ctx.fillStyle = "rgba(11,10,30,0.62)"; ctx.fillRect(0, 1340, W, 230); ctx.fillStyle = K.orange; ctx.fillRect(0, 1340, W, 6); ctx.fillRect(0, 1564, W, 6); }
   card({ tag: "SPACE WEATHER", title: "SOLAR FLARE", sub: lt >= tC ? "CME LAUNCHED > EARTH" : "TYPE: WHITE-LIGHT FLARE", col: K.orange, subCol: lt >= tC ? K.pink : K.orange, icon: "sun", fill: lt >= tF ? 24 : 6 });
   if (lt >= tC) big("CME LAUNCHED", 400, 8, K.pink, tC, { panel: K.pink });
   else if (lt >= tF) big("FLARE!", 400, 13, "#FFFFFF", tF, { panel: K.yellow });
@@ -343,7 +344,7 @@ function sCme() {
   }
   earth(ex, ey, 13, ang);
   if (imp) {
-    if (li < 0.6) { g.globalAlpha = clamp(1 - li / 0.6); disc(ex, ey, Math.round(14 + li * 40), "#FFFFFF"); g.globalAlpha = 1; }
+    if (li < 0.5) { g.globalAlpha = clamp(1 - li / 0.5); if (li < 0.12) disc(ex, ey, 16, "#FFFFFF"); ring(ex, ey, 14 + li * 60, "#FFFFFF"); ring(ex, ey, 13 + li * 60, K.pink); g.globalAlpha = 1; }
     for (let i = 0; i < 90; i++) { const a = ang + (rnd(i) - 0.5) * 2.6, d = 24 * c + rnd(i * 3) * 40; g.globalAlpha = 0.5 * rnd(i * 2); P(ex + Math.cos(a) * d, ey + Math.sin(a) * d, i % 2 ? K.pink : K.orange); } g.globalAlpha = 1;
     for (const s of [-1, 1]) { g.globalAlpha = 0.6 + 0.4 * Math.sin(t * 9); ring(ex, ey + s * 12, 5, K.lime, 0, TAU); ring(ex, ey + s * 12, 3, "#C8FFB8", 0, TAU); } g.globalAlpha = 1;
   }
@@ -375,7 +376,7 @@ function sAur() {
   const yy = (la) => Math.round(420 + (70 - la) / 60 * 640), x = 948;
   ctx.fillStyle = K.ink; ctx.fillRect(x - 12, 396, 72, 690); ctx.fillStyle = "#17143F"; ctx.fillRect(x - 6, 402, 60, 678);
   for (let la = 70; la >= 15; la -= 5) { const y = yy(la); ctx.fillStyle = la >= lat ? (la > 45 ? K.lime : la > 30 ? "#2EE6A6" : K.pink) : "#2E2A6A"; ctx.fillRect(x, y - 12, 48, 44); }
-  for (const la of [60, 45, 30]) TXT(ctx, la + "N", x - 24, yy(la) - 4, 4, "#A9A4E0", { align: "right", out: K.ink, ow: 2 });
+  for (const la of [60, 45]) TXT(ctx, la + "N", x - 24, yy(la) - 4, 4, "#A9A4E0", { align: "right", out: K.ink, ow: 2 });
   const my = yy(lat); ctx.fillStyle = "#FFFFFF"; ctx.fillRect(x - 20, my - 3, 88, 6);
   if (lk >= 1) { if (blink(2.5)) TXT(ctx, "CUBA!", x - 30, my - 50, 6, K.yellow, { align: "right", out: K.ink, ow: 3 }); TXT(ctx, "23N", x - 30, my + 12, 4, "#FFFFFF", { align: "right", out: K.ink, ow: 2 }); }
   TXT(ctx, "AURORA", x + 24, 350, 4, K.lime, { align: "center", out: K.ink, ow: 2 });
@@ -434,7 +435,7 @@ function sTele() {
   if (!UI) return;
   if (!nb) { if (blink(3)) big("ZAP!", 420, 13, K.yellow, p.tZap ?? 0.2); }
   else { big("BATTERY: OFF", 380, 7, K.red, tN, { panel: K.red }); big("STILL WORKING!", 520, 7, K.lime, tN + 0.25); }
-  if (nb) TXT(ctx, "UNPLUGGED", hx(150), hy(205), hu(3), K.red, { align: "center", out: K.ink, ow: 2 });
+  if (nb) TXT(ctx, "UNPLUGGED", hx(150), hy(150), hu(3), K.red, { align: "center", out: K.ink, ow: 2 });
 }
 function pylon(x, base, h) {
   const c = "#5A5F8A", top = base - h;
