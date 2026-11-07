@@ -276,14 +276,14 @@ const rev = p.rev ?? 1, fl = p.flock ?? 0;
 const bg = cached("bird_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
   vwash(g, -200, 520, "28,27,25", 0.92, 0.05);
   blob(g, 560, 900, 720, 520, "246,240,224", 0.5);
-  vwash(g, 1150, H + 200, "22,21,20", 0.7, 1);
+  vwash(g, 1050, 1150, "22,21,20", 0, 0.7); vwash(g, 1150, H + 200, "22,21,20", 0.7, 1);
 });
 ctx.drawImage(bg, -200, -200);
 // gold disc low behind the branch
 goldDisc(ctx, 330, 860, 200, 0.9);
 // shadow of a raptor cast large on the wall (cached + softened once)
-const sh = cached("raptor_shadow", 1100, 900, (g) => { g.filter = "blur(5px)"; raptor(g, 620, 820, 2.2, 1, "rgba(20,19,18,1)", 0); g.filter = "none"; });
-if (rev > 0) { ctx.save(); ctx.globalAlpha = 0.62 * E["ease-in-out"](cl(rev)); const s = 0.9 + 0.1 * rev; ctx.translate(540, 1080); ctx.scale(s, s); ctx.drawImage(sh, -560, -830); ctx.restore(); }
+const sh = cached("raptor_shadow", 1500, 900, (g) => { g.filter = "blur(5px)"; raptor(g, 1000, 840, 2.2, 1, "rgba(20,19,18,1)", 0); g.filter = "none"; });
+if (rev > 0) { ctx.save(); ctx.globalAlpha = 0.62 * E["ease-in-out"](cl(rev)); const s = 0.66 + 0.06 * rev; ctx.translate(700, 1150); ctx.scale(s, s); ctx.drawImage(sh, -1000, -840); ctx.restore(); }
 // gold rim between bird and shadow: a dotted link
 // branch
 brush(ctx, [-60, 1080, 200, 1060, 470, 1040, 700, 1046, 860, 1020], 30, INK.ink, 1, 4, 0.3);

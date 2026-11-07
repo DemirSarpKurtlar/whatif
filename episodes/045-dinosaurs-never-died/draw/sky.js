@@ -274,7 +274,7 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
 frameIn(p);
 const k = p.k ?? 0.5, hit = p.hit ?? 0;
 const bg = cached("sky_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
-  vwash(g, -200, 1150, "26,25,23", 0.96, 0.25);
+  vwash(g, -200, 1150, "26,25,23", 0.96, 0);
   streak(g, 260, 300, 1000, 150, "16,15,14", 0.55, 16); streak(g, 820, 560, 820, 110, "20,19,18", 0.45, 14); streak(g, 380, 760, 700, 60, "45,43,40", 0.35, 10);
   blob(g, 330, 1080, 620, 260, "235,226,205", 0.45);
   ridge(g, 1130, 150, 0.6, "120,115,105", 0.6, 8, 160, 0.9);
@@ -284,7 +284,7 @@ const bg = cached("sky_bg", W + 400, H + 400, (g) => { g.translate(200, 200); dr
   // far sauropods in mist
   sauropod(g, 260, 1250, 0.28, 1, "rgba(70,67,62,0.9)", 0, 0.75); sauropod(g, 470, 1262, 0.22, 1, "rgba(78,75,70,0.85)", 0, 0.5);
   // foreground rock + ferns (ink)
-  vwash(g, 1330, H + 200, "20,19,18", 0.9, 1);
+  vwash(g, 1240, 1400, "20,19,18", 0, 0.9); vwash(g, 1400, H + 200, "20,19,18", 0.9, 1);
   g.fillStyle = INK.ink; g.beginPath(); g.moveTo(-200, 1560); g.quadraticCurveTo(300, 1440, 620, 1470); g.quadraticCurveTo(820, 1400, 1080, 1420); g.lineTo(1300, 1440); g.lineTo(1300, H + 200); g.lineTo(-200, H + 200); g.fill();
   for (let i = 0; i < 9; i++) frond(g, 40 + i * 120 + rnd(i) * 40, 1600 + rnd(i * 3) * 120, 220 + rnd(i * 5) * 140, -Math.PI / 2 + (rnd(i * 7) - 0.5) * 1.6, (rnd(i * 9) - 0.5) * 2.2, INK.ink, 6, i);
 });
@@ -311,11 +311,11 @@ if (hit > 0) {
   const [ix, iy] = P1, e = E["ease-out"](cl(hit));
   glow(ctx, ix, iy, 300 + 1300 * e, 0.85 * (1 - 0.4 * e));
   ctx.save(); ctx.beginPath(); ctx.rect(-400, -400, W + 800, iy + 400); ctx.clip();
-  const R = 60 + 520 * e; goldShape(ctx, (q) => { q.ellipse(ix, iy, R * 1.25, R, 0, Math.PI, 0); }, 60);
+  const R = 40 + 300 * e; goldShape(ctx, (q) => { q.ellipse(ix, iy, R * 1.3, R, 0, Math.PI, 0); }, 60); glow(ctx, ix, iy - R * 0.3, R * 1.1, 0.9 * (1 - e * 0.5), "255,248,226");
   ctx.restore();
   ctx.strokeStyle = `rgba(255,241,200,${0.8 * (1 - e)})`; ctx.lineWidth = 10 * (1 - e) + 2; ctx.beginPath(); ctx.ellipse(ix, iy + 10, 100 + 1400 * e, 30 + 260 * e, 0, 0, TAU); ctx.stroke();
   for (let i = 0; i < 16; i++) { const ph = cl(e * 1.2 - i * 0.03), a = rnd(i * 3.3) * Math.PI - Math.PI; const r = (120 + rnd(i) * 220) * ph;
-    blob(ctx, ix + Math.cos(a) * r * 1.6, iy - 120 * ph - Math.abs(Math.sin(a)) * r * 1.4 - ph * 280, 90 + 220 * ph, 70 + 160 * ph, i % 3 ? "20,19,18" : "60,57,52", 0.6 * ph); }
+    blob(ctx, ix + Math.cos(a) * r * 1.2, iy - 200 * ph - Math.abs(Math.sin(a)) * r * 1.6 - ph * 380, 90 + 200 * ph, 70 + 150 * ph, i % 3 ? "20,19,18" : "60,57,52", 0.7 * ph); }
   // ejecta flecks
   for (let i = 0; i < 50; i++) { const a = -Math.PI * (0.1 + 0.8 * rnd(i * 1.3)), v = 400 + rnd(i * 2.2) * 900, tt = e; const x = ix + Math.cos(a) * v * tt, y = iy + Math.sin(a) * v * tt + 500 * tt * tt;
     ctx.fillStyle = `rgba(242,214,138,${(1 - e) * 0.9})`; ctx.fillRect(x, y, 4, 4); }

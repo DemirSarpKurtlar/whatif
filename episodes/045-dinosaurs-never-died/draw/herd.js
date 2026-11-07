@@ -274,7 +274,7 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
 frameIn(p);
 const ast = p.ast ?? 0.5;
 const bg = cached("herd_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
-  vwash(g, -200, 700, "30,29,27", 0.92, 0.1);
+  vwash(g, -200, 760, "30,29,27", 0.92, 0);
   streak(g, 300, 250, 900, 120, "22,21,20", 0.5, 14); streak(g, 850, 430, 700, 80, "30,29,27", 0.4, 12);
   blob(g, 600, 960, 700, 380, "246,240,224", 0.5);
 });
@@ -290,7 +290,7 @@ if (ast > 0 && ast < 1) {
 }
 // gold sun behind the herd
 goldDisc(ctx, 620, 930, 230, 1);
-ctx.save(); ctx.globalAlpha = 0.8; brush(ctx, [300, 900, 640, 886, 980, 896], 14, INK.ink, 0.8, 3, 0.7); brush(ctx, [420, 1010, 700, 1004, 860, 1012], 8, INK.ink, 0.7, 6, 0.8); ctx.restore();
+ctx.drawImage(cached("herd_cloud", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 560, 860, 760, 40, "30,29,27", 0.6, 8); streak(g, 700, 1000, 520, 26, "30,29,27", 0.5, 6); }), -200, -200);
 // mist layers + far herd (cached)
 const mid = cached("herd_mid", W + 400, H + 400, (g) => { g.translate(200, 200);
   ridge(g, 1090, 110, 1.1, "120,115,105", 0.7, 8, 140, 0.9);
@@ -305,7 +305,7 @@ streak(ctx, 540, 1180, 1500, 40, "190,183,168", 0.4, 0);
 sauropod(ctx, 380 + lt * 22, 1290, 0.58, 1, "rgba(40,38,35,0.97)", w, 0.7, 2);
 // near ground
 const near = cached("herd_near", W + 400, H + 400, (g) => { g.translate(200, 200);
-  vwash(g, 1260, H + 200, "20,19,18", 0.7, 1);
+  vwash(g, 1160, 1260, "20,19,18", 0, 0.7); vwash(g, 1260, H + 200, "20,19,18", 0.7, 1);
   g.fillStyle = INK.ink; g.beginPath(); g.moveTo(-200, 1500); g.quadraticCurveTo(400, 1420, 1300, 1480); g.lineTo(1300, H + 200); g.lineTo(-200, H + 200); g.fill();
   for (let i = 0; i < 8; i++) frond(g, 900 + rnd(i) * 300 - 100, 1560 + rnd(i * 3) * 100, 200 + rnd(i * 5) * 150, -Math.PI / 2 + (rnd(i * 7) - 0.5) * 1.8, (rnd(i * 9) - 0.5) * 2.4, INK.ink, 6, i + 20);
 });

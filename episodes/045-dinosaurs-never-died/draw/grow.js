@@ -274,18 +274,19 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
 frameIn(p);
 const gk = p.g ?? 1, qk = p.q ?? 1;
 const bg = cached("grow_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
-  vwash(g, -200, 560, "28,27,25", 0.95, 0.1);
+  vwash(g, -200, 600, "28,27,25", 0.95, 0);
   blob(g, 600, 820, 700, 460, "246,240,224", 0.45);
   ridge(g, 1060, 80, 3.1, "120,115,105", 0.5, 8, 140, 1.2);
-  vwash(g, 1110, H + 200, "24,23,21", 0.75, 1);
+  vwash(g, 1000, 1110, "24,23,21", 0, 0.75); vwash(g, 1110, H + 200, "24,23,21", 0.75, 1);
   g.fillStyle = INK.ink; g.beginPath(); g.moveTo(-200, 1135); g.quadraticCurveTo(540, 1110, 1300, 1132); g.lineTo(1300, 1175); g.lineTo(-200, 1175); g.fill();
   brush(g, [-60, 1132, 500, 1124, 1140, 1130], 10, INK.ink, 0.9, 3, 0.4);
 });
 ctx.drawImage(bg, -200, -200);
-function mammoth(q) { // path in local coords (feet at 0), facing left
-  q.moveTo(330, -300); q.quadraticCurveTo(320, -560, 120, -600); q.quadraticCurveTo(-60, -660, -180, -610); q.quadraticCurveTo(-300, -640, -340, -540);
-  q.quadraticCurveTo(-400, -420, -380, -250); q.quadraticCurveTo(-400, -120, -420, -40); q.quadraticCurveTo(-440, 0, -400, 0); q.quadraticCurveTo(-360, -60, -330, -260);
-  q.lineTo(-300, -330); q.lineTo(-280, 0); q.lineTo(-200, 0); q.lineTo(-190, -260); q.lineTo(180, -260); q.lineTo(190, 0); q.lineTo(270, 0); q.lineTo(290, -260); q.quadraticCurveTo(340, -200, 330, -300); q.closePath();
+function mammoth(q) { // path in local coords (feet at 0), facing left: domed head, sloping back, curled trunk, tusk
+  q.moveTo(300, -250); q.quadraticCurveTo(350, -450, 250, -540); q.quadraticCurveTo(60, -600, -150, -680); q.quadraticCurveTo(-280, -720, -330, -600);
+  q.quadraticCurveTo(-370, -520, -380, -440); q.quadraticCurveTo(-400, -250, -440, -120); q.quadraticCurveTo(-460, -50, -415, -50); q.quadraticCurveTo(-405, -90, -372, -200);
+  q.quadraticCurveTo(-345, -330, -300, -360); q.lineTo(-290, 0); q.lineTo(-180, 0); q.lineTo(-170, -230); q.quadraticCurveTo(0, -200, 160, -230); q.lineTo(170, 0); q.lineTo(280, 0); q.closePath();
+  q.moveTo(-318, -392); q.quadraticCurveTo(-500, -330, -450, -150); q.quadraticCurveTo(-440, -140, -425, -158); q.quadraticCurveTo(-455, -300, -308, -362); q.closePath();
 }
 function ghost(pathFn, x, y, s, a) { if (a <= 0) return; ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
   ctx.globalAlpha = a * 0.25; ctx.beginPath(); pathFn(ctx); ctx.fillStyle = goldPat(ctx); ctx.fill();

@@ -274,18 +274,18 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
 frameIn(p);
 const qk = p.q ?? 0, w = p.walk ?? 1;
 const bg = cached("city_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
-  vwash(g, -200, 760, "28,27,25", 0.95, 0.1);
+  vwash(g, -200, 820, "28,27,25", 0.95, 0);
   streak(g, 300, 300, 900, 110, "18,17,16", 0.5, 14); streak(g, 820, 500, 700, 70, "26,25,23", 0.4, 12);
   blob(g, 540, 900, 700, 420, "246,240,224", 0.5);
 });
 ctx.drawImage(bg, -200, -200);
 goldDisc(ctx, 560, 820, 210, 1);
-ctx.save(); ctx.globalAlpha = 0.75; brush(ctx, [260, 790, 600, 778, 900, 788], 12, INK.ink, 0.8, 5, 0.7); ctx.restore();
+ctx.drawImage(cached("city_cloud", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 520, 790, 700, 36, "30,29,27", 0.6, 8); }), -200, -200);
 const far = cached("city_far", W + 400, H + 400, (g) => { g.translate(200, 200);
   g.filter = "blur(1.5px)"; skylineInk(g, 1010, 3, "rgba(120,115,106,0.9)", 0.0, 120, 420); g.filter = "none";
   streak(g, 540, 1000, 1500, 60, "220,213,198", 0.55, 14);
   skylineInk(g, 1100, 7, "rgba(66,63,58,0.97)", 0.08, 160, 600);
-  streak(g, 540, 1095, 1500, 46, "190,183,168", 0.45, 10);
+  streak(g, 540, 1095, 1500, 46, "190,183,168", 0.45, 10); streak(g, 400, 1205, 1100, 80, "215,208,192", 0.6, 14);
 });
 ctx.drawImage(far, -200, -200);
 // a long-neck walking among the mid towers
@@ -293,13 +293,13 @@ sauropod(ctx, 160 + lt * 26, 1130, 0.62, 1, "rgba(34,32,30,0.98)", w, 0.9, 1);
 const near = cached("city_near", W + 400, H + 400, (g) => { g.translate(200, 200);
   skylineInk(g, 1240, 11, INK.ink, 0.16, 300, 820, 640, 1300);
   skylineInk(g, 1240, 19, INK.ink, 0.16, 260, 700, -220, 140);
-  vwash(g, 1180, H + 200, "18,17,16", 0.85, 1); g.fillStyle = INK.ink; g.fillRect(-200, 1236, W + 400, H);
+  vwash(g, 1236, H + 200, "18,17,16", 0.85, 1); g.fillStyle = INK.ink; g.fillRect(-200, 1236, W + 400, H);
   // street lines
   g.fillStyle = "rgba(242,214,138,0.35)"; for (let i = 0; i < 9; i++) g.fillRect(-100 + i * 150, 1380, 70, 5);
 });
 ctx.drawImage(near, -200, -200);
 // T. rex crossing the street in front
-trex(ctx, 980 - lt * 40, 1290, 0.62, -1, INK.ink, w, 0.15, 1);
+trex(ctx, 760 - lt * 40, 1240, 0.7, -1, INK.ink, w, 0.15, 1);
 // pterosaur-like birds over the city
 for (let i = 0; i < 4; i++) flyBird(ctx, 820 - i * 130 - lt * 30, 480 + Math.sin(i * 1.9) * 50, 1.2 - i * 0.12, INK.ink, i);
 if (qk > 0) { ctx.save(); ctx.globalAlpha = cl(qk * 2); const s = 0.8 + 0.2 * E["back"](cl(qk)); ctx.translate(560, 820); ctx.scale(s, s);

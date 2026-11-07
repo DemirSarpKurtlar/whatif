@@ -274,15 +274,15 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
 frameIn(p);
 const k = p.k ?? 0;
 const bg = cached("ext_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
-  vwash(g, -200, 420, "26,25,23", 0.95, 0.2);
+  vwash(g, -200, 520, "26,25,23", 0.95, 0);
   blob(g, 540, 800, 700, 520, "240,234,218", 0.35);
   vwash(g, 1120, 1300, "26,25,23", 0, 0.8); vwash(g, 1300, H + 200, "26,25,23", 0.8, 0.95);
   brush(g, [-40, 1205, 400, 1200, 800, 1208, 1140, 1202], 6, INK.ink, 0.6, 4, 0.7);
 });
 ctx.drawImage(bg, -200, -200);
 // icon sprites (ink + gold), cached once
-const spr = (kind, gold) => cached(`ic${kind}${gold ? "g" : ""}`, 240, 200, (g, w, h) => {
-  icon(g, kind, w / 2, h / 2, 1.0, INK.ink);
+const spr = (kind, gold) => cached(`ic${kind}${gold ? "g" : ""}`, 280, 240, (g, w, h) => {
+  icon(g, kind, w / 2, h / 2, 1.3, INK.ink);
   if (gold) { g.globalCompositeOperation = "source-in"; g.fillStyle = goldPat(g); g.fillRect(0, 0, w, h); g.globalCompositeOperation = "source-over"; }
 });
 // layout 4 cols x 5 rows; survivor cells
@@ -294,12 +294,12 @@ for (let i = 0; i < 20; i++) {
   const kind = kinds[i];
   if (surv.has(i)) {
     const gk = cl((k - 0.75) / 0.25);
-    ctx.drawImage(spr(kind, 0), x - 120, y - 100); if (gk > 0) { ctx.save(); ctx.globalAlpha = gk; glow(ctx, x, y, 120, 0.45); ctx.drawImage(spr(kind, 1), x - 120, y - 100); ctx.restore(); }
+    ctx.drawImage(spr(kind, 0), x - 140, y - 120); if (gk > 0) { ctx.save(); ctx.globalAlpha = gk; glow(ctx, x, y, 130, 0.5); ctx.drawImage(spr(kind, 1), x - 140, y - 120); ctx.restore(); }
     continue;
   }
   const th = 0.05 + (rnd(i * 7.7) * 0.6 + (order++ / 15) * 0.4) * 0.65; // when this one goes
   const d = cl((k - th) / 0.16);
-  if (d < 1) { ctx.save(); ctx.globalAlpha = 1 - d; ctx.drawImage(spr(kind, 0), x - 120, y - 100 - d * 30); ctx.restore(); }
+  if (d < 1) { ctx.save(); ctx.globalAlpha = 1 - d; ctx.drawImage(spr(kind, 0), x - 140, y - 120 - d * 30); ctx.restore(); }
   if (d > 0 && d < 1) { for (let j = 0; j < 4; j++) blob(ctx, x + (rnd(i + j) - 0.5) * 120, y - d * 90 - j * 22, 50 + d * 70, 40 + d * 50, "20,19,18", 0.45 * Math.sin(Math.PI * d)); splatter(ctx, x, y, 80 * d + 10, 8, i * 5 + 1, INK.ink, 0.6 * (1 - d)); }
 }
 goldDust(ctx, 18, 0, 380, W, 800, 9, 0.5, 10);

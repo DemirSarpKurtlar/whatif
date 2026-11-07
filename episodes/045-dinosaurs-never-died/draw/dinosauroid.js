@@ -277,12 +277,11 @@ const bg = cached("droid_bg", W + 400, H + 400, (g) => { g.translate(200, 200); 
   vwash(g, -200, H + 200, "30,29,27", 0.9, 0.85);
   blob(g, 560, 820, 560, 720, "120,115,106", 0.45);
   streak(g, 520, 1200, 1500, 60, "150,144,132", 0.35, 14);
-  vwash(g, 1220, H + 200, "16,15,14", 0.4, 1);
+  vwash(g, 1120, 1220, "16,15,14", 0, 0.4); vwash(g, 1220, H + 200, "16,15,14", 0.4, 1);
 });
 ctx.drawImage(bg, -200, -200);
 // halo behind the head
 goldDisc(ctx, 600, 560, 230 + 6 * Math.sin(t * 1.5), 1 - 0.6 * ph);
-ctx.save(); ctx.globalAlpha = 0.7 * (1 - ph); brush(ctx, [320, 640, 620, 628, 900, 640], 12, INK.ink, 0.8, 9, 0.7); ctx.restore();
 // Troodon on the left, smaller (what Russell started from)
 if (gh > 0) { ctx.save(); ctx.globalAlpha = gh * (1 - 0.7 * ph); raptor(ctx, 200, 1260, 0.95, 1, "rgba(24,23,21,0.95)", 1); ctx.restore(); }
 // the dinosauroid
