@@ -5,25 +5,26 @@ W = json.load(open(os.environ.get("WORDS", EP + "words.json")))
 norm = lambda x: re.sub(r"[^a-z0-9]", "", x.lower())
 NW = [norm(w["w"]) for w in W]
 _last = [0]
-def find(phrase, after=None):
-    """index of the first word of `phrase` (searching forward from the previous match)"""
-    toks = [norm(t) for t in phrase.split()]
-    st = _last[0] if after is None else after
+def find(*phrases):
+    """index of the first word of the first matching alternative (searching forward from the previous match)"""
+    st = _last[0]
     for i in range(st, len(NW)):
-        if NW[i:i + len(toks)] == toks:
-            _last[0] = i + 1; return i
-    raise SystemExit(f"phrase not found: {phrase!r} after {st}")
+        for phrase in phrases:
+            toks = [norm(t) for t in phrase.split()]
+            if NW[i:i + len(toks)] == toks:
+                _last[0] = i + 1; return i
+    raise SystemExit(f"phrase not found: {phrases!r} after {st}")
 r2 = lambda x: round(x, 2)
 def s(i): return W[i]["s"]
 def e(i): return W[i]["e"]
 
 iT = find("What if Earth's"); iTe = find("half") ; iA = find("Last time"); iB = find("This time"); iBh = find("half")
-iC = find("Seventy kilos"); iC2 = find("thirty-five") if "thirtyfive" in NW else find("thirty")
-iD = find("Your jump"); iDm = find("full metre"); iE = find("so the average"); iEd = find("dunk")
+iC = find("Seventy kilos", "70 kilos")
+iD = find("Your"); iD2 = find("from half"); iDm = find("full"); iE = find("so the average"); iEd = find("dunk")
 iF = find("A dropped"); iF2 = find("slower")
-iG = find("Air pressure"); iGe = find("Everest"); iH = find("Storm waves"); iI = find("Bones and"); iJ = find("Trees grow")
+iG = find("Air pressure"); iGe = find("like breathing"); iH = find("Storm waves"); iI = find("Bones and"); iJ = find("Trees grow")
 iK = find("Over millions"); iKs = find("space"); iL = find("And in orbit"); iLs = find("suddenly"); iM = find("Even the Moon")
-iN = find("Would you rather"); iNd = find("dunk"); iNm = find("Moon")
+iN = find("Would you rather")
 LAST = len(W) - 1
 END = r2(e(LAST) + 2.6)
 ENDC = r2(s(iN) - 0.08)
@@ -98,11 +99,11 @@ for a, bb, g, p, h, x in sc:
 def cap(i, j, t): return f'[{r2(s(i)-0.04)}, {r2(e(j)+0.06)}, "{t}"]'
 caps = [
   cap(iA, iB - 1, "Last time, it flipped."), cap(iB, iC - 1, "This time, you weigh half."),
-  cap(iC, iD - 1, "Seventy kilos feels like thirty-five."),
-  cap(iD, iDm - 2, "Your jump doubles,"), cap(iDm - 1, iE - 1, "from half a metre to a full metre,"),
+  cap(iC, iD - 1, "70 kilos feels like 35."),
+  cap(iD, iD2 - 1, "Your jump height doubles,"), cap(iD2, iE - 1, "from half a metre to a full metre,"),
   cap(iE, iF - 1, "so the average man can dunk."),
   cap(iF, iF + 5, "A dropped phone hits the floor"), cap(iF + 6, iG - 1, "29% slower."),
-  cap(iG, iG + 3, "Air pressure halves too,"), cap(iG + 4, iH - 1, "like breathing at Everest Base Camp."),
+  cap(iG, iGe - 1, "Air pressure halves too,"), cap(iGe, iH - 1, "like breathing at Everest Base Camp."),
   cap(iH, iI - 1, "Storm waves grow twice as tall."), cap(iI, iJ - 1, "Bones and muscles weaken."), cap(iJ, iK - 1, "Trees grow taller."),
   cap(iK, iK + 3, "Over millions of years,"), cap(iK + 4, iL - 1, "air leaks into space."),
   cap(iL, iL + 2, "And in orbit,"), cap(iL + 3, iM - 1, "every satellite is suddenly at escape speed."),
