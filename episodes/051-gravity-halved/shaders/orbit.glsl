@@ -168,7 +168,7 @@ vec4 pixel(vec2 uv){
     float r = q, ang = the;
     if (u_met > 0.0) { float nu = nuOf(n*u_met*0.5); r = 2.0*q/(1.0 + cos(nu)); ang = the + nu; }
     vec3 MP = (e1*cos(ang) + e2*sin(ang))*r;
-    float mr = 0.27;
+    float mr = 0.38;
     vec3 oc = ro - MP; float mb = dot(oc, rd), mc = dot(oc,oc) - mr*mr, md = mb*mb - mc;
     if (md > 0.0) {
       float tm = -mb - sqrt(md);

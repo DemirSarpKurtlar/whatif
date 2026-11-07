@@ -22,7 +22,7 @@ export default {
       hud: { cat: "YOUR WEIGHT", label: "70 KG FEELS LIKE", value: "", sub: "HALF THE LOAD ON YOUR LEGS", vcol: "#FFD866", counter: { at: 0.2, dur: 1.6, from: 70, to: 35, suffix: " kg", easing: "ease-in-out" } } },
     { a: 11.08, b: 15.81, glsl: "court", cut: true, p: { ...K, cx: [4.6, 4.0], cy: [1.6, 2.0], cz: [5.0, 4.4], ty: [1.5, 2.1], jt: [[0, 0, "linear"], [4.73, 0.64, "ease-out"]], ghost: 0.9 },
       hud: { cat: "SAME LEGS · HALF GRAVITY", label: "JUMP HEIGHT", value: "", sub: "GHOST = TODAY · 0.5 M", vcol: "#FFD866", counter: { at: 0.2, dur: 2.4, from: 0.5, to: 1.0, dec: 2, suffix: " m", easing: "ease-out" } } },
-    { a: 15.81, b: 18.35, glsl: "court", cut: true, p: { ...K, cx: [5.0, 4.6], cy: [1.8, 2.2], cz: [1.0, 1.2], tx: 0, ty: [2.2, 2.5], tz: 0.15, jt: [[0, 0.25, "linear"], [1.3, 0.95, "linear"], [2.54, 1.4, "ease-out"]], ghost: 0.7, shake: [[0, 0], [1.3, 0.5], [2.54, 0.1]] },
+    { a: 15.81, b: 18.35, glsl: "court", cut: true, p: { ...K, cx: [5.2, 4.8], cy: [1.9, 2.2], cz: [-0.3, -0.2], tx: 0, ty: [2.2, 2.5], tz: 0.2, jt: [[0, 0.25, "linear"], [1.3, 0.95, "linear"], [2.54, 1.4, "ease-out"]], ghost: 0.7, shake: [[0, 0], [1.3, 0.5], [2.54, 0.1]] },
       hud: { cat: "RIM 3.05 M · TODAY YOU REACH 2.83", label: "YOUR HAND REACHES", value: "3.33 m", sub: "THE AVERAGE MAN CAN DUNK", dot: "#FF8A3D" } },
     { a: 18.35, b: 22.88, glsl: "court", cut: true, p: { ...K, cx: [4.3, 4.1], cy: [1.0, 0.9], cz: [5.9, 5.6], tx: 3.2, ty: [0.75, 0.6], tz: 3.4, phone: 1, ghost: 0.9, drop: [[0, 0, "linear"], [0.3, 0, "linear"], [2.6, 0.72, "linear"], [4.53, 0.72]] },
       hud: { cat: "DROPPED PHONE · 1.2 M", label: "IMPACT SPEED", value: "", sub: "4.9 → 3.4 M/S · LANDS 41% LATER", vcol: "#5CB8F0", counter: { at: 0.3, dur: 2.3, from: 0, to: -29, suffix: " %", easing: "linear" } } },
@@ -40,7 +40,7 @@ export default {
       hud: { cat: "ISS · GPS · EVERY CIRCULAR ORBIT", label: "ORBITAL SPEED", value: "= Escape speed", sub: "√(GM/r) = √(2·½GM/r)", dot: "#FFD866" } },
     { a: 43.26, b: 45.67, glsl: "orbit", cut: true, p: { ...B, dist: [18, 30], orb: [0.5, 0.65], camy: [9, 16], ty: 0.0, cyc: 3.0, et: [10, 22], moon: 1, mq: 3.4, met: [[0, 0.5, "linear"], [2.31, 14.0, "ease-in"]], leak: 0.2 },
       hud: { cat: "PAST EARTH'S PULL · 1.2 M KM", label: "THE MOON", value: "Drifts away", sub: "THE SUN TAKES IT · TIDES SHRINK", dot: "#C9CED6" } },
-    { a: 45.67, b: 51.6, glsl: "court", p: { ...K, cx: 4.8, cy: 2.0, cz: 1.1, tx: 0, ty: 2.3, tz: 0.15, jt: [0.3, 1.4], ghost: 0 } },
+    { a: 45.67, b: 51.6, glsl: "court", p: { ...K, cx: 4.8, cy: 2.0, cz: -0.2, tx: 0, ty: 2.3, tz: 0.2, jt: [0.3, 1.4], ghost: 0 } },
   ],
   captions: [
     [3.38, 5.41, "Last time, it flipped."],

@@ -55,7 +55,7 @@ scene(b(iD), b(iE), "court", f'{{ ...K, cx: [4.6, 4.0], cy: [1.6, 2.0], cz: [5.0
       f'{{ cat: "SAME LEGS · HALF GRAVITY", label: "JUMP HEIGHT", value: "", sub: "GHOST = TODAY · 0.5 M", vcol: "#FFD866", counter: {{ at: 0.2, dur: {r2(min(2.4, dD-0.3))}, from: 0.5, to: 1.0, dec: 2, suffix: " m", easing: "ease-out" }} }}', ", cut: true")
 # E: the dunk (other angle)
 dE = b(iF) - b(iE)
-scene(b(iE), b(iF), "court", f'{{ ...K, cx: [5.0, 4.6], cy: [1.8, 2.2], cz: [1.0, 1.2], tx: 0, ty: [2.2, 2.5], tz: 0.15, jt: [[0, 0.25, "linear"], [{r2(min(1.3, dE*0.6))}, 0.95, "linear"], [{r2(dE)}, 1.4, "ease-out"]], ghost: 0.7, shake: [[0, 0], [{r2(min(1.3, dE*0.6))}, 0.5], [{r2(dE)}, 0.1]] }}',
+scene(b(iE), b(iF), "court", f'{{ ...K, cx: [5.2, 4.8], cy: [1.9, 2.2], cz: [-0.3, -0.2], tx: 0, ty: [2.2, 2.5], tz: 0.2, jt: [[0, 0.25, "linear"], [{r2(min(1.3, dE*0.6))}, 0.95, "linear"], [{r2(dE)}, 1.4, "ease-out"]], ghost: 0.7, shake: [[0, 0], [{r2(min(1.3, dE*0.6))}, 0.5], [{r2(dE)}, 0.1]] }}',
       '{ cat: "RIM 3.05 M · TODAY YOU REACH 2.83", label: "YOUR HAND REACHES", value: "3.33 m", sub: "THE AVERAGE MAN CAN DUNK", dot: "#FF8A3D" }', ", cut: true")
 # F: phone drop
 dF = b(iG) - b(iF)
@@ -86,10 +86,10 @@ scene(b(iL), b(iM), "orbit", f'{{ ...B, dist: [7.5, 8.5], orb: [0.25, 0.45], cam
       '{ cat: "ISS · GPS · EVERY CIRCULAR ORBIT", label: "ORBITAL SPEED", value: "= Escape speed", sub: "√(GM/r) = √(2·½GM/r)", dot: "#FFD866" }', ", cut: true")
 # M: the Moon drifts away
 dM = b(iN) - b(iM)
-scene(b(iM), b(iN) + 0.1, "orbit", f'{{ ...B, dist: [18, 30], orb: [0.5, 0.65], camy: [9, 16], ty: 0.0, cyc: 3.0, et: [10, 22], moon: 1, mq: 3.4, met: [[0, 0.5, "linear"], [{r2(dM)}, {r2(max(14.0, dM*6))}, "ease-in"]], leak: 0.2 }}',
-      '{ cat: "PAST EARTH\'S PULL · 1.2 M KM", label: "THE MOON", value: "Drifts away", sub: "THE SUN TAKES IT · TIDES SHRINK", dot: "#C9CED6" }', ", cut: true")
+scene(b(iM), b(iN) + 0.1, "orbit", f'{{ ...B, dist: [18, 30], orb: [0.5, 0.65], camy: [9, 16], ty: 0.0, cyc: 3.0, et: [10, 22], moon: 1, mq: 3.4, met: [[0, 0.3, "linear"], [{r2(dM)}, 8.0, "ease-in"]], leak: 0.2 }}',
+      '{ cat: "HILL SPHERE NOW 1.2 MILLION KM", label: "THE MOON", value: "Drifts away", sub: "THE SUN TAKES IT · TIDES SHRINK", dot: "#C9CED6" }', ", cut: true")
 # N: behind the end card
-scene(b(iN) + 0.1, END, "court", f'{{ ...K, cx: 4.8, cy: 2.0, cz: 1.1, tx: 0, ty: 2.3, tz: 0.15, jt: [0.3, 1.4], ghost: 0 }}')
+scene(b(iN) + 0.1, END, "court", f'{{ ...K, cx: 4.8, cy: 2.0, cz: -0.2, tx: 0, ty: 2.3, tz: 0.2, jt: [0.3, 1.4], ghost: 0 }}')
 
 lines = []
 for a, bb, g, p, h, x in sc:
