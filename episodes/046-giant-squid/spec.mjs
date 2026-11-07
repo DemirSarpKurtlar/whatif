@@ -1,0 +1,41 @@
+// Episode 046 — What if you met a giant squid in the deep ocean?  Style: "Woodblock Wave" (as 041). See style.md.
+// Scenes are 2D canvas (draw/*.js are GENERATED: edit src/lib.js + src/<scene>.js, then `python3 src/build.py`).
+// Numbers live on in-scene cream plaques; every caption gets an indigo plaque drawn by the scene code (src/lib.js capPlaque, needs p.sid = scene index).
+export default {
+  END: 35.5,
+  bg: "#070D1C",
+  accent: "#FF9A73",
+  xf: 0.35,
+  title: { text: "What if you met a giant squid in the deep ocean?", end: 2.9 },
+  hook: { scene: 2, at: 0.6 },
+  cover: 1.4,
+  scenes: [
+    { a: 0, b: 2.9, draw: "surface", p: { sid: 0, zoom: [1.0, 1.04], shadow: [[0, 0], [2.9, 0.8]] } },
+    { a: 2.9, b: 6.2, draw: "descent", p: { sid: 1, zoom: [1.0, 1.05], d: [[0, 0], [2.6, 1, "ease-in-out"]], labk: [[0, 0], [0.4, 1]] } },
+    { a: 6.2, b: 8.0, draw: "eye", p: { sid: 2, zoom: [1.12, 1.0], open: [[0, 0], [0.5, 0], [1.3, 1]], glow: [[0, 0.3], [1.2, 1]], look: [[0, 0.6], [1.6, -0.3]] } },
+    { a: 8.0, b: 10.2, draw: "eye", p: { sid: 3, zoom: [1.0, 1.04], lab: 1, labk: [[0, 0], [0.5, 1]] } },
+    { a: 10.2, b: 11.8, draw: "eye", p: { sid: 4, zoom: [1.04, 1.06], lab: 2, labk: [[0, 0], [0.7, 1]] } },
+    { a: 11.8, b: 14.6, draw: "eye", p: { sid: 5, zoom: [1.06, 0.98], lab: 3, labk: [[0, 0], [1.2, 1]], look: -0.4 } },
+    { a: 14.6, b: 17.2, draw: "tentacles", p: { sid: 6, zoom: [2.4, 1.0], cy: [1350, 960], reach: [[0, 0.5], [1.6, 1]], rule: [[0, 0], [1.2, 0], [2.2, 1]], labk: [[0, 0], [1.6, 0], [2.0, 1]] } },
+    { a: 17.2, b: 19.0, draw: "size", p: { sid: 7, sq: [[0, 0], [0.7, 1]], bus: [[0, 0], [0.3, 0], [1.1, 1]], cmp: 0 } },
+    { a: 19.0, b: 22.6, draw: "camera", p: { sid: 8, zoom: [1.0, 1.15], labk: [[0, 0], [0.5, 1]] } },
+    { a: 22.6, b: 26.4, draw: "whale", p: { sid: 9, zoom: [1.0, 1.0, 1.7], cx: [[0, 540], [2.0, 540], [3.2, 360]], cy: [[0, 960], [2.0, 960], [3.2, 820]], scars: [[0, 0], [2.0, 0], [3.2, 1]], labk: [[0, 0], [0.4, 1]], lab2k: [[0, 0], [2.4, 0], [2.8, 1]] } },
+    { a: 26.4, b: 29.4, draw: "kraken", p: { sid: 10, un: [[0, 0], [1.2, 1]], rise: [[0, 0], [0.9, 0], [2.2, 1]], labk: [[0, 0], [1.6, 0], [2.0, 1]] } },
+    { a: 29.4, b: 32.5, draw: "eye", p: { sid: 11, zoom: [1.0, 1.08], lab: 4, labk: [[0, 0], [0.8, 0], [1.6, 1]], look: [[0, -0.3], [3, 0.4]] } },
+  ],
+  captions: [
+    [3.0, 6.1, "You sink past 300 metres, and the sunlight is gone."],
+    [6.3, 7.9, "Then something looks back."],
+    [8.1, 10.1, "An eye 27 centimetres wide,"], [10.2, 11.7, "the size of a dinner plate."],
+    [11.9, 14.5, "The biggest eyes of any animal, along with the colossal squid."],
+    [14.7, 16.4, "From fin to tentacle tip, up to 13 metres."], [17.2, 18.9, "As long as a city bus."],
+    [19.1, 22.5, "Nobody filmed one alive down here until 2012, off Japan."],
+    [22.7, 24.0, "Its only real enemy?"], [24.1, 26.3, "Sperm whales, covered in its sucker scars."],
+    [26.5, 29.3, "It may be the monster sailors called the Kraken."],
+    [29.5, 32.4, "Would you stay and watch, or swim for the surface?"],
+  ],
+  bigs: [],
+  huds: [],
+  flashes: [{ at: 2.92, dur: 0.3, color: "#F1E6CC" }, { at: 7.1, dur: 0.15, color: "#F1E6CC" }, { at: 22.62, dur: 0.2, color: "#F1E6CC" }],
+  endCard: { at: 32.5, title: "What if you met a giant squid in the deep ocean?", small: ["UP TO 13 m LONG · EYES 27 cm WIDE", "FIRST FILMED IN THE DEEP: 2012, JAPAN", "SOURCES: BRITANNICA · SMITHSONIAN · NHK/DISCOVERY"], cta: "WOULD YOU STAY, OR SWIM?" },
+};
