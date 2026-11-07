@@ -274,7 +274,7 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
 frameIn(p);
 const step = p.step ?? 0;
 const bg = cached("fern_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
-  vwash(g, -200, 900, "24,23,21", 0.95, 0.4);
+  vwash(g, -200, 1000, "24,23,21", 0.95, 0);
   streak(g, 400, 360, 900, 100, "14,13,12", 0.5, 14);
   blob(g, 760, 560, 360, 300, "235,226,205", 0.3);
   ridge(g, 1000, 90, 2.2, "96,92,85", 0.55, 8, 160, 1.4);
@@ -286,18 +286,21 @@ ctx.drawImage(bg, -200, -200);
 goldDisc(ctx, 780, 520, 90, 0.9); // moon
 // the dinosaur leg + foot coming down (behind the fern on the right)
 const fy = lerp(-520, 1135, E["ease-in"](cl(step)));
-ctx.save(); ctx.fillStyle = INK.ink; ctx.strokeStyle = INK.ink; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.translate(-110, 0);
-// scaly shin (metatarsus) rising out of frame + ankle
-ctx.beginPath(); ctx.moveTo(840, fy - 1500); ctx.quadraticCurveTo(820, fy - 700, 800, fy - 210); ctx.lineTo(990, fy - 190); ctx.quadraticCurveTo(1010, fy - 800, 1060, fy - 1500); ctx.closePath(); ctx.fill();
-ctx.beginPath(); ctx.ellipse(890, fy - 170, 120, 80, 0.1, 0, TAU); ctx.fill();
-ctx.strokeStyle = "rgba(242,214,138,0.28)"; ctx.lineWidth = 3; for (let i = 0; i < 9; i++) { const yy = fy - 260 - i * 90; ctx.beginPath(); ctx.moveTo(822, yy); ctx.quadraticCurveTo(900, yy + 22, 990, yy - 4); ctx.stroke(); }
+function foot() {
+ctx.save(); ctx.fillStyle = INK.ink; ctx.strokeStyle = INK.ink; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.translate(-60, 0);
+// scaly shin (metatarsus) slanting up out of frame + ankle
+ctx.beginPath(); ctx.moveTo(960, fy - 1500); ctx.quadraticCurveTo(860, fy - 700, 790, fy - 200); ctx.lineTo(960, fy - 170); ctx.quadraticCurveTo(1030, fy - 800, 1180, fy - 1500); ctx.closePath(); ctx.fill();
+ctx.beginPath(); ctx.ellipse(880, fy - 150, 110, 72, 0.15, 0, TAU); ctx.fill();
+ctx.strokeStyle = "rgba(242,214,138,0.16)"; ctx.lineWidth = 2.5; for (let i = 0; i < 12; i++) { const u = i / 12, yy = fy - 240 - u * 1100, xl = lerp(800, 900, u) , xr = lerp(965, 1080, u); for (let j = 0; j < 3; j++) { const x0 = lerp(xl, xr, j / 3) + (i % 2) * 20; ctx.beginPath(); ctx.arc(x0 + 22, yy, 20, 0.2, Math.PI - 0.2); ctx.stroke(); } }
 ctx.strokeStyle = INK.ink;
-// three forward toes (tapered) with claws, one small back toe
-[[600, 0, 58], [690, 6, 66], [770, 2, 54]].forEach(([tx, dy, w]) => {
-  ctx.beginPath(); ctx.moveTo(860, fy - 160 - w / 2); ctx.quadraticCurveTo(tx + 120, fy - 70 + dy, tx + 30, fy - 30 + dy); ctx.lineTo(tx + 30, fy - 2 + dy); ctx.quadraticCurveTo(tx + 160, fy - 10 + dy, 880, fy - 100); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(tx + 40, fy - 34 + dy); ctx.quadraticCurveTo(tx - 10, fy - 30 + dy, tx - 26, fy + 4 + dy); ctx.quadraticCurveTo(tx + 6, fy - 6 + dy, tx + 40, fy - 2 + dy); ctx.closePath(); ctx.fill(); });
-ctx.beginPath(); ctx.moveTo(960, fy - 120); ctx.quadraticCurveTo(1030, fy - 70, 1060, fy - 20); ctx.lineTo(1040, fy - 10); ctx.quadraticCurveTo(1000, fy - 60, 940, fy - 90); ctx.closePath(); ctx.fill();
-ctx.restore();
+// three toes splayed forward on the ground, each with a hooked claw; small back toe
+[[560, -2, 60], [650, 4, 70], [740, 0, 56]].forEach(([tx, dy, w]) => {
+  ctx.beginPath(); ctx.moveTo(850, fy - 150 - w / 2); ctx.quadraticCurveTo(tx + 150, fy - 80 + dy, tx + 40, fy - 36 + dy); ctx.lineTo(tx + 40, fy + dy); ctx.quadraticCurveTo(tx + 170, fy - 4 + dy, 880, fy - 90); ctx.closePath(); ctx.fill();
+  for (let k = 0; k < 3; k++) { ctx.fillRect(tx + 70 + k * 40, fy - 40 + dy - k * 6, 4, 32); }
+  ctx.beginPath(); ctx.moveTo(tx + 50, fy - 40 + dy); ctx.quadraticCurveTo(tx - 10, fy - 40 + dy, tx - 30, fy + 2 + dy); ctx.quadraticCurveTo(tx + 6, fy - 8 + dy, tx + 50, fy + dy); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(242,214,138,0.55)"; ctx.beginPath(); ctx.moveTo(tx - 4, fy - 26 + dy); ctx.quadraticCurveTo(tx - 18, fy - 18 + dy, tx - 26, fy - 2 + dy); ctx.lineTo(tx - 20, fy - 4 + dy); ctx.quadraticCurveTo(tx - 12, fy - 16 + dy, tx, fy - 22 + dy); ctx.fill(); ctx.fillStyle = INK.ink; });
+ctx.beginPath(); ctx.moveTo(950, fy - 120); ctx.quadraticCurveTo(1020, fy - 70, 1050, fy - 20); ctx.lineTo(1030, fy - 10); ctx.quadraticCurveTo(990, fy - 60, 930, fy - 90); ctx.closePath(); ctx.fill();
+ctx.restore(); }
 // dust when it lands
 const land = cl((step - 0.97) / 0.03);
 if (step > 0.96) for (let i = 0; i < 10; i++) blob(ctx, 860 + (rnd(i) - 0.5) * 600 * (0.5 + lt * 0.3), 1130 - rnd(i * 2) * 80, 90 + lt * 30, 50 + lt * 10, "120,114,104", 0.3 * land);
@@ -308,7 +311,8 @@ const fr = cached("fern_front", W + 400, H + 400, (g) => { g.translate(200, 200)
   for (let i = 0; i < 6; i++) frond(g, -60 + rnd(i * 5) * 200, 1170, 380, -Math.PI / 2 + (i - 2) * 0.35, 1.6, INK.ink, 7, i + 90);
 });
 ctx.save(); const sway = Math.sin(t * 1.3) * 0.01 + (step > 0.96 ? Math.sin(lt * 20) * 0.01 * (1 - cl(lt - 1.5)) : 0); ctx.translate(300, 1150); ctx.rotate(sway); ctx.translate(-300, -1150); ctx.drawImage(fr, -200, -200); ctx.restore();
-glow(ctx, 420, 1110, 160, 0.25);
+foot();
+glow(ctx, 430, 1100, 220, 0.5);
 mammal(ctx, 420, 1148, 1.25, 1, INK.ink, 1, 1);
 goldDust(ctx, 24, 0, 300, W, 900, 21, 0.6, 8);
 finish(ctx, 0.6);
