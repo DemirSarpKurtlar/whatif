@@ -254,8 +254,6 @@ const P3 = arcade(ctx, 1180, 1120, 260, 900, 984, 40, 16, "rgba(60,57,52,0.97)",
 const P2 = arcade(ctx, -120, 1060, 300, 640, 984, 46, 18, "rgba(45,43,40,0.98)", 0.7); water(P2, 0.7);
 // main arcade, big in the foreground
 const P1 = arcade(ctx, -260, 1700, 1300, 700, 990, 60, 14, INK.ink, 1); water(P1, 0.95);
-// spill: water falling into a basin near the bottom-left
-for (let i = 0; i < 16; i++) { const u = (lt * 1.6 + i / 16) % 1; ctx.fillStyle = `rgba(242,214,138,${0.8 * (1 - u)})`; ctx.fillRect(40 + Math.sin(i) * 14, 420 + u * 240, 5, 22); }
 ctx.fillStyle = INK.ink; ctx.fillRect(-300, 1690, W + 600, H);
 goldDust(ctx, 28, 0, 500, W, 800, 17, 0.7, 16);
 finish(ctx);

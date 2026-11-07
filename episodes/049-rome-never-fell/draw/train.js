@@ -243,7 +243,6 @@ const bg = cached("train_bg", W + 400, H + 400, (g) => { g.translate(200, 200); 
 });
 ctx.drawImage(bg, -200, -200);
 goldDisc(ctx, 560, 700, 240, 1);
-brush(ctx, [180, 650, 520, 640, 930, 652], 14, INK.ink, 0.6, 3, 0.7);
 // viaduct (aqueduct arches) across the frame
 const yb = 1500, top = 1010;
 ctx.fillStyle = INK.ink; ctx.beginPath(); ctx.rect(-300, top, W + 600, yb - top);

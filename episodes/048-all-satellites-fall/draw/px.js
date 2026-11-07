@@ -341,7 +341,7 @@ function sOrbit() {
   big(fmt(cnt), 330, 12, dk > 0 ? K.red : "#FFFFFF", 0.05);
   big("ACTIVE SATELLITES", 450, 4, "#FFFFFF", 0.15);
   if (dk > 0) big("ALL FALLING!", 560, 8, K.yellow, tD, { panel: K.red });
-  TXT(ctx, "GEO 36,000 KM", hx(ecx), hy(ecy - er - 150) - 40, 3, "#C86A9A", { align: "center", out: K.ink, ow: 2 });
+  if (dk <= 0) TXT(ctx, "GEO 36,000 KM", hx(ecx), hy(ecy - er - 150) - 40, 3, "#C86A9A", { align: "center", out: K.ink, ow: 2 });
   TXT(ctx, "GPS 20,200 KM", hx(ecx), hy(ecy - er - 95) - 40, 3, "#C8A050", { align: "center", out: K.ink, ow: 2 });
 }
 function sMeteor() {

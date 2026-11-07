@@ -32,7 +32,7 @@ function dim(y, x0, x1, label, a, col = K.red) { if (a <= 0) return; ctx.save();
 dim(TY + TR + 95, TX - TR, TX + TR, "≈ 20 cm", cl((rk - 0.85) * 7));
 if (bk > 0.9) { ctx.save(); ctx.globalAlpha = cl((bk - 0.9) * 10); ctx.fillStyle = K.ink; ctx.font = "30px LSerif"; ctx.textAlign = "center"; ctx.letterSpacing = "4px"; ctx.fillText("BEACH BALL", BX, BY + BR + 50); ctx.letterSpacing = "0px"; ctx.restore(); }
 if (uk > 0.9) dim(SY + 70, HX - SW / 2, HX + SW / 2, "≈ 40 cm", cl((uk - 0.9) * 10));
-if (ck > 0) { ctx.save(); ctx.globalAlpha = cl(ck * 2); ctx.setLineDash([14, 10]); ctx.strokeStyle = K.red; ctx.lineWidth = 6; const r = TR * (0.6 + 0.4 * eback(cl(ck))); ctx.beginPath(); ctx.arc(HX, SY + 60 - 230, 0, 0, TAU); ctx.stroke();
+if (ck > 0) { ctx.save(); ctx.globalAlpha = cl(ck * 2); ctx.setLineDash([14, 10]); ctx.strokeStyle = K.red; ctx.lineWidth = 6; const r = TR * (0.6 + 0.4 * eback(cl(ck)));
   ctx.beginPath(); ctx.arc(HX - TR, SY - 10, r, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.arc(HX + TR, SY - 10, r, 0, TAU); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
   plaque(ctx, 540, 1460, [{ t: "YOUR SHOULDERS", s: 30, sp: 6 }, { t: "× 2 TOO WIDE", s: 64, c: K.red }], ck); }
 finish(ctx);

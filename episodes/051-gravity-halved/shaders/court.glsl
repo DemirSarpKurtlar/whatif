@@ -13,7 +13,7 @@ float gT = 0.0;
 bool gG = false;            // true: map() returns only the ghost (1 g) objects
 const float GF = 9.81, GH = 4.905, V0 = 3.1321;
 const vec3 RIM = vec3(0.0, 3.05, 0.0);
-const vec3 PH0 = vec3(1.2, 1.2, 1.6);
+const vec3 PH0 = vec3(3.2, 1.2, 3.4);
 float jumpY(float t, float g){ if (t <= 0.0) return 0.0; return max(V0*t - 0.5*g*t*t, 0.0); }
 float dropY(float t, float g){ if (t <= 0.0) return PH0.y; return max(PH0.y - 0.5*g*t*t, 0.006); }
 vec3 ballPos(float t, float g){
