@@ -9,7 +9,7 @@ ends with two choices (A/B). Viewers vote in the comments; the majority decides 
 |----|--------|----------------|--------|-------------|
 | 1 | 023-zombie-ep1 | A: hide in the attic · B: run for the car | **A (attic)** | 4 / 0 |
 | 2 | 042-zombie-ep2 | A: stay silent and wait for dawn · B: text your neighbor for help | **A (silent until dawn)** | 5 / 0 |
-| 3 | 043-zombie-ep3 | (to be written) | (pending) | |
+| 3 | 043-zombie-ep3 | A: sneak to the stadium on foot · B: take the neighbor's bike | (pending) | |
 
 ## Canon so far
 - EP1: 11:42 PM, the first bite happens at the city hospital. Infections double every hour.
@@ -17,3 +17,4 @@ ends with two choices (A/B). Viewers vote in the comments; the majority decides 
 - EP1 vote (2026-11-06, 4 voters): A — you hide in the attic.
 - EP2: you pull the ladder up into the attic; the back door bursts open; a zombie stands right below the hatch; phone at 7%. They hunt by sound.
 - EP2 vote (2026-11-07, 5 voters): A — you stay silent in the attic and wait for dawn.
+- EP3: you stay silent all night; the zombie leaves; phone dies at 3:17 AM; at dawn a helicopter announces an evacuation point at the high school stadium, 2 km away. By 6 AM: 64 infected.
