@@ -10,7 +10,7 @@ for (let gx = -2; gx < 9; gx++) for (let gy = -2; gy < 14; gy++) {
 // warm dawn wash from the east
 const wg = ctx.createLinearGradient(0, 0, W, 0); wg.addColorStop(0, "rgba(255,170,100,0)"); wg.addColorStop(1, "rgba(255,170,100,0.22)"); ctx.fillStyle = wg; ctx.fillRect(-W, -H, W * 3, H * 3);
 // stadium (top right): oval stands, green field, track
-const SX = 790, SY = 470;
+const SX = 774, SY = 470;
 ctx.fillStyle = "#E9E6F5"; ctx.beginPath(); ctx.ellipse(SX, SY, 190, 130, 0, 0, TAU); ctx.fill();
 ctx.fillStyle = "#C9603F"; ctx.beginPath(); ctx.ellipse(SX, SY, 150, 98, 0, 0, TAU); ctx.fill();
 ctx.fillStyle = "#3FA35A"; ctx.beginPath(); ctx.ellipse(SX, SY, 118, 70, 0, 0, TAU); ctx.fill();
@@ -20,7 +20,7 @@ const nd = Math.round(p.dots ?? 64);
 for (let i = 0; i < nd; i++) { const x = 40 + rnd(i * 3.3) * 1000, y = 200 + rnd(i * 7.1 + 2) * 1500; if (Math.hypot(x - SX, y - SY) < 230) continue;
   const pu = 0.75 + 0.25 * Math.sin(t * 3 + i); circ(x, y, 13 * pu, "rgba(147,196,108,0.35)"); circ(x, y, 7, "#C9F29A"); }
 // route along the streets (dashed, drawing in)
-const pts = [[250, 1335], [250, 1035], [565, 1035], [565, 735], [715, 735], [715, 590]];
+const pts = [[249, 1330], [249, 1304], [324, 1304], [324, 1004], [624, 1004], [624, 704], [774, 704], [774, 604]];
 let tot = 0; const seg = []; for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); tot += d; }
 const rk = E["ease-in-out"](cl(p.route || 0)); let left = tot * rk;
 ctx.strokeStyle = "#FFD23F"; ctx.lineWidth = 16; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.setLineDash([34, 26]); ctx.lineDashOffset = -lt * 60;
@@ -35,8 +35,8 @@ function pin(x, y, col, label) { ctx.save(); ctx.translate(x, y); ctx.scale(pk, 
   ctx.font = "38px LHeavy"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; const w = ctx.measureText(label).width + 40;
   rr(-w / 2, -186, w, 62, 20, "rgba(14,18,54,0.9)"); ctx.fillStyle = "#FFFFFF"; ctx.fillText(label, 0, -154); ctx.restore(); }
 // your house icon
-rr(205, 1300, 90, 70, 8, PAL.hoodie); poly([190, 1305, 250, 1250, 310, 1305], PAL.roof);
-pin(250, 1250, PAL.hoodie2, "YOU");
+rr(204, 1350, 90, 70, 8, PAL.hoodie); poly([189, 1355, 249, 1300, 309, 1355], PAL.roof); rr(236, 1380, 26, 40, 4, "#2A2357");
+pin(249, 1296, PAL.hoodie2, "YOU");
 pin(SX, SY - 120, PAL.red, "STADIUM");
 // distance label at the route midpoint
-if (rk > 0.55) { const a = cl((rk - 0.55) / 0.2); ctx.save(); ctx.globalAlpha = a; rr(600, 860, 200, 90, 30, "#FFD23F"); ctx.font = "54px LHeavy"; ctx.fillStyle = "#151A45"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("2 KM", 700, 907); ctx.restore(); }
+if (rk > 0.55) { const a = cl((rk - 0.55) / 0.2); ctx.save(); ctx.globalAlpha = a; rr(374, 830, 200, 90, 30, "#FFD23F"); ctx.font = "54px LHeavy"; ctx.fillStyle = "#151A45"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("2 KM", 474, 877); ctx.restore(); }
