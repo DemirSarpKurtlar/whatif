@@ -314,3 +314,100 @@ function whaleShape(g, x, y, s = 1, flex = 0) {
   g.restore();
 }
 function ring(g, x, y, r, a = 1) { g.save(); g.globalAlpha *= a; g.strokeStyle = K.cream; g.lineWidth = Math.max(2, r * 0.28); g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); g.restore(); }
+
+// ================= 050 whale additions =================
+Object.assign(K, { blue: "#6F8FB3", blueD: "#4A6688", blueL: "#A9C0D6", hump: "#232C44", humpD: "#161C2E", mouth: "#E3B9A6", mouthD: "#5A2A2A",
+  gut: "#2A1418", gut2: "#3E1C1F", wall: "#A8402F", wallL: "#D27556", acid: "#B9B54A", acidL: "#DCD77A" });
+function flukes(g, x0, tail, sz = 1) { // forked tail at local x0 (facing left whales), tail = vertical swing
+  g.lineTo(x0, -12 * sz + tail); g.bezierCurveTo(x0 + 40 * sz, -60 * sz + tail, x0 + 90 * sz, -78 * sz + tail, x0 + 115 * sz, -70 * sz + tail);
+  g.bezierCurveTo(x0 + 88 * sz, -36 * sz + tail, x0 + 66 * sz, -8 * sz + tail, x0 + 40 * sz, 0 + tail);
+  g.bezierCurveTo(x0 + 66 * sz, 8 * sz + tail, x0 + 88 * sz, 36 * sz + tail, x0 + 115 * sz, 70 * sz + tail);
+  g.bezierCurveTo(x0 + 90 * sz, 78 * sz + tail, x0 + 40 * sz, 60 * sz + tail, x0, 12 * sz + tail);
+}
+// blue whale facing left; (x,y) = snout tip; body ~1010 units long at s=1
+function blueWhale(g, x, y, s = 1, o = {}) {
+  const tl = Math.sin(t * 1.3 + (o.ph || 0)) * 22;
+  g.save(); g.translate(x, y); g.scale(s, s); g.lineJoin = "round"; const lw = (o.lw || 3) / s;
+  const path = () => { g.beginPath(); g.moveTo(-4, 0); g.bezierCurveTo(10, -30, 80, -50, 200, -58); g.bezierCurveTo(420, -70, 640, -56, 800, -22 + tl * 0.3);
+    g.lineTo(870, -10 + tl * 0.7); flukes(g, 880, tl, 1); g.lineTo(870, 10 + tl * 0.7); g.lineTo(800, 20 + tl * 0.3);
+    g.bezierCurveTo(640, 58, 420, 86, 220, 80); g.bezierCurveTo(100, 74, 20, 40, -4, 0); g.closePath(); };
+  // pectoral (far side) behind
+  g.fillStyle = K.blueD; g.strokeStyle = K.cream; g.lineWidth = lw; g.beginPath(); g.moveTo(250, 50); g.quadraticCurveTo(300, 110, 350, 130); g.quadraticCurveTo(320, 80, 300, 50); g.fill();
+  path(); g.fillStyle = K.blue; g.fill();
+  g.save(); path(); g.clip();
+  g.fillStyle = K.blueD; g.beginPath(); g.moveTo(-10, -70); g.lineTo(1100, -70); g.lineTo(1100, -14); g.bezierCurveTo(600, -36, 300, -40, -10, -20); g.closePath(); g.fill(); // darker back
+  g.fillStyle = "rgba(220,230,240,0.35)"; for (let i = 0; i < 70; i++) { g.beginPath(); g.ellipse(120 + rnd(i * 2.3) * 700, -50 + rnd(i * 4.1) * 110, 4 + rnd(i) * 10, 2 + rnd(i * 3) * 5, 0, 0, TAU); g.fill(); }
+  g.strokeStyle = "rgba(27,34,51,0.45)"; g.lineWidth = 1.6 / s; for (let k = 1; k < 9; k++) { g.beginPath(); for (let xx = 20; xx <= 430; xx += 20) { const u = xx / 430, yy = 8 + k * 7.5 + u * (34 + k * 1.2); xx === 20 ? g.moveTo(xx, yy) : g.lineTo(xx, yy); } g.stroke(); }
+  g.restore();
+  path(); g.strokeStyle = K.cream; g.lineWidth = lw; g.stroke();
+  g.strokeStyle = K.ink; g.lineWidth = lw * 0.9; g.beginPath(); g.moveTo(0, 4); g.quadraticCurveTo(100, 22, 190, 14); g.stroke(); // mouth line
+  g.fillStyle = K.ink; g.beginPath(); g.arc(205, 12, 5, 0, TAU); g.fill();
+  g.fillStyle = K.blueD; g.strokeStyle = K.cream; g.beginPath(); g.moveTo(705, -50); g.quadraticCurveTo(735, -60, 760, -76); g.quadraticCurveTo(752, -56, 770, -44); g.closePath(); g.fill(); g.stroke(); // dorsal
+  g.fillStyle = K.blueD; g.beginPath(); g.moveTo(240, 46); g.quadraticCurveTo(300, 100, 380, 120); g.quadraticCurveTo(330, 70, 300, 44); g.closePath(); g.fill(); g.stroke(); // pectoral near
+  g.restore();
+}
+// sperm whale facing left with a jaw that opens. (x,y) = front of head (centre); gape 0..1; o.inner(g) draws inside the mouth gap (local coords) before the jaw
+function spermWhale(g, x, y, s = 1, gape = 0, o = {}) {
+  g.save(); g.translate(x, y); g.scale(s, s); g.lineJoin = "round"; const lw = (o.lw || 3.5) / s;
+  const tl = Math.sin(t * 1.5) * 26, HX = 330, HY = 64, ja = -0.42 * eout(gape);
+  const path = () => { g.beginPath(); g.moveTo(0, -110); g.lineTo(330, -125); g.bezierCurveTo(520, -120, 680, -60, 820, -12 + tl * 0.4); flukes(g, 830, tl, 1.05); g.lineTo(820, 14 + tl * 0.4);
+    g.bezierCurveTo(700, 70, 480, 96, 340, 92); g.lineTo(HX, HY); g.lineTo(70, 48); g.quadraticCurveTo(-10, 40, -10, -10); g.quadraticCurveTo(-10, -100, 0, -110); g.closePath(); };
+  path(); g.fillStyle = K.whale; g.fill();
+  g.save(); path(); g.clip(); g.fillStyle = K.whaleD; g.fillRect(-20, 30, 1000, 120);
+  g.strokeStyle = "rgba(240,230,200,0.18)"; g.lineWidth = 2 / s; for (let i = 0; i < 26; i++) { const xx = 380 + i * 18; g.beginPath(); g.moveTo(xx, -110); g.quadraticCurveTo(xx + 8, 0, xx, 90); g.stroke(); }
+  for (let i = 0; i < 9; i++) { g.beginPath(); g.moveTo(20, -90 + i * 14); g.quadraticCurveTo(160, -96 + i * 15, 300, -100 + i * 16); g.stroke(); }
+  g.restore();
+  path(); g.strokeStyle = K.cream; g.lineWidth = lw; g.stroke();
+  // mouth interior (visible when open)
+  const rot = (px, py) => { const dx = px - HX, dy = py - HY; return [HX + dx * Math.cos(ja) - dy * Math.sin(ja), HY + dx * Math.sin(ja) + dy * Math.cos(ja)]; };
+  const tip = rot(50, 62), tipB = rot(50, 84);
+  if (gape > 0.01) { g.fillStyle = K.mouth; g.beginPath(); g.moveTo(HX, HY); g.lineTo(70, 48); g.lineTo(tip[0], tip[1]); g.closePath(); g.fill();
+    const rg = g.createRadialGradient(HX - 20, HY + 6, 4, HX - 20, HY + 6, 120); rg.addColorStop(0, K.mouthD); rg.addColorStop(1, "rgba(90,42,42,0)"); g.fillStyle = rg; g.fill();
+    g.strokeStyle = K.ink; g.lineWidth = lw * 0.7; g.stroke(); }
+  if (o.inner) o.inner(g, tip);
+  // lower jaw (narrow rod) with teeth
+  g.save(); g.translate(HX, HY); g.rotate(ja); g.translate(-HX, -HY);
+  g.fillStyle = K.whaleD; g.beginPath(); g.moveTo(HX + 10, 60); g.lineTo(HX, 62); g.lineTo(50, 62); g.quadraticCurveTo(36, 72, 50, 84); g.lineTo(HX, 94); g.closePath(); g.fill(); g.strokeStyle = K.cream; g.lineWidth = lw; g.stroke();
+  if (gape > 0.05) { g.fillStyle = K.cream; g.strokeStyle = K.ink; g.lineWidth = 1.2 / s; for (let i = 0; i < 12; i++) { const tx = 70 + i * 20; g.beginPath(); g.moveTo(tx - 6, 62); g.lineTo(tx, 62 - 16 * cl(gape * 2)); g.lineTo(tx + 6, 62); g.closePath(); g.fill(); g.stroke(); } }
+  g.restore();
+  g.fillStyle = K.cream; g.beginPath(); g.arc(300, 10, 6, 0, TAU); g.fill(); // eye
+  g.fillStyle = K.whaleD; g.strokeStyle = K.cream; g.lineWidth = lw; g.beginPath(); g.moveTo(380, 70); g.quadraticCurveTo(420, 150, 470, 140); g.quadraticCurveTo(450, 90, 440, 72); g.fill(); g.stroke(); // flipper
+  g.restore();
+  return { tip, HX, HY };
+}
+// humpback facing left; (x,y) = snout tip; rot radians; o: gape 0..1, pouch 0..1, xray 0..1 (dashed window with a diver in the mouth)
+function humpback(g, x, y, s = 1, rot = 0, o = {}) {
+  const gp = eout(o.gape || 0), pu = o.pouch || 0, tl = Math.sin(t * 1.2) * 20;
+  g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s); g.lineJoin = "round"; const lw = (o.lw || 3.5) / s;
+  const chin = 22 + gp * 110, belly = (xx) => xx <= 560 ? chin + (110 + pu * 70 - chin) * Math.sin(Math.min(1, xx / 420) * Math.PI / 2) - (xx > 420 ? (xx - 420) * 0.25 : 0) : lerp(110 + pu * 70 - 35, 18, (xx - 560) / 300);
+  const path = () => { g.beginPath(); g.moveTo(0, 0); g.bezierCurveTo(60, -16, 160, -44, 260, -62); g.bezierCurveTo(400, -88, 560, -92, 650, -82); g.lineTo(690, -110); g.lineTo(712, -80);
+    g.bezierCurveTo(780, -64, 830, -34, 860, -12 + tl * 0.4); flukes(g, 870, tl, 1.25); for (let xx = 860; xx >= 0; xx -= 20) g.lineTo(xx, belly(xx)); g.closePath(); };
+  path(); g.fillStyle = K.hump; g.fill();
+  g.save(); path(); g.clip();
+  // cream throat pleats
+  g.strokeStyle = "rgba(241,230,204,0.75)"; g.lineWidth = 2.2 / s; for (let k = 1; k <= 7; k++) { g.beginPath(); for (let xx = 30; xx <= 560; xx += 20) { const top = 26 + xx * 0.06 + gp * 30 * (1 - xx / 560); const yy = lerp(top, belly(xx), k / 8); xx === 30 ? g.moveTo(xx, yy) : g.lineTo(xx, yy); } g.stroke(); }
+  g.fillStyle = "rgba(255,255,255,0.06)"; g.fillRect(-20, -120, 1100, 50);
+  g.restore();
+  // open mouth wedge with baleen
+  if (gp > 0.01) { g.fillStyle = K.mouthD; g.beginPath(); g.moveTo(2, 6); g.quadraticCurveTo(120, 18, 240, 14); g.lineTo(22, chin - 6); g.closePath(); g.fill();
+    g.strokeStyle = "rgba(217,192,143,0.85)"; g.lineWidth = 2 / s; for (let i = 0; i < 22; i++) { const xx = 10 + i * 10; g.beginPath(); g.moveTo(xx, 8 + xx * 0.03); g.lineTo(xx, 8 + xx * 0.03 + 26 * gp * (1 - xx / 260)); g.stroke(); } }
+  path(); g.strokeStyle = K.cream; g.lineWidth = lw; g.stroke();
+  g.strokeStyle = K.cream; g.lineWidth = lw * 0.8; g.beginPath(); g.moveTo(2, 6); g.quadraticCurveTo(120, 18, 240, 14); g.stroke(); // mouth line
+  // knobs
+  g.fillStyle = K.humpD; g.strokeStyle = "rgba(241,230,204,0.8)"; g.lineWidth = 1.5 / s; for (let i = 0; i < 9; i++) { const xx = 20 + i * 24; g.beginPath(); g.arc(xx, -6 - xx * 0.22 + 10, 6, 0, TAU); g.fill(); g.stroke(); }
+  g.fillStyle = K.cream; g.beginPath(); g.arc(262, 10, 6, 0, TAU); g.fill();
+  // x-ray window: the diver inside the closed mouth
+  if ((o.xray || 0) > 0) { g.save(); g.globalAlpha *= cl(o.xray); g.setLineDash([12 / s, 9 / s]); g.strokeStyle = K.cream; g.lineWidth = 3.5 / s; g.fillStyle = "rgba(90,42,42,0.85)";
+    g.beginPath(); g.ellipse(140, 46, 120, 40, 0.08, 0, TAU); g.fill(); g.stroke(); g.setLineDash([]);
+    g.save(); g.translate(140, 46); g.rotate(-Math.PI / 2 + 0.1 + Math.sin(t * 4) * 0.06); diver(g, 0, 0, 0.42, K.cream, "#0B1222"); g.restore(); g.restore(); }
+  // long cream pectoral fin (near side)
+  g.fillStyle = K.cream; g.strokeStyle = K.ink; g.lineWidth = lw * 0.9; const fw = Math.sin(t * 1.4) * 10;
+  g.beginPath(); g.moveTo(300, 80); g.bezierCurveTo(380, 120, 500, 190 + fw, 600, 236 + fw); g.lineTo(588, 254 + fw);
+  for (let i = 6; i >= 0; i--) { const u = i / 6; g.quadraticCurveTo(lerp(588, 300, u) + 8, lerp(254, 112, u) + 14 + fw * u, lerp(588, 300, u + 1 / 12), lerp(254, 112, u + 1 / 12) + fw * u); }
+  g.closePath(); g.fill(); g.stroke();
+  g.restore();
+}
+// red ink stamp (rotated seal box)
+function stamp(g, x, y, text, s = 80, k = 1, rot = -0.08) { if (k <= 0 || isHook()) return; const kk = eback(cl(k)); g.save(); g.translate(x, y); g.rotate(rot); g.scale(1.6 - 0.6 * kk, 1.6 - 0.6 * kk); g.globalAlpha = cl(k * 2);
+  g.font = `${s}px LSerif`; g.letterSpacing = "6px"; const w = g.measureText(text).width + s * 0.8, h = s * 1.35; g.fillStyle = K.red; g.fillRect(-w / 2, -h / 2, w, h);
+  g.strokeStyle = K.cream; g.lineWidth = 4; g.strokeRect(-w / 2 + 9, -h / 2 + 9, w - 18, h - 18); g.fillStyle = K.cream; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(text, 3, 4); g.letterSpacing = "0px"; g.restore(); }
