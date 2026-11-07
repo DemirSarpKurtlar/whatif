@@ -18,7 +18,7 @@ export default {
     { a: 5.47, b: 7.05, glsl: "lowcity", p: { ...C, cam: [0.7, 0.85], panx: 0.4, ph: [[0.0, 0.0, "linear"], [0.91, 0.0, "linear"], [1.58, 0.13, "linear"]], pov: 1, shake: [[0, 0], [0.86, 0], [0.96, 0.9], [1.58, 0.35]], dust: [[0, 0], [0.91, 0], [1.58, 0.6]] },
       hud: { cat: "FOR ONE SECOND", label: "GRAVITY", value: "", sub: "POINTING UP", vcol: "#FF6B5E", counter: { at: 0.66, dur: 0.5, from: 9.81, to: -9.81, dec: 2, suffix: " m/s²", easing: "ease-in-out" } } },
     { a: 7.05, b: 8.93, glsl: "lowcity", p: { ...C, cam: 0.85, panx: 0.4, pov: 1, ph: [[0.0, 0.13, "linear"], [1.88, 0.51, "linear"]], tilt: [0, -1.5], spin: [0.1, 0.45], dust: 0.7, shake: [0.35, 0.15] },
-      hud: { cat: "IN ONE SECOND", label: "YOU RISE", value: "", sub: "FALLING UP · ½·g·t²", vcol: "#FFD866", counter: { at: 0, dur: 1.88, from: 0, to: 1.26, dec: 1, suffix: " m", easing: "ease-in" } } },
+      hud: { cat: "YOU FALL UP", label: "HEIGHT", value: "", sub: "4.9 M AFTER 1 SECOND", vcol: "#FFD866", counter: { at: 0, dur: 1.88, from: 0.09, to: 1.26, dec: 1, suffix: " m", easing: "ease-in" } } },
     { a: 8.93, b: 11.41, glsl: "lowcity", cut: true, p: { ...C, cam: 0.85, panx: 0.4, pov: 1, ph: [[0.0, 0.51, "linear"], [2.48, 1.0, "linear"]], tilt: [-1.5, -3.5], spin: [0.45, 0.7], dust: 0.7, shake: 0.12 },
       hud: { cat: "AFTER 1 SECOND · 4.9 M UP", label: "STILL RISING AT", value: "", sub: "GRAVITY IS BACK · YOU COAST", vcol: "#FF6B5E", counter: { at: 0.1, dur: 1.4, from: 0, to: 35, suffix: " km/h", easing: "ease-out" } } },
     { a: 11.41, b: 13.89, glsl: "lowcity", cut: true, p: { ...C, cam: 0.85, panx: 0.4, pov: 1, ph: [[0.0, 1.0, "linear"], [2.07, 2.0, "linear"], [2.48, 2.0, "linear"]], tilt: [-3.5, -8.5], spin: [0.7, 0.85], dust: 0.6 },
