@@ -445,7 +445,7 @@ if (sp > 0.8) { const k = cl((sp - 0.8) / 0.2); for (let i = 0; i < 5; i++) claw
 ctx.restore();
 const lk = p.labk || 0;
 if (p.lab === 1) { plaque(ctx, 540, 120, [{ t: "CAPE COD · JUNE 2021", s: 52, sp: 5 }, { t: "PROVINCETOWN, USA · 14 m DEEP", s: 24, sp: 5 }], lk);
-  plaque(ctx, 540, 1500, [{ t: "LOBSTER DIVER", s: 30, sp: 8 }, { t: "MICHAEL PACKARD", s: 56, sp: 4, c: K.red }], cl(lk * 1.4 - 0.5)); }
+  plaque(ctx, 540, 1500, [{ t: "LOBSTER DIVER", s: 30, sp: 8 }, { t: "MICHAEL PACKARD", s: 56, sp: 4, c: K.red }], p.namek || 0); }
 if (p.lab === 2) { const sec = Math.round(40 * cl(p.timer || 0)); plaque(ctx, 540, 120, [{ t: "INSIDE ITS MOUTH", s: 34, sp: 8 }, { t: "0:" + String(sec).padStart(2, "0"), s: 120, c: K.red }], lk, { minW: 420 }); }
 if (p.lab === 3) { plaque(ctx, 540, 120, [{ t: "INSIDE ITS MOUTH", s: 34, sp: 8 }, { t: "0:40", s: 120, c: K.red }], 1, { minW: 420 });
   stamp(ctx, 540, 1560, "SPAT OUT ALIVE", 64, lk); }

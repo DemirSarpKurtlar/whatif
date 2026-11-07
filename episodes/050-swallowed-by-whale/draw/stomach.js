@@ -459,5 +459,5 @@ if (md === 1) { plaque(ctx, 540, 120, [{ t: "STOMACH 1 OF 4", s: 64, sp: 4 }, { 
   if ((p.lab2k || 0) > 0) plaque(ctx, 540, 1520, [{ t: "SQUEEZE", s: 80, sp: 10, c: K.red }], p.lab2k); }
 if (md === 2) { plaque(ctx, 540, 120, [{ t: "STOMACH 2", s: 40, sp: 6 }, { t: "ACID", s: 110, sp: 14, c: K.red }], p.labk || 0);
   if ((p.lab2k || 0) > 0) plaque(ctx, 540, 1520, [{ t: "NO AIR", s: 64, sp: 8 }, { t: "OXYGEN 0 %", s: 34, sp: 5, c: K.red }], p.lab2k); }
-if (md === 3) { plaque(ctx, 300, 1560, [{ t: "SQUEEZE", s: 62, sp: 6 }], cl((p.labk || 0) * 1.5)); plaque(ctx, 780, 1560, [{ t: "ACID", s: 62, sp: 8, c: K.red }], cl((p.labk || 0) * 1.5 - 0.3)); }
+if (md === 3) { plaque(ctx, 300, 1560, [{ t: "SQUEEZE", s: 62, sp: 6 }], p.labk || 0); plaque(ctx, 780, 1560, [{ t: "ACID", s: 62, sp: 8, c: K.red }], p.lab2k || 0); }
 finish(ctx);
