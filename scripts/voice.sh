@@ -14,5 +14,6 @@ bash scripts/pause_render.sh 9>&- >/dev/null
 trap 'rm -f engine/PAUSED; bash scripts/resume.sh 9>&- >/dev/null 2>&1 || true' EXIT
 /opt/cbx/bin/python scripts/tts_chatterbox.py "$EP/script.txt" "$EP/voice.wav" "$EX" 0.5 > "/tmp/tts_$1.log" 2>&1
 python3 scripts/words.py "$EP/voice.wav" "$EP/words.json" >> "/tmp/tts_$1.log" 2>&1
+ffmpeg -y -loglevel error -i "$EP/voice.wav" -c:a libmp3lame -b:a 160k "$EP/voice.mp3" && echo "wrote $EP/voice.mp3"
 grep -E "^wrote|LAST_END" "/tmp/tts_$1.log"
 grep -oE "^[A-Z][a-z]*@0\.0.*" "/tmp/tts_$1.log" | head -1
