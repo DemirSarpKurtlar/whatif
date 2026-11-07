@@ -173,7 +173,7 @@ function ftxt(s, x, y, size, color, align = "center", font = "LHeavy") {
 }
 function flatCaption(C, t, a) {
   ctx.globalAlpha = a;
-  const size = 62, font = `${size}px LHeavy`; ctx.font = font; const sp = ctx.measureText(" ").width;
+  const size = 62, font = `${size}px LHeavy`; ctx.font = font; const sp = ctx.measureText(" ").width * 1.7; // outline eats the gap
   const lines = wrapToks(C.toks, font, 920);
   const pop0 = 1 - EASE["ease-out"](clamp01((t - C.a) / 0.22));
   const y0 = (SPEC.capY || 1400) - (lines.length - 1) * 38 + pop0 * 16;
@@ -197,7 +197,7 @@ function flatCaption(C, t, a) {
 function flatTitle(S, t) {
   const a = Math.min(1, (S.title.end - t) / 0.25);
   const size = 76, font = `${size}px LHeavy`; const toks = S.title.text.split(" "); const lines = wrapToks(toks, font, 940);
-  ctx.font = font; const sp = ctx.measureText(" ").width; let k = 0;
+  ctx.font = font; const sp = ctx.measureText(" ").width * 1.6; let k = 0;
   const hot = (S.title.hot || []).map((w) => w.toLowerCase());
   const y0 = (S.title.y || 1330) - (lines.length - 1) * 44;
   if (S.title.tag) { ctx.globalAlpha = a; pill(S.title.tag, W / 2, y0 - 150, "#FF3B4E", "#FFFFFF", 30, "center"); }

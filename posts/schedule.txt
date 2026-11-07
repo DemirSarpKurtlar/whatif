@@ -42,5 +42,6 @@
 016-all-volcanoes-erupt
 043-zombie-ep3
 046-giant-squid
+044-carrington-solar-storm
 019-insects-vanish
 017-earth-stops-orbiting
