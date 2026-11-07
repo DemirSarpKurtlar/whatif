@@ -522,7 +522,7 @@ function sClock() {
   const nl = ts.filter((x) => lt >= x).length;
   card({ tag: "CLOCK SYNC", title: nl ? "GPS TIME: LOST" : "GPS TIME: OK", sub: nl === 3 ? "SWITCHING TO BACKUPS" : "SYNCING...", col: nl ? K.red : K.lime, subCol: nl === 3 ? K.yellow : K.lime, icon: "clock", fill: 24 - nl * 8, w: 720 });
   if (!UI) return;
-  ["CELL", "GRID", "BANK"].forEach((s, i) => { TXT(ctx, s, hx(xs[i]), hy(240), 5, "#FFFFFF", { align: "center", out: K.ink, ow: 2 }); const lost = lt >= ts[i], bk = lost && lt - ts[i] > 0.5; if (bk) TXT(ctx, "BACKUP", hx(xs[i]), hy(148) , 3, K.yellow, { align: "center", out: K.ink, ow: 2 }); });
+  ["CELL", "GRID", "BANK"].forEach((s, i) => { TXT(ctx, s, hx(xs[i]), hy(104) - 20, 5, "#FFFFFF", { align: "center", out: K.ink, ow: 2 }); const lost = lt >= ts[i], bk = lost && lt - ts[i] > 0.5; if (bk) TXT(ctx, "BACKUP", hx(xs[i]), hy(148) , 3, K.yellow, { align: "center", out: K.ink, ow: 2 }); });
   big("GPS = THEIR CLOCK", 380, 6, K.yellow, 0.15, { panel: K.yellow });
 }
 function sMoney() {
@@ -549,7 +549,7 @@ function sWeather() {
   // grid lines
   for (let x = 0; x < LW; x += 30) for (let y = 0; y < LH; y += 3) P(x, y, "#2A4A8A"); for (let y = 0; y < LH; y += 30) for (let x = 0; x < LW; x += 3) P(x, y, "#2A4A8A");
   // hurricane
-  const hx0 = 128 - lt * 5, hy0 = 196 - lt * 3, rot = t * 1.8;
+  const hx0 = 128 - lt * 5, hy0 = 166 - lt * 3, rot = t * 1.8;
   for (let y = -44; y <= 44; y++) for (let x = -44; x <= 44; x++) {
     const r = Math.hypot(x, y); if (r > 44) continue;
     const th = Math.atan2(y, x), arm = Math.sin(th * 2 + Math.log(r + 1) * 3.2 - rot);
@@ -576,7 +576,7 @@ const tlv = (yr) => { for (let i = 1; i < TL.length; i++) if (yr <= TL[i][0]) { 
 function sTimeline() {
   const k = clamp(p.prog ?? 0), tC = p.tCrash ?? 99, cr = lt >= tC, lc = lt - tC;
   skyNight(LH, DARK); stars(80, LH, 91);
-  const x0 = 18, x1 = 166, yb = 250, yt = 90;
+  const x0 = 18, x1 = 166, yb = 222, yt = 72;
   R(x0 - 2, yt - 6, 1, yb - yt + 8, "#5A5F8A"); R(x0 - 2, yb + 1, x1 - x0 + 6, 1, "#5A5F8A");
   for (let y = 0; y <= 4; y++) for (let x = x0; x < x1; x += 3) P(x, yb - y * (yb - yt) / 4, "#24204A");
   const yr = 1957 + 69 * k, px = (y) => x0 + (x1 - x0) * (y - 1957) / 69, py = (v) => yb - (yb - yt) * v / 17000;
@@ -594,7 +594,7 @@ function sTimeline() {
   TXT(ctx, String(Math.floor(yr)), hx(x1), hy(yb) + 30, 5, "#FFFFFF", { align: "right", out: K.ink, ow: 2 });
   TXT(ctx, "1957", hx(x0), hy(yb) + 30, 5, "#A9A4E0", { out: K.ink, ow: 2 });
   TXT(ctx, "SPUTNIK 1", hx(px(1957) + 8), hy(yb - 22), 3, "#C8C4E0", { out: K.ink, ow: 2 });
-  if (!cr && k > 0.98) TXT(ctx, "16,988", hx(lx) - 10, hy(ly) - 40, 4, K.yellow, { align: "right", out: K.ink, ow: 2 });
+  if (!cr && k > 0.98) TXT(ctx, "16,988", hx(lx) - 16, hy(ly) - 10, 4, K.yellow, { align: "right", out: K.ink, ow: 2 });
   if (k > 0.98 && !cr) big("69 YEARS", 1070, 12, K.yellow, p.tBig ?? 0, { panel: K.yellow });
   if (cr) big("0", 1070, 14, K.red, tC, { panel: K.red });
 }
