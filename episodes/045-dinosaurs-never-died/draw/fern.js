@@ -286,11 +286,17 @@ ctx.drawImage(bg, -200, -200);
 goldDisc(ctx, 780, 520, 90, 0.9); // moon
 // the dinosaur leg + foot coming down (behind the fern on the right)
 const fy = lerp(-520, 1135, E["ease-in"](cl(step)));
-ctx.save(); ctx.fillStyle = INK.ink; ctx.strokeStyle = INK.ink; ctx.lineCap = "round";
-ctx.beginPath(); ctx.moveTo(700, fy - 1400); ctx.quadraticCurveTo(640, fy - 700, 760, fy - 160); ctx.lineTo(1000, fy - 160); ctx.quadraticCurveTo(1080, fy - 800, 1100, fy - 1400); ctx.closePath(); ctx.fill();
-ctx.beginPath(); ctx.ellipse(880, fy - 140, 150, 70, 0, 0, TAU); ctx.fill();
-[[-1, 640], [0, 600], [1, 1120]].forEach(([d, tx], i) => { ctx.lineWidth = 64 - Math.abs(d) * 8; ctx.beginPath(); ctx.moveTo(880, fy - 130); ctx.quadraticCurveTo(lerp(880, tx, 0.5), fy - 60, tx, fy - 6); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(tx - 10, fy - 26); ctx.lineTo(tx + (d >= 0 ? -1 : 1) * 44 * (d === 1 ? -1 : 1), fy + 4); ctx.lineTo(tx + 10, fy - 30); ctx.fill(); });
+ctx.save(); ctx.fillStyle = INK.ink; ctx.strokeStyle = INK.ink; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.translate(-110, 0);
+// scaly shin (metatarsus) rising out of frame + ankle
+ctx.beginPath(); ctx.moveTo(840, fy - 1500); ctx.quadraticCurveTo(820, fy - 700, 800, fy - 210); ctx.lineTo(990, fy - 190); ctx.quadraticCurveTo(1010, fy - 800, 1060, fy - 1500); ctx.closePath(); ctx.fill();
+ctx.beginPath(); ctx.ellipse(890, fy - 170, 120, 80, 0.1, 0, TAU); ctx.fill();
+ctx.strokeStyle = "rgba(242,214,138,0.28)"; ctx.lineWidth = 3; for (let i = 0; i < 9; i++) { const yy = fy - 260 - i * 90; ctx.beginPath(); ctx.moveTo(822, yy); ctx.quadraticCurveTo(900, yy + 22, 990, yy - 4); ctx.stroke(); }
+ctx.strokeStyle = INK.ink;
+// three forward toes (tapered) with claws, one small back toe
+[[600, 0, 58], [690, 6, 66], [770, 2, 54]].forEach(([tx, dy, w]) => {
+  ctx.beginPath(); ctx.moveTo(860, fy - 160 - w / 2); ctx.quadraticCurveTo(tx + 120, fy - 70 + dy, tx + 30, fy - 30 + dy); ctx.lineTo(tx + 30, fy - 2 + dy); ctx.quadraticCurveTo(tx + 160, fy - 10 + dy, 880, fy - 100); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(tx + 40, fy - 34 + dy); ctx.quadraticCurveTo(tx - 10, fy - 30 + dy, tx - 26, fy + 4 + dy); ctx.quadraticCurveTo(tx + 6, fy - 6 + dy, tx + 40, fy - 2 + dy); ctx.closePath(); ctx.fill(); });
+ctx.beginPath(); ctx.moveTo(960, fy - 120); ctx.quadraticCurveTo(1030, fy - 70, 1060, fy - 20); ctx.lineTo(1040, fy - 10); ctx.quadraticCurveTo(1000, fy - 60, 940, fy - 90); ctx.closePath(); ctx.fill();
 ctx.restore();
 // dust when it lands
 const land = cl((step - 0.97) / 0.03);

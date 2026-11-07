@@ -5,7 +5,7 @@ export default { END: 40, bg: "#141312", accent: "#F2D68A", xf: 0.0, hook: false
     { a: 6, b: 9, draw: "extinct", p: { k: 0.6 } },
     { a: 9, b: 12, draw: "herd", p: { ast: 0.4 } },
     { a: 12, b: 15, draw: "timeline", p: { fill: 1, rest: 1 } },
-    { a: 15, b: 18, draw: "fern", p: { step: 1, zoom: 1.25, cx: 560, cy: 1000 } },
+    { a: 15, b: 18, draw: "fern", p: { step: 1 } },
     { a: 18, b: 21, draw: "grow", p: { g: 1, q: 1 } },
     { a: 21, b: 24, draw: "city", p: { q: 0 } },
     { a: 24, b: 27, draw: "bird", p: { rev: 1, flock: 0.5 } },

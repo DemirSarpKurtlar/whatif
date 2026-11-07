@@ -290,7 +290,7 @@ if (ast > 0 && ast < 1) {
 }
 // gold sun behind the herd
 goldDisc(ctx, 620, 930, 230, 1);
-ctx.drawImage(cached("herd_cloud", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 560, 860, 760, 40, "30,29,27", 0.6, 8); streak(g, 700, 1000, 520, 26, "30,29,27", 0.5, 6); }), -200, -200);
+ctx.drawImage(cached("herd_cloud", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 560, 860, 760, 40, "30,29,27", 0.45, 10); streak(g, 700, 1000, 520, 26, "30,29,27", 0.38, 8); }), -200, -200);
 // mist layers + far herd (cached)
 const mid = cached("herd_mid", W + 400, H + 400, (g) => { g.translate(200, 200);
   ridge(g, 1090, 110, 1.1, "120,115,105", 0.7, 8, 140, 0.9);
@@ -301,7 +301,7 @@ ctx.drawImage(mid, -200, -200);
 const w = p.walk ?? 1;
 sauropod(ctx, 120 + lt * 14, 1150, 0.3, 1, "rgba(84,80,75,0.92)", w, 0.85, 1);
 sauropod(ctx, 900 - lt * 10, 1162, 0.24, -1, "rgba(92,88,82,0.9)", w, 0.4, 3);
-streak(ctx, 540, 1180, 1500, 40, "190,183,168", 0.4, 0);
+ctx.drawImage(cached("herd_mist2", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 540, 1180, 1500, 40, "190,183,168", 0.4, 6); }), -200, -200);
 sauropod(ctx, 380 + lt * 22, 1290, 0.58, 1, "rgba(40,38,35,0.97)", w, 0.7, 2);
 // near ground
 const near = cached("herd_near", W + 400, H + 400, (g) => { g.translate(200, 200);

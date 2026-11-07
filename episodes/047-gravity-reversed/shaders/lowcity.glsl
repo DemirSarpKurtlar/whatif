@@ -125,14 +125,13 @@ vec2 map(vec3 p){
   r = opU(r, trees(p));
   r = opU(r, boats(p));
   if (gSplash > 0.01) {
-    vec3 q = p - vec3(0.0, WTOP0 + gW, -16.4);
-    float cx = floor(q.x/0.9);
-    q.x = mod(q.x,0.9)-0.45;
-    float hh = hash2(vec2(cx,7.0));
-    float hg = gSplash*(0.8+3.2*hh*hh);
-    vec3 c = vec3((hash2(vec2(cx,1.0))-0.5)*0.4, hg*0.5, (hash2(vec2(cx,4.0))-0.5)*1.2);
-    float d = sdEllipsoid(q-c, vec3(0.55, hg*0.55+0.1, 0.6));
-    r = opU(r, vec2(d*0.6, 15.0));
+    // crashing wall of white water along the quay (low-poly crest)
+    vec3 q = p - vec3(0.0, WTOP0 + gW, -16.3);
+    float hx = gSplash*(1.2 + 2.6*noise2(vec2(p.x*0.45, 3.0)) + 0.8*noise2(vec2(p.x*1.3, 9.0)));
+    float wz = 0.9 + 0.5*noise2(vec2(p.x*0.7, 5.0));
+    float d = (length(vec2(q.y/(hx+0.05), q.z/wz)) - 1.0)*min(hx, wz)*0.8;
+    d = max(d, -q.y);
+    r = opU(r, vec2(d, 15.0));
   }
   return r;
 }
