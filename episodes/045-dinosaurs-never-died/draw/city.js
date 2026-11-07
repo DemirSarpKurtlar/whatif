@@ -276,11 +276,11 @@ const qk = p.q ?? 0, w = p.walk ?? 1;
 const bg = cached("city_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
   vwash(g, -200, 820, "28,27,25", 0.95, 0);
   streak(g, 300, 300, 900, 110, "18,17,16", 0.5, 14); streak(g, 820, 500, 700, 70, "26,25,23", 0.4, 12);
-  blob(g, 540, 900, 700, 420, "246,240,224", 0.5);
+  blob(g, 540, 760, 700, 480, "246,240,224", 0.5);
 });
 ctx.drawImage(bg, -200, -200);
-goldDisc(ctx, 560, 820, 210, 1);
-ctx.drawImage(cached("city_cloud", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 520, 790, 700, 36, "30,29,27", 0.6, 8); }), -200, -200);
+goldDisc(ctx, 560, 600, 190, 1);
+ctx.drawImage(cached("city_cloud", W + 400, H + 400, (g) => { g.translate(200, 200); streak(g, 520, 640, 640, 30, "30,29,27", 0.45, 8); }), -200, -200);
 const far = cached("city_far", W + 400, H + 400, (g) => { g.translate(200, 200);
   g.filter = "blur(1.5px)"; skylineInk(g, 1010, 3, "rgba(120,115,106,0.9)", 0.0, 120, 420); g.filter = "none";
   streak(g, 540, 1000, 1500, 60, "220,213,198", 0.55, 14);
@@ -302,7 +302,7 @@ ctx.drawImage(near, -200, -200);
 trex(ctx, 760 - lt * 40, 1240, 0.7, -1, INK.ink, w, 0.15, 1);
 // pterosaur-like birds over the city
 for (let i = 0; i < 4; i++) flyBird(ctx, 820 - i * 130 - lt * 30, 480 + Math.sin(i * 1.9) * 50, 1.2 - i * 0.12, INK.ink, i);
-if (qk > 0) { ctx.save(); ctx.globalAlpha = cl(qk * 2); const s = 0.8 + 0.2 * E["back"](cl(qk)); ctx.translate(560, 820); ctx.scale(s, s);
-  ctx.font = "300px LSerif"; ctx.textAlign = "center"; ctx.fillStyle = INK.ink; ctx.fillText("?", 0, 105); ctx.restore(); }
+if (qk > 0) { ctx.save(); ctx.globalAlpha = cl(qk * 2); const s = 0.8 + 0.2 * E["back"](cl(qk)); ctx.translate(560, 600); ctx.scale(s, s);
+  ctx.font = "280px LSerif"; ctx.textAlign = "center"; ctx.fillStyle = INK.ink; ctx.fillText("?", 0, 95); ctx.restore(); }
 goldDust(ctx, 22, 0, 400, W, 900, 31, 0.6, 12);
 finish(ctx);

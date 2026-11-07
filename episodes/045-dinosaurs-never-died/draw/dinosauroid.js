@@ -1,4 +1,4 @@
-// Dale Russell's 1982 "dinosauroid" thought experiment: a Troodon-like dinosaur beside the upright big-brained figure, gold halo and a brushed gold "?". Then it holds a glowing phone. p: ghost (0..1 Troodon), q (0..1 ?), phone (0..1), zoom, cx, cy
+// Dale Russell's 1982 "dinosauroid" thought experiment: a Troodon-like dinosaur beside the upright big-brained figure, gold halo and a brushed gold "?". Then it holds a glowing phone. p: droid (0..1 reveal from ink mist), ghost (0..1 Troodon), q (0..1 ?), phone (0..1), zoom, cx, cy
 // ---- Ink & Gold helpers (copied from episode 038 and inlined into every draw file by the episode's build step) ----
 const C8 = window.__c045 || (window.__c045 = {});
 const INK = { paper: "#CFC8B9", mid: "#9C978E", dark: "#55524D", ink: "#141312", g0: "#7E5E19", g1: "#C9A64B", g2: "#F2D68A", seal: "#B8322A" };
@@ -272,7 +272,7 @@ function skylineInk(g, yb, seed, col, win = 0.15, hmin = 200, hmax = 760, x0 = -
     x += w + 6 + rnd(i * 5 + seed) * 24; i++; }
 }
 frameIn(p);
-const gh = p.ghost ?? 1, qk = p.q ?? 1, ph = p.phone ?? 0;
+const gh = p.ghost ?? 1, qk = p.q ?? 1, ph = p.phone ?? 0, dr = p.droid ?? 1;
 const bg = cached("droid_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
   vwash(g, -200, H + 200, "30,29,27", 0.9, 0.85);
   blob(g, 560, 820, 560, 720, "120,115,106", 0.45);
@@ -281,12 +281,13 @@ const bg = cached("droid_bg", W + 400, H + 400, (g) => { g.translate(200, 200); 
 });
 ctx.drawImage(bg, -200, -200);
 // halo behind the head
-goldDisc(ctx, 600, 560, 230 + 6 * Math.sin(t * 1.5), 1 - 0.6 * ph);
+if (dr > 0) { ctx.save(); ctx.globalAlpha = cl(dr * 1.5); goldDisc(ctx, 600, 560, (200 + 30 * dr) + 6 * Math.sin(t * 1.5), 1 - 0.6 * ph); ctx.restore(); }
 // Troodon on the left, smaller (what Russell started from)
 if (gh > 0) { ctx.save(); ctx.globalAlpha = gh * (1 - 0.7 * ph); raptor(ctx, 200, 1260, 0.95, 1, "rgba(24,23,21,0.95)", 1); ctx.restore(); }
 // the dinosauroid
 const arm = E["ease-in-out"](cl(ph));
-dinosauroid(ctx, 600, 1300, 0.86, 1, INK.ink, 1, arm);
+if (dr > 0) { ctx.save(); ctx.globalAlpha = cl(dr * 1.3); dinosauroid(ctx, 600, 1300 + 40 * (1 - dr), 0.86, 1, INK.ink, cl(dr * 2 - 1), arm); ctx.restore(); }
+if (dr > 0 && dr < 1) for (let i = 0; i < 10; i++) { const u = rnd(i * 2.3); blob(ctx, 600 + (u - 0.5) * 360, 1250 - i * 85, 120 + 80 * u, 90, "18,17,16", 0.55 * Math.sin(Math.PI * dr)); }
 // phone glow on its face
 if (ph > 0) { const hx = 600 + (30 + 40) * 0.86, hy = 1300 - 760 * 0.86; ctx.save(); ctx.globalAlpha = arm;
   glow(ctx, hx, hy - 80, 360, 0.7); goldShape(ctx, (q) => { q.roundRect(hx - 34, hy - 40, 68, 120, 10); }, 40);
