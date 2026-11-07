@@ -125,18 +125,14 @@ vec2 map(vec3 p){
   r = opU(r, trees(p));
   r = opU(r, boats(p));
   if (gSplash > 0.01) {
-    vec3 q = p - vec3(0.0, WTOP0 + gW, -16.2);
-    float cx = floor(q.x/1.3);
-    q.x = mod(q.x,1.3)-0.65;
+    vec3 q = p - vec3(0.0, WTOP0 + gW, -16.4);
+    float cx = floor(q.x/0.9);
+    q.x = mod(q.x,0.9)-0.45;
     float hh = hash2(vec2(cx,7.0));
-    float hg = gSplash*(1.0+2.4*hh);
-    float d = 1e9;
-    for (int k=0;k<3;k++){
-      float fk = float(k);
-      vec3 c = vec3((hash2(vec2(cx,fk+1.0))-0.5)*0.6, hg*(0.15+0.33*fk), (hash2(vec2(cx,fk+4.0))-0.5)*1.0);
-      d = min(d, sdSphere(q-c, (0.5-0.13*fk)*(0.4+0.6*gSplash)));
-    }
-    r = opU(r, vec2(d*0.8, 15.0));
+    float hg = gSplash*(0.8+3.2*hh*hh);
+    vec3 c = vec3((hash2(vec2(cx,1.0))-0.5)*0.4, hg*0.5, (hash2(vec2(cx,4.0))-0.5)*1.2);
+    float d = sdEllipsoid(q-c, vec3(0.55, hg*0.55+0.1, 0.6));
+    r = opU(r, vec2(d*0.6, 15.0));
   }
   return r;
 }
@@ -183,9 +179,9 @@ vec3 towers(vec3 ro, vec3 rd, float R, float wcell, float seed, float hmin, floa
 vec3 farView(vec3 ro, vec3 rd, vec3 sky){
   float h1, h2;
   vec3 c = sky;
-  vec3 t2 = towers(ro, rd, 175.0, 13.0, 21.0, 22.0, 78.0, h2);
+  vec3 t2 = towers(ro, rd, 175.0, 13.0, 21.0, 16.0, 62.0, h2);
   if (h2 > 0.5) c = mix(t2, sky, 0.34);
-  vec3 t1 = towers(ro, rd, 128.0, 15.5, 3.0, 14.0, 62.0, h1);
+  vec3 t1 = towers(ro, rd, 128.0, 15.5, 3.0, 10.0, 48.0, h1);
   if (h1 > 0.5) c = mix(t1, sky, 0.17);
   float dh = max(length(rd.xz), 1e-4);
   float ys = ro.y + rd.y*SHORE/dh;
@@ -259,7 +255,7 @@ vec4 pixel(vec2 uv){
     }
     else if (id < 13.5) alb = lin(vec3(240.0,240.0,236.0)/255.0);
     else if (id < 14.5) alb = lin(vec3(210.0,72.0,60.0)/255.0);
-    else { alb = lin(vec3(0.95,0.97,1.0)); n = facet(n, 2.0); }
+    else { alb = lin(vec3(0.93,0.97,1.0)); n = facet(n, 1.6); }
     col = shade(pos, n, rd, alb, L, key, skyF, bnc, gl);
     col = grade(col, hazeC, m.x, 22.0, 0.25, 0.02);
   } else if (eid > 19.5) {
@@ -346,13 +342,14 @@ vec4 pixel(vec2 uv){
     } else {
       // bay floor, now exposed under the lifted water (wet mud, stones, stranded fish)
       vec2 fc = floor(pos.xz*1.3);
-      vec3 c = mix(vec3(120.0,98.0,70.0), vec3(86.0,72.0,56.0), noise2(pos.xz*0.6))/255.0;
+      vec3 c = mix(vec3(104.0,82.0,58.0), vec3(70.0,58.0,46.0), noise2(pos.xz*0.6))/255.0;
+      if (noise2(pos.xz*0.35+7.0) > 0.62) c = mix(c, vec3(120.0,150.0,180.0)/255.0, 0.6);
       if (hash2(fc) > 0.93) c = vec3(150.0,146.0,140.0)/255.0;
       vec2 fq = pos.xz*vec2(0.9,1.6); vec2 fcid = floor(fq);
       if (hash2(fcid+9.0) > 0.95) { vec2 ff = fract(fq)-0.5; if (length(ff*vec2(1.0,2.0)) < 0.25) c = vec3(0.78,0.82,0.86); }
       float shadeU = gW > 0.3 ? 0.42 : 1.0;
       col = lin(c)*(key*0.75*shadeU + skyF*1.0);
-      col = grade(col, hazeC, te, 30.0, 0.3, 0.02);
+      col = grade(col, hazeC, te, 40.0, 0.15, 0.0);
     }
   }
   // rising debris: paper, leaves, dust

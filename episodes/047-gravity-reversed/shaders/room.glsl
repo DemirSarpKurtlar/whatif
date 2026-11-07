@@ -127,7 +127,8 @@ vec4 pixel(vec2 uv){
   } else {
     float sh = mix(0.45, 1.0, softShadow(pos+n*0.01, L, 8.0));
     float sky = 0.6 + 0.4*n.y;
-    col = lin(a)*(key*0.75*sh*clamp(dot(n,L)*0.5+0.6,0.0,1.0) + skyF*sky);
+    float lam = n.y < -0.5 ? 0.75 : clamp(dot(n,L)*0.5+0.6,0.0,1.0);
+    col = lin(a)*(key*0.75*sh*lam + skyF*sky);
     col = pow(max(col,0.0), vec3(0.4545));
     if (tw == tf.y && rd.y > 0.0 && abs(pos.x-0.2) < 0.5 && abs(pos.z+1.2) < 0.5) col = vec3(1.0,0.99,0.94);
   }

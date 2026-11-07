@@ -375,7 +375,7 @@ function sAur() {
   const yy = (la) => Math.round(420 + (70 - la) / 60 * 640), x = 948;
   ctx.fillStyle = K.ink; ctx.fillRect(x - 12, 396, 72, 690); ctx.fillStyle = "#17143F"; ctx.fillRect(x - 6, 402, 60, 678);
   for (let la = 70; la >= 15; la -= 5) { const y = yy(la); ctx.fillStyle = la >= lat ? (la > 45 ? K.lime : la > 30 ? "#2EE6A6" : K.pink) : "#2E2A6A"; ctx.fillRect(x, y - 12, 48, 44); }
-  for (const la of [60, 40, 20]) TXT(ctx, la + "N", x - 24, yy(la) - 4, 4, "#A9A4E0", { align: "right", out: K.ink, ow: 2 });
+  for (const la of [60, 45, 30]) TXT(ctx, la + "N", x - 24, yy(la) - 4, 4, "#A9A4E0", { align: "right", out: K.ink, ow: 2 });
   const my = yy(lat); ctx.fillStyle = "#FFFFFF"; ctx.fillRect(x - 20, my - 3, 88, 6);
   if (lk >= 1) { if (blink(2.5)) TXT(ctx, "CUBA!", x - 30, my - 50, 6, K.yellow, { align: "right", out: K.ink, ow: 3 }); TXT(ctx, "23N", x - 30, my + 12, 4, "#FFFFFF", { align: "right", out: K.ink, ow: 2 }); }
   TXT(ctx, "AURORA", x + 24, 350, 4, K.lime, { align: "center", out: K.ink, ow: 2 });
@@ -421,9 +421,9 @@ function sTele() {
   R(50, 192, 36, 4, "#4A3018"); R(66, 189, 4, 3, "#8A6A30"); R(54, 187 + (down ? 2 : 0), 30, 2, "#C8A050"); R(52, 185 + (down ? 2 : 0), 6, 4, "#1A1414");
   R(96, 192, 24, 4, "#4A3018"); R(99, 184, 5, 8, "#8A2A2A"); R(108, 184, 5, 8, "#8A2A2A"); R(96, 182 + (down ? 1 : 0), 22, 2, "#C8A050");
   // battery jars + loose wire
-  for (let i = 0; i < 3; i++) { const x = 130 + i * 14; g.globalAlpha = 0.6; R(x, 226, 11, 22, "#7FD8C8"); g.globalAlpha = 1; R(x + 1, 234, 9, 13, "#3A6A8A"); R(x + 3, 220, 1, 7, "#8A8A8A"); R(x + 7, 220, 1, 7, "#B87333"); }
-  L(133, 220, 124, 206, "#141010"); L(124, 206, 120, 214, "#141010");
-  if (nb && blink(2)) redX(150, 210, 5);
+  for (let i = 0; i < 3; i++) { const x = 130 + i * 14; g.globalAlpha = 0.6; R(x, 176, 11, 20, "#7FD8C8"); g.globalAlpha = 1; R(x + 1, 183, 9, 12, "#3A6A8A"); R(x + 3, 170, 1, 7, "#8A8A8A"); R(x + 7, 170, 1, 7, "#B87333"); }
+  L(133, 170, 124, 160, "#141010"); L(124, 160, 121, 168, "#141010");
+  if (nb && blink(2)) redX(150, 160, 5);
   // sparks
   const nS = nb ? 3 : 5;
   for (let i = 0; i < nS; i++) { const seed = Math.floor(t * 9) * 7 + i; if (rnd(seed) < 0.55) { const [x, y] = path(i % 2 ? W1 : W2, rnd(seed * 3)); spark(Math.round(x), Math.round(y), 2 + Math.floor(rnd(seed * 5) * 3)); } }
@@ -434,7 +434,7 @@ function sTele() {
   if (!UI) return;
   if (!nb) { if (blink(3)) big("ZAP!", 420, 13, K.yellow, p.tZap ?? 0.2); }
   else { big("BATTERY: OFF", 380, 7, K.red, tN, { panel: K.red }); big("STILL WORKING!", 520, 7, K.lime, tN + 0.25); }
-  if (nb) TXT(ctx, "UNPLUGGED", hx(150), hy(256), hu(3), K.red, { align: "center", out: K.ink, ow: 2 });
+  if (nb) TXT(ctx, "UNPLUGGED", hx(150), hy(205), hu(3), K.red, { align: "center", out: K.ink, ow: 2 });
 }
 function pylon(x, base, h) {
   const c = "#5A5F8A", top = base - h;
@@ -449,9 +449,9 @@ function sGrid() {
   skyline(232, 2, ["#1E1A50", "#241F5E", "#171442"], 0.35 * hp, 50, 120, 12, 24);
   skyline(250, 5, [K.bldA, K.bldB, K.dk], 0.8 * hp, 40, 105, 18, 30);
   R(0, 250, LW, 70, "#120F2A"); R(0, 250, LW, 2, "#2C2860");
-  pylon(30, 300, 110); pylon(150, 290, 94);
+  pylon(30, 320, 170); pylon(150, 310, 150);
   const wires = [];
-  for (const [ax, bx, dy] of [[-13, -13, 6], [13, 13, 6], [-10, -10, 16], [10, 10, 16]]) wires.push([[30 + ax, 190 + dy], [150 + bx, 196 + dy]]);
+  for (const [ax, bx, dy] of [[-13, -13, 6], [13, 13, 6], [-10, -10, 16], [10, 10, 16]]) wires.push([[30 + ax, 150 + dy], [150 + bx, 160 + dy]]);
   const wy = (w, k) => w[0][1] + (w[1][1] - w[0][1]) * k + Math.sin(k * Math.PI) * 9;
   wires.forEach((w) => { for (let x = 0; x < LW; x++) { const k = (x - w[0][0]) / (w[1][0] - w[0][0]); if (k < 0 || k > 1) continue; P(x, wy(w, k), "#3A3E6A"); } L(0, w[0][1] + 4, w[0][0], w[0][1], "#3A3E6A"); L(w[1][0], w[1][1], LW, w[1][1] + 3, "#3A3E6A"); });
   if (hp > 0.05) wires.forEach((w, wi) => { for (let j = 0; j < 4; j++) { const k = (lt * 1.4 + j / 4 + wi * 0.13) % 1, x = w[0][0] + (w[1][0] - w[0][0]) * k, y = wy(w, k); g.globalAlpha = 0.35; R(x - 2, y - 2, 5, 5, K.red); g.globalAlpha = 1; R(x - 1, y, 3, 1, K.yellow); P(x, y, "#FFFFFF"); } });
@@ -504,7 +504,7 @@ function sGps() {
   R(0, 0, 26, 52, "#1A1838"); for (let i = 0; i < 8; i++) R(2 + (i % 3) * 8, 3 + Math.floor(i / 3) * 16, 6, 12, i % 2 ? "#3A3486" : "#2B2A6B");
   R(26, 0, 8, LH, "#2A2860"); R(0, 52, LW, 8, "#2A2860"); for (let y = 0; y < LH; y += 10) R(29, y, 2, 5, "#FFD23F88"); for (let x = 0; x < LW; x += 10) R(x, 55, 5, 2, "#FFD23F88");
   R(40, 0, 136, 46, "#163A2E"); for (let i = 0; i < 9; i++) disc(50 + i * 15, 18 + (i % 2) * 10, 5, "#1E5A3A");
-  const xr = 130, yT = 300 - ((lt * 26) % 240);
+  const xr = 130, yT = Math.max(76, 214 - lt * 24);
   const wob = (y) => gl * (Math.sin(y * 0.09 + 1) * 7 + Math.sin(y * 0.23) * 3);
   R(40, 66, 136, 250, "#3A2A1E");
   for (let i = 0; i < 15; i++) { const x = 46 + i * 6; if (x < xr) R(x, 66, 2, 250, "#2E8A4A"); else for (let y = 66; y < LH; y += 3) P(x, y, "#4A3626"); }
@@ -549,7 +549,7 @@ function sCost() {
   skyNight(240); stars(80, 170, 81); aurora(150, 110, 0.8, 11);
   skyline(250, 5, [K.bldA, K.bldB, K.dk], 0.05, 40, 105, 18, 30);
   R(0, 250, LW, 70, "#120F2A"); R(0, 250, LW, 2, "#2C2860");
-  for (let i = 0; i < 8; i++) { const n = Math.floor(c * (8 + rnd(i * 3) * 16)), x = 6 + i * 21; for (let k = 0; k < n; k++) { R(x, 300 - k * 3, 16, 3, k % 2 ? "#C89A2A" : K.yellow); R(x, 300 - k * 3, 16, 1, "#FFF2A0"); } }
+  for (let i = 0; i < 8; i++) { const n = Math.floor(c * (6 + rnd(i * 3) * 10)), x = 6 + i * 21; for (let k = 0; k < n; k++) { R(x, 316 - k * 3, 16, 3, k % 2 ? "#C89A2A" : K.yellow); R(x, 316 - k * 3, 16, 1, "#FFF2A0"); } }
   blit();
   card({ tag: "DAMAGE REPORT", title: "THE BILL", sub: "US ESTIMATE · LLOYD'S 2013", col: K.yellow, icon: "cash", fill: Math.round(c * 24) });
   if (!UI) return;
@@ -566,10 +566,10 @@ function sMiss() {
   const cx = 90, cy = 142, R0 = 64;
   for (let i = 4; i >= 1; i--) { g.globalAlpha = 0.08 * (5 - i); disc(cx, cy, 10 + i * 4, "#FF8A3D"); } g.globalAlpha = 1;
   disc(cx, cy, 10, "#FFB13B"); disc(cx, cy, 7, "#FFD23F");
-  for (let i = 0; i < 140; i++) if (i % 2) { const a = i * TAU / 140; P(cx + Math.cos(a) * R0, cy + Math.sin(a) * R0, "#5A5F8A"); }
+  for (let i = 0; i < 200; i++) if (i % 3) { const a = i * TAU / 200; P(cx + Math.cos(a) * R0, cy + Math.sin(a) * R0, "#8A8FB8"); }
   const aE = Math.PI / 2 - lt * 0.03, aS = Math.PI / 2 - 2.11;
   const ex = cx + Math.cos(aE) * R0, ey = cy + Math.sin(aE) * R0, sx = cx + Math.cos(aS) * R0, sy = cy + Math.sin(aS) * R0;
-  if (blink(1.5)) for (const s of [-0.22, 0.22]) for (let d = 12; d < R0 + 8; d += 4) P(cx + Math.cos(Math.PI / 2 + s) * d, cy + Math.sin(Math.PI / 2 + s) * d, "#FF3B4E");
+  g.globalAlpha = blink(1.5) ? 1 : 0.45; for (const s of [-0.22, 0.22]) for (let d = 12; d < R0 + 8; d += 4) P(cx + Math.cos(Math.PI / 2 + s) * d, cy + Math.sin(Math.PI / 2 + s) * d, "#FF3B4E"); g.globalAlpha = 1;
   if (lt >= tC) {
     const rf = Math.min(R0 + 22, 12 + (lt - tC) * 70);
     for (let i = 0; i < 120; i++) { const a = aS + (rnd(i) - 0.5) * 0.6, d = 12 + (rf - 12) * rnd(i * 3); g.globalAlpha = 0.6; P(cx + Math.cos(a) * d, cy + Math.sin(a) * d, i % 2 ? K.pink : K.orange); }
@@ -584,7 +584,7 @@ function sMiss() {
   TXT(ctx, "EARTH", hx(ex), hy(ey + 10), 4, "#8FD8FF", { align: "center", out: K.ink, ow: 2 });
   TXT(ctx, "STEREO-A", hx(sx) - 10, hy(sy) - 70, 4, "#FFFFFF", { align: "center", out: K.ink, ow: 2 });
   if (lt >= tC + 1.1 && blink(3)) TXT(ctx, "HIT!", hx(sx) + 40, hy(sy) + 20, 5, K.red, { out: K.ink, ow: 2 });
-  if (blink(1.5)) TXT(ctx, "1 WEEK EARLIER", hx(cx), hy(cy + 34), 3, K.red, { align: "center", out: K.ink, ow: 2 });
+  TXT(ctx, "1 WEEK EARLIER", hx(cx), hy(cy + 34), 4, K.red, { align: "center", out: K.ink, ow: 2 });
   big("MISSED US BY 1 WEEK", 310, 5, K.yellow, tM, { panel: K.yellow });
 }
 function sRoof() {
