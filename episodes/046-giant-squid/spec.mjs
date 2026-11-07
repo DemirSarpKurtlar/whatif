@@ -10,8 +10,8 @@ export default {
   hook: { scene: 2, at: 0.6 },
   cover: 1.4,
   scenes: [
-    { a: 0, b: 2.9, draw: "surface", p: { sid: 0, zoom: [1.0, 1.04], shadow: [[0, 0], [2.9, 0.8]] } },
-    { a: 2.9, b: 6.2, draw: "descent", p: { sid: 1, zoom: [1.0, 1.05], d: [[0, 0], [2.6, 1, "ease-in-out"]], labk: [[0, 0], [0.4, 1]] } },
+    { a: 0, b: 4.3, draw: "surface", p: { sid: 0, zoom: [1.0, 1.06], shadow: [[0, 0], [4.3, 1]], dive: [[0, 0], [3.0, 0], [4.3, 1]], lab: 1, labk: [[0, 0], [2.9, 0], [3.3, 1]] } },
+    { a: 4.3, b: 6.2, draw: "descent", p: { sid: 1, zoom: [1.0, 1.05], d: [[0, 0.1], [1.7, 1, "ease-in-out"]], labk: [[0, 0], [0.4, 1]] } },
     { a: 6.2, b: 8.0, draw: "eye", p: { sid: 2, zoom: [1.12, 1.0], open: [[0, 0], [0.5, 0], [1.3, 1]], glow: [[0, 0.3], [1.2, 1]], look: [[0, 0.6], [1.6, -0.3]] } },
     { a: 8.0, b: 10.2, draw: "eye", p: { sid: 3, zoom: [1.0, 1.04], lab: 1, labk: [[0, 0], [0.5, 1]] } },
     { a: 10.2, b: 11.8, draw: "eye", p: { sid: 4, zoom: [1.04, 1.06], lab: 2, labk: [[0, 0], [0.7, 1]] } },

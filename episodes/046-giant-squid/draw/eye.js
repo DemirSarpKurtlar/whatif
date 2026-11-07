@@ -352,7 +352,7 @@ if (p.lab === 3) {
   }
 }
 if (p.lab === 4) {
-  diver(ctx, 860, 1110 + Math.sin(t) * 10, 0.55);
+  diver(ctx, 850, 1080 + Math.sin(t) * 10, 0.75);
   plaque(ctx, 300, 1640, [{ t: "STAY", s: 70, sp: 6 }], cl(lk * 1.5)); plaque(ctx, 780, 1640, [{ t: "SWIM", s: 70, sp: 6, c: K.red }], cl(lk * 1.5 - 0.3));
 }
 finish(ctx);
