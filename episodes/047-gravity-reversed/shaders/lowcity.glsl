@@ -256,6 +256,7 @@ vec4 pixel(vec2 uv){
     else if (id < 14.5) alb = lin(vec3(210.0,72.0,60.0)/255.0);
     else { float fy = clamp((pos.y - WTOP0 - gW)/2.5, 0.0, 1.0); alb = lin(mix(vec3(0.55,0.82,0.92), vec3(0.97,0.99,1.0), fy*0.8 + 0.2*step(0.6, noise2(pos.xy*vec2(3.0,1.2))))); n = facet(n, 2.5); }
     col = shade(pos, n, rd, alb, L, key, skyF, bnc, gl);
+    if (id > 14.5) col = alb*(0.8 + 0.45*clamp(dot(n,L),0.0,1.0)) + lin(vec3(0.85,0.93,1.0))*0.12*(0.5+0.5*n.y);
     col = grade(col, hazeC, m.x, 22.0, 0.25, 0.02);
   } else if (eid > 19.5) {
     vec3 pos = ro+rd*te;
