@@ -504,7 +504,7 @@ function pixClock(cx, cy, r, ok, ang, warn) {
   L(cx, cy, cx + Math.cos(ang) * (r - 4), cy + Math.sin(ang) * (r - 4), K.ink); L(cx, cy, cx + Math.cos(ang * 0.083 - 1) * (r - 7), cy + Math.sin(ang * 0.083 - 1) * (r - 7), K.ink); P(cx, cy, K.red);
 }
 function sClock() {
-  const ts = p.tLose ?? [0.3, 0.7, 1.1];
+  const ts = [p.tL0 ?? 0.3, p.tL1 ?? 0.7, p.tL2 ?? 1.1];
   skyNight(240); stars(70, 120, 61);
   skyline(232, 9, ["#1E1A50", "#241F5E", "#171442"], 0.3, 30, 70, 12, 24);
   R(0, 232, LW, 88, "#120F2A"); R(0, 232, LW, 2, "#2C2860");
@@ -576,7 +576,7 @@ const tlv = (yr) => { for (let i = 1; i < TL.length; i++) if (yr <= TL[i][0]) { 
 function sTimeline() {
   const k = clamp(p.prog ?? 0), tC = p.tCrash ?? 99, cr = lt >= tC, lc = lt - tC;
   skyNight(LH, DARK); stars(80, LH, 91);
-  const x0 = 18, x1 = 166, yb = 222, yt = 72;
+  const x0 = 18, x1 = 166, yb = 200, yt = 84;
   R(x0 - 2, yt - 6, 1, yb - yt + 8, "#5A5F8A"); R(x0 - 2, yb + 1, x1 - x0 + 6, 1, "#5A5F8A");
   for (let y = 0; y <= 4; y++) for (let x = x0; x < x1; x += 3) P(x, yb - y * (yb - yt) / 4, "#24204A");
   const yr = 1957 + 69 * k, px = (y) => x0 + (x1 - x0) * (y - 1957) / 69, py = (v) => yb - (yb - yt) * v / 17000;
@@ -595,8 +595,8 @@ function sTimeline() {
   TXT(ctx, "1957", hx(x0), hy(yb) + 30, 5, "#A9A4E0", { out: K.ink, ow: 2 });
   TXT(ctx, "SPUTNIK 1", hx(px(1957) + 8), hy(yb - 22), 3, "#C8C4E0", { out: K.ink, ow: 2 });
   if (!cr && k > 0.98) TXT(ctx, "16,988", hx(lx) - 16, hy(ly) - 10, 4, K.yellow, { align: "right", out: K.ink, ow: 2 });
-  if (k > 0.98 && !cr) big("69 YEARS", 1070, 12, K.yellow, p.tBig ?? 0, { panel: K.yellow });
-  if (cr) big("0", 1070, 14, K.red, tC, { panel: K.red });
+  if (k > 0.98 && !cr) big("69 YEARS", 320, 12, K.yellow, p.tBig ?? 0, { panel: K.yellow });
+  if (cr) big("0", 310, 14, K.red, tC, { panel: K.red });
 }
 function sEnd() {
   skyNight(200); stars(120, 180, 17);

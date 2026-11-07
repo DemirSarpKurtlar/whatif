@@ -22,7 +22,7 @@ export default {
     sc(2, 8.15, 11.95, { tBig: 0.95, tBreak: 2.3, tSplash: 2.95 }),                       // 2 ISS 420 t reentry, chunks hit
     sc(3, 11.95, 14.6, { tLost: 1.1 }),                                                  // 3 phone map: GPS lost, map spins
     sc(4, 14.6, 16.85, { tCmp: 0.4 }),                                                   // 4 pilots + ship crews, old-school nav
-    sc(5, 16.85, 20.5, { tLose: [0.15, 0.95, 1.65] }),                                   // 5 cell / grid / bank clocks -> backup
+    sc(5, 16.85, 20.5, { tL0: 0.15, tL1: 0.95, tL2: 1.65 }),                                   // 5 cell / grid / bank clocks -> backup
     sc(6, 20.5, 24.2, { cnt: [[0, 0], [1.2, 0], [2.55, 1]], tDay: 2.98 }),                // 6 $1 billion per day
     sc(7, 24.2, 28.25, { data: [[0, 0], [0.8, 0], [1.4, 1]], tBig: 1.45, tUnk: 3.4 }),   // 7 weather data -90%, hurricane
     sc(8, 28.25, 30.95, { prog: [[0, 0], [1.55, 1]], tBig: 1.55, tCrash: 2.3 }),        // 8 1957 -> 2026 timeline, crash to 0
