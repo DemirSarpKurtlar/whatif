@@ -327,8 +327,8 @@ squid(ctx, 540, TOP + Math.sin(t * 0.8) * 8, S, Math.PI / 2, { reach: p.reach ??
 ctx.restore();
 // ruler (screen space): fin tip to tentacle tip
 if (rl > 0) { const y0 = TOP, y1 = TOP + 13 * S * eout(rl), x = 110; ctx.save(); ctx.strokeStyle = K.red; ctx.fillStyle = K.cream; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y1); ctx.stroke(); ctx.lineWidth = 3; ctx.font = "26px LSerif"; ctx.textAlign = "left";
+  ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y1); ctx.stroke(); ctx.lineWidth = 3; ctx.font = "36px LSerif"; ctx.textAlign = "left";
   for (let m = 0; m <= 13; m++) { const y = y0 + m * S; if (y > y1 + 1) break; ctx.beginPath(); ctx.moveTo(x - (m % 5 ? 12 : 24), y); ctx.lineTo(x + (m % 5 ? 12 : 24), y); ctx.stroke(); if (m % 5 === 0 || m === 13) ctx.fillText(m + " m", x + 30, y + 9); }
   ctx.restore(); }
-plaque(ctx, 790, 420, [{ t: "FIN TO TENTACLE TIP", s: 26, sp: 4 }, { t: "UP TO 13 m", s: 76, c: K.red }], p.labk || 0);
+plaque(ctx, 815, 640, [{ t: "FIN TO TENTACLE TIP", s: 26, sp: 4 }, { t: "UP TO 13 m", s: 76, c: K.red }], p.labk || 0);
 finish(ctx);

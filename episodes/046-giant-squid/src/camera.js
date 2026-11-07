@@ -21,5 +21,5 @@ ctx.restore();
 // cream double frame
 ctx.save(); ctx.strokeStyle = K.cream; ctx.lineWidth = 12; ctx.strokeRect(SX - 8, SY - 8, SW + 16, SH + 16); ctx.strokeStyle = K.ink; ctx.lineWidth = 3; ctx.strokeRect(SX - 15, SY - 15, SW + 30, SH + 30); ctx.strokeRect(SX - 1, SY - 1, SW + 2, SH + 2); ctx.restore();
 plaque(ctx, 540, 110, [{ t: "FIRST FILMED ALIVE IN THE DEEP", s: 30, sp: 4 }, { t: "2012", s: 100, c: K.red }], p.labk || 0, { minW: 620 });
-plaque(ctx, 540, 1480, [{ t: "OGASAWARA ISLANDS · JAPAN", s: 34, sp: 5 }, { t: "NHK · DISCOVERY · NATIONAL MUSEUM OF NATURE AND SCIENCE", s: 18, sp: 2 }], cl((p.labk || 0) * 1.5 - 0.4));
+plaque(ctx, 540, 1480, [{ t: "OGASAWARA ISLANDS · JAPAN", s: 34, sp: 5 }, { t: "NHK · DISCOVERY · NATIONAL MUSEUM OF NATURE AND SCIENCE", s: 21, sp: 1 }], cl((p.labk || 0) * 1.5 - 0.4));
 finish(ctx);

@@ -7,7 +7,7 @@ whaleShape(ctx, WX, WY, WS);
 // scars: cream rings over the head
 if (sc > 0) { const n = Math.floor(34 * sc); for (let i = 0; i < n; i++) { const x = WX + (20 + rnd(i * 3.7) * 330) * WS, y = WY + (-95 + rnd(i * 5.3) * 170) * WS; ring(ctx, x, y, 6 + rnd(i * 2.2) * 16, cl((sc * 34 - i) / 3)); } }
 // the squid fighting: arms wrapped toward the jaw
-squid(ctx, 980 + Math.sin(t * 1.2) * 14, 1290, 130, -2.55 + Math.sin(t * 1.4) * 0.06, { sw: 1.4, reach: 0.65, ph: 2 });
+squid(ctx, 900 + Math.sin(t * 1.2) * 14, 1180, 100, -2.75 + Math.sin(t * 1.4) * 0.06, { sw: 1.2, reach: 0.25, ph: 2 });
 ctx.restore();
 plaque(ctx, 540, 140, [{ t: "SPERM WHALE", s: 66, sp: 6 }, { t: "ITS ONLY REAL ENEMY", s: 28, sp: 7 }], p.labk || 0);
 if ((p.lab2k || 0) > 0) plaque(ctx, 540, 1500, [{ t: "SUCKER SCARS", s: 54, sp: 6, c: K.red }, { t: "LEFT BY GIANT SQUID", s: 24, sp: 6 }], p.lab2k);

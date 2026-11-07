@@ -17,7 +17,7 @@ if (p.lab === 1) {
   plaque(ctx, 540, 140, [{ t: "ITS EYE", s: 34, sp: 10 }, { t: "27 cm", s: 120, c: K.red }], lk, { minW: 360 });
 }
 if (p.lab === 2) { // dinner plate slides in beside, same size
-  const k = eout(cl(lk)); const px = lerp(1500, 540, k), py = EY; ctx.save(); ctx.globalAlpha = 0.92; ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 4;
+  const k = eout(cl(lk)); const px = lerp(1500, 540, k), py = EY; ctx.save(); ctx.globalAlpha = 0.82; ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 4;
   ctx.beginPath(); ctx.arc(px, py, R * 0.86, 0, TAU); ctx.fill(); ctx.stroke(); ctx.strokeStyle = K.indigo2; ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(px, py, R * 0.86 - 22, 0, TAU); ctx.stroke();
   ctx.lineWidth = 3; for (let i = 0; i < 16; i++) { const a = i / 16 * TAU; ctx.beginPath(); ctx.arc(px + Math.cos(a) * (R * 0.86 - 22), py + Math.sin(a) * (R * 0.86 - 22), 12, 0, TAU); ctx.stroke(); }
   ctx.strokeStyle = "rgba(27,34,51,0.25)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, py, R * 0.5, 0, TAU); ctx.stroke(); ctx.restore();
