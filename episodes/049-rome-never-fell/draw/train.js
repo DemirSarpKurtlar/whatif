@@ -252,7 +252,7 @@ ctx.fillRect(-300, yb, W + 600, H); ctx.fillStyle = INK.ink; ctx.fillRect(-300, 
 // rails
 ctx.fillStyle = "rgba(242,214,138,0.8)"; ctx.fillRect(-300, top - 8, W + 600, 3);
 // the train moves right
-const run = p.run ?? 70, x0 = -330 + lt * run;
+const run = p.run ?? 70, x0 = -230 + lt * run;
 const wagon = (x, w, h) => { ctx.fillStyle = INK.ink; ctx.fillRect(x, top - 20 - h, w, h); ctx.beginPath(); ctx.moveTo(x - 10, top - 20 - h); ctx.lineTo(x + w / 2, top - 30 - h - 36); ctx.lineTo(x + w + 10, top - 20 - h); ctx.fill();
   for (let i = 0; i < 5; i++) { ctx.fillStyle = `rgba(242,214,138,${0.7 + 0.2 * Math.sin(t * 3 + i + x)})`; ctx.fillRect(x + 16 + i * (w - 32) / 5, top - 20 - h + 22, (w - 32) / 5 - 12, h - 44); }
   [x + 30, x + w - 30].forEach((wx) => { circ2(ctx, wx, top - 18, 20, INK.ink); }); };

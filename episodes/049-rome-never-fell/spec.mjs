@@ -6,7 +6,7 @@ export default {
   accent: GL,
   xf: 0.3,
   title: { text: "What if the Roman Empire never fell?", end: 2.75 },
-  hook: { scene: 10, at: 0.3 },
+  hook: { scene: 10, at: 0.8 },
   cover: 1.4,
   scenes: [
     { a: 0, b: 2.75, draw: "rome", p: { zoom: [1.12, 1.0], cy: [920, 960], seal: 1 } },
@@ -49,7 +49,7 @@ export default {
     [34.04, 35.6, "Would you live in a Rome that never fell?"],
   ],
   bigs: [
-    { at: 23.54, dur: 1.4, text: "16 centuries", size: 140, color: GL },
+    { at: 23.54, dur: 1.0, text: "16 centuries", size: 140, color: GL, y: 560 },
     { at: 29.0, dur: 0.9, text: "?", color: GL },
   ],
   flashes: [{ at: 4.35, dur: 0.3, color: GL }, { at: 25.55, dur: 0.25, color: "#141312" }, { at: 28.95, dur: 0.25, color: GL }],
