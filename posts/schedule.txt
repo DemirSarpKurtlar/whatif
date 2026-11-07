@@ -47,3 +47,4 @@
 045-dinosaurs-never-died
 019-insects-vanish
 017-earth-stops-orbiting
+048-all-satellites-fall
