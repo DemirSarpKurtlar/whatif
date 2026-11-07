@@ -127,7 +127,7 @@ vec2 map(vec3 p){
   if (gSplash > 0.01) {
     // crashing wall of white water along the quay (low-poly crest)
     vec3 q = p - vec3(0.0, WTOP0 + gW, -16.3);
-    float hx = gSplash*(1.2 + 2.6*noise2(vec2(p.x*0.45, 3.0)) + 0.8*noise2(vec2(p.x*1.3, 9.0)));
+    float hx = gSplash*(0.7 + 1.9*noise2(vec2(p.x*0.6, 3.0)) + 0.9*noise2(vec2(p.x*2.1, 9.0)));
     float wz = 0.9 + 0.5*noise2(vec2(p.x*0.7, 5.0));
     float d = (length(vec2(q.y/(hx+0.05), q.z/wz)) - 1.0)*min(hx, wz)*0.8;
     d = max(d, -q.y);
@@ -254,7 +254,7 @@ vec4 pixel(vec2 uv){
     }
     else if (id < 13.5) alb = lin(vec3(240.0,240.0,236.0)/255.0);
     else if (id < 14.5) alb = lin(vec3(210.0,72.0,60.0)/255.0);
-    else { alb = lin(vec3(0.93,0.97,1.0)); n = facet(n, 1.6); }
+    else { float fy = clamp((pos.y - WTOP0 - gW)/2.5, 0.0, 1.0); alb = lin(mix(vec3(0.55,0.82,0.92), vec3(0.97,0.99,1.0), fy*0.8 + 0.2*step(0.6, noise2(pos.xy*vec2(3.0,1.2))))); n = facet(n, 2.5); }
     col = shade(pos, n, rd, alb, L, key, skyF, bnc, gl);
     col = grade(col, hazeC, m.x, 22.0, 0.25, 0.02);
   } else if (eid > 19.5) {
