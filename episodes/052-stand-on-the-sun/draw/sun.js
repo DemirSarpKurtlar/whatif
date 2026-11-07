@@ -305,7 +305,7 @@ else if (S === 9) { // skin boils away in 0.1 s: figure dissolves into dots
     for (let j = 0; j < 8; j++) { const yy = 900 - ph * 400 - j * 26; const xx = x + Math.sin(j * 0.9 + t * 4 + i) * 16; j ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
   g.globalAlpha = 1;
   bigNum("0.1 s", 450, 230, k01(0, 0.25));
-  stamp("SKIN: GONE", 540, 560, 40, K.coral, cl((lt - (p.tGone ?? 1.2)) / 0.3), 0.05);
+  mono("SKIN: VAPORISED", W / 2, 515, 30, K.coral, "center", cl((lt - (p.tGone ?? 1.2)) / 0.3));
 }
 else if (S === 10) { // the light's 100,000-year escape
   const cx = 540, cy = 1300, R = 660; const k = eio((lt - 0.2) / Math.max(1, D - 1.0));
