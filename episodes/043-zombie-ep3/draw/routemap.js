@@ -39,4 +39,4 @@ rr(204, 1350, 90, 70, 8, PAL.hoodie); poly([189, 1355, 249, 1300, 309, 1355], PA
 pin(249, 1296, PAL.hoodie2, "YOU");
 pin(SX, SY - 120, PAL.red, "STADIUM");
 // distance label at the route midpoint
-if (rk > 0.55) { const a = cl((rk - 0.55) / 0.2); ctx.save(); ctx.globalAlpha = a; rr(374, 830, 200, 90, 30, "#FFD23F"); ctx.font = "54px LHeavy"; ctx.fillStyle = "#151A45"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("2 KM", 474, 877); ctx.restore(); }
+if (rk > 0.35) { const a = E.back(cl((rk - 0.35) / 0.2)); ctx.save(); ctx.translate(474, 875); ctx.scale(a, a); ctx.translate(-474, -875); rr(334, 815, 280, 120, 36, "#FFD23F"); ctx.font = "78px LHeavy"; ctx.fillStyle = "#151A45"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("2 KM", 474, 877); ctx.restore(); }

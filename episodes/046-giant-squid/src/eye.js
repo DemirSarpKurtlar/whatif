@@ -26,14 +26,14 @@ if (p.lab === 2) { // dinner plate slides in beside, same size
 if (p.lab === 3) {
   plaque(ctx, 540, 120, [{ t: "THE LARGEST EYES", s: 54, sp: 4 }, { t: "IN THE ANIMAL KINGDOM", s: 28, sp: 7 }], lk);
   const k2 = cl((lk - 0.3) * 1.6); if (k2 > 0) { // human eye to scale (2.4 cm vs 27 cm)
-    ctx.save(); ctx.globalAlpha = k2; const hr = R * 0.86 * 2.4 / 27, hx = 900, hy = 1180; ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(hx, hy, hr, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.globalAlpha = k2; const hr = R * 0.86 * 2.4 / 27, hx = 830, hy = 1530; ctx.fillStyle = K.cream; ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(hx, hy, hr, 0, TAU); ctx.fill(); ctx.stroke();
     ctx.fillStyle = "#4C78A8"; ctx.beginPath(); ctx.arc(hx, hy, hr * 0.5, 0, TAU); ctx.fill(); ctx.fillStyle = K.ink; ctx.beginPath(); ctx.arc(hx, hy, hr * 0.22, 0, TAU); ctx.fill(); ctx.restore();
-    plaque(ctx, 900, 1210, [{ t: "HUMAN EYE", s: 24, sp: 4 }, { t: "2.4 cm", s: 34, c: K.red }], k2);
-    plaque(ctx, 250, 1160, [{ t: "SHARED WITH THE", s: 22, sp: 4 }, { t: "COLOSSAL SQUID", s: 30, sp: 3 }], k2);
+    plaque(ctx, 830, 1575, [{ t: "HUMAN EYE", s: 24, sp: 4 }, { t: "2.4 cm", s: 34, c: K.red }], k2);
+    plaque(ctx, 290, 1520, [{ t: "SHARED WITH THE", s: 22, sp: 4 }, { t: "COLOSSAL SQUID", s: 30, sp: 3 }], k2);
   }
 }
 if (p.lab === 4) {
-  diver(ctx, 540, 1460 + Math.sin(t) * 10, 0.7);
+  diver(ctx, 860, 1110 + Math.sin(t) * 10, 0.55);
   plaque(ctx, 300, 1640, [{ t: "STAY", s: 70, sp: 6 }], cl(lk * 1.5)); plaque(ctx, 780, 1640, [{ t: "SWIM", s: 70, sp: 6, c: K.red }], cl(lk * 1.5 - 0.3));
 }
 finish(ctx);

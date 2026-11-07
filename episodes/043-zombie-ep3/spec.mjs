@@ -8,7 +8,7 @@ export default {
   capY: 1420,
   hot: ["silent", "move", "hours", "groaning", "fades", "away", "phone", "dies", "percent", "orange", "vent", "street", "infected", "cold", "slow", "helicopter", "loudspeaker", "evacuation", "stadium", "kilometers", "foot", "bike", "a", "b"],
   title: { text: "Episode 3: You stayed silent...", end: 2.0, tag: "ZOMBIE OUTBREAK · EP 3", hot: ["silent"] },
-  hook: { scene: 6, at: 0.8 },
+  hook: { scene: 7, at: 2.0 },
   cover: 1.4,
   scenes: [
     { a: 0, b: 2.05, draw: "house", p: { pull: 1, door: 1, px: 330, scared: 1, look: 0.6, dark: 0.5, zx: 470, zoom: [1.0, 1.1], cy: 1000, shh: 1 } },
@@ -40,7 +40,6 @@ export default {
     { at: 11.9, dur: 1.2, text: "1%", tag: "BATTERY", y: 245, size: 150, color: "#FF3B4E" },
     { at: 13.3, dur: 1.4, text: "5:58 AM", tag: "DAWN", y: 300, size: 160, color: "#FFB36B" },
     { at: 18.4, dur: 1.5, text: "64", tag: "INFECTED IN TOWN", y: 300, size: 200, color: "#FF3B4E" },
-    { at: 26.8, dur: 1.3, text: "2 KM", tag: "TO SAFETY", y: 245, size: 150, color: "#FFD23F" },
   ],
   flashes: [{ at: 12.35, dur: 0.2, color: "#000000" }],
   endCard: { at: 31.4, series: "ZOMBIE OUTBREAK · EP 3", title: "What do you do?", choices: [{ k: "A", text: "Sneak to the stadium on foot" }, { k: "B", text: "Take the neighbor's bike" }], cta: "COMMENT A OR B", small: ["MOST VOTES DECIDES EPISODE 4", "FOLLOW SO YOU DON'T MISS IT"] },
