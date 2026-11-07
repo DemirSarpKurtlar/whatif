@@ -41,5 +41,6 @@
 014-oxygen-doubles
 016-all-volcanoes-erupt
 043-zombie-ep3
+046-giant-squid
 019-insects-vanish
 017-earth-stops-orbiting
