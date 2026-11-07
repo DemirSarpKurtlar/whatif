@@ -130,7 +130,7 @@ export default {{
   captions: [
     {(","+chr(10)+"    ").join(caps)},
   ],
-  bigs: [{{ at: {r2(s(iDm))}, dur: 0.9, text: "1 m" }}, {{ at: {r2(s(iEd))}, dur: 0.9, text: "DUNK", size: 210, color: "#FF8A3D" }}, {{ at: {r2(s(iGe)-0.1)}, dur: 1.0, text: "½ air", size: 200, color: "#FFB36B" }}, {{ at: {r2(s(iLs)+0.05)}, dur: 1.0, text: "ESCAPE", size: 190, color: "#FFD866" }}],
+  bigs: [{{ at: {r2(s(iDm))}, dur: 0.9, text: "1 m" }}, {{ at: {r2(s(iEd))}, dur: 0.9, text: "DUNK", size: 210, color: "#FF8A3D" }}, {{ at: {r2(s(iGe)-0.1)}, dur: 1.0, text: "½ pressure", size: 130, color: "#FFB36B" }}, {{ at: {r2(s(iLs)+0.05)}, dur: 1.0, text: "ESCAPE", size: 190, color: "#FFD866" }}],
   flashes: [{{ at: {r2(s(iBh))}, dur: 0.3 }}, {{ at: {r2(s(iEd))}, dur: 0.2 }}, {{ at: {r2(b(iH))}, dur: 0.25 }}, {{ at: {r2(s(iLs))}, dur: 0.3, color: "#FFD866" }}],
   endCard: {{ at: {ENDC}, title: "What if Earth's gravity was cut in half?", small: ["GRAVITY PART 5 · SIMPLIFIED PHYSICS", "EARTH'S MASS HALVED · SAME SIZE · ORBITS NOT TO SCALE"], cta: "WOULD YOU RATHER DUNK, OR KEEP THE MOON?" }},
 }};
