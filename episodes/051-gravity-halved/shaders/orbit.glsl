@@ -77,7 +77,14 @@ vec4 pixel(vec2 uv){
   if (disc > 0.0) {
     vec3 pos = ro + rd*tE;
     vec3 n = normalize(pos);
-    vec3 fn = facet(n, 7.0);
+    // low-poly facets: nearest jittered lattice point (3D Voronoi on the sphere) -> one flat normal per facet
+    vec3 fn = n; { vec3 g = n*5.0; vec3 gi = floor(g); float best = 1e9;
+      for (int x = -1; x <= 1; x++) for (int y = -1; y <= 1; y++) for (int z = -1; z <= 1; z++) {
+        vec3 c3 = gi + vec3(float(x), float(y), float(z));
+        vec3 j = c3 + 0.5 + 0.38*(vec3(h3(c3), h3(c3+7.1), h3(c3+3.3)) - 0.5);
+        vec3 jn = normalize(j);
+        float dd = length(n - jn*1.0);
+        if (dd < best) { best = dd; fn = jn; } } }
     vec3 q = fn; q.xz = rot(0.4 + u_time*0.02)*q.xz;
     float land = fbm3(q*2.1 + vec3(3.0,1.0,7.0));
     float isLand = step(0.52, land);
@@ -141,7 +148,7 @@ vec4 pixel(vec2 uv){
       // occluded if the ray to P hits the Earth first
       float bb = dot(ro, normalize(v)), cc = dot(ro,ro) - 1.0, dd = bb*bb - cc;
       float hidden = (dd > 0.0 && -bb - sqrt(dd) < length(v)) ? 1.0 : 0.0;
-      float sz = 0.012*clamp(5.0/z, 0.6, 2.2);
+      float sz = 0.019*clamp(5.0/z, 0.6, 2.0);
       vec2 o = (p - s)/sz;
       o = rot(0.4)*o;
       float body = max(abs(o.x) - 0.55, abs(o.y) - 0.55);

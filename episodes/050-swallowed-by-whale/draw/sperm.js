@@ -379,7 +379,7 @@ function spermWhale(g, x, y, s = 1, gape = 0, o = {}) {
 // humpback facing left; (x,y) = snout tip; rot radians; o: gape 0..1, pouch 0..1, xray 0..1 (dashed window with a diver in the mouth)
 function humpback(g, x, y, s = 1, rot = 0, o = {}) {
   const gp = eout(o.gape || 0), pu = o.pouch || 0, tl = Math.sin(t * 1.2) * 20;
-  g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s); g.lineJoin = "round"; const lw = (o.lw || 3.5) / s;
+  g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s * 1.3); g.lineJoin = "round"; const lw = (o.lw || 3.5) / s;
   const chin = 22 + gp * 110, belly = (xx) => xx <= 560 ? chin + (110 + pu * 70 - chin) * Math.sin(Math.min(1, xx / 420) * Math.PI / 2) - (xx > 420 ? (xx - 420) * 0.25 : 0) : lerp(110 + pu * 70 - 35, 18, (xx - 560) / 300);
   const path = () => { g.beginPath(); g.moveTo(0, 0); g.bezierCurveTo(60, -16, 160, -44, 260, -62); g.bezierCurveTo(400, -88, 560, -92, 650, -82); g.lineTo(690, -110); g.lineTo(712, -80);
     g.bezierCurveTo(780, -64, 830, -34, 860, -12 + tl * 0.4); flukes(g, 870, tl, 1.25); for (let xx = 860; xx >= 0; xx -= 20) g.lineTo(xx, belly(xx)); g.closePath(); };
@@ -403,8 +403,10 @@ function humpback(g, x, y, s = 1, rot = 0, o = {}) {
     g.save(); g.translate(140, 46); g.rotate(-Math.PI / 2 + 0.1 + Math.sin(t * 4) * 0.06); diver(g, 0, 0, 0.42, K.cream, "#0B1222"); g.restore(); g.restore(); }
   // long cream pectoral fin (near side)
   g.fillStyle = K.cream; g.strokeStyle = K.ink; g.lineWidth = lw * 0.9; const fw = Math.sin(t * 1.4) * 10;
-  g.beginPath(); g.moveTo(300, 80); g.bezierCurveTo(380, 120, 500, 190 + fw, 600, 236 + fw); g.lineTo(588, 254 + fw);
-  for (let i = 6; i >= 0; i--) { const u = i / 6; g.quadraticCurveTo(lerp(588, 300, u) + 8, lerp(254, 112, u) + 14 + fw * u, lerp(588, 300, u + 1 / 12), lerp(254, 112, u + 1 / 12) + fw * u); }
+  g.beginPath(); g.moveTo(290, 70); g.bezierCurveTo(400, 96, 540, 170 + fw, 650, 250 + fw); g.bezierCurveTo(640, 268 + fw, 600, 262 + fw, 560, 240 + fw);
+  for (let i = 1; i <= 6; i++) { const u = i / 6, ex = lerp(560, 300, u), ey = lerp(240 + fw, 118, u); g.quadraticCurveTo(ex + 22, ey + 22, ex, ey); }
+  g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = K.ink; for (let i = 0; i < 7; i++) { const u = 0.15 + i * 0.11; g.beginPath(); g.arc(lerp(300, 640, u), lerp(74, 246, u * u * 0.6 + u * 0.4) + fw * u - 2, 4, 0, TAU); g.fill(); }
   g.closePath(); g.fill(); g.stroke();
   g.restore();
 }
@@ -415,8 +417,8 @@ function stamp(g, x, y, text, s = 80, k = 1, rot = -0.08) { if (k <= 0 || isHook
 
 // ---- scene ----
 // Sperm whale opens its jaw; a 10 m squid slides in, swallowed whole. p: zoom, cx, gape 0..1, sq 0..1 (squid appears), slide 0..1 (squid pulled in), rule 0..1, labk, lab2k, sid
-const z = p.zoom || 1, cx = p.cx || 540, gp = p.gape ?? 0.8, sl = ease(p.slide || 0), sqk = p.sq ?? 1, WX = 470, WY = 900, WS = 0.8, PXM = 47; // 47 px per metre (whale 16 m ≈ 750 px)
-depthBg(ctx, 0.8); rays(ctx, 0.3);
+const z = p.zoom || 1, cx = p.cx || 540, gp = p.gape ?? 0.8, sl = ease(p.slide || 0), sqk = p.sq ?? 1, WX = 640, WY = 900, WS = 1.0, PXM = 59; // 59 px per metre (whale 16 m ≈ 940 px)
+depthBg(ctx, 0.55); rays(ctx, 0.6);
 ctx.save(); cam(cx, 960, z, p.shake || 0);
 snow(ctx, 90, 51, -8, 0.35);
 const mx = WX + 46 * WS, my = WY + 56 * WS; // mouth opening (screen)
@@ -425,9 +427,9 @@ spermWhale(ctx, WX, WY, WS, gp, { inner: (g, tip) => {
   g.beginPath(); g.rect(-400, -400, mx + 60 - (-400), 2000); g.clip(); g.globalAlpha = cl(sqk * 2);
   squid(g, mx + 40 + sl * 330, my + 4, PXM, Math.PI + 0.02 + Math.sin(t * 1.3) * 0.03, { sw: 0.9 * (1 - sl * 0.6), reach: 1, tl: 10, lw: 2.4, ph: 1 });
   g.restore(); } });
+const rl = p.rule || 0; if (rl > 0 && !isHook()) { const x1 = mx + 40, x0 = x1 - 10 * PXM * eout(rl), y = my + 150; ctx.save(); ctx.globalAlpha = cl(1 - sl * 3); ctx.strokeStyle = K.red; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.moveTo(x0, y - 16); ctx.lineTo(x0, y + 16); ctx.moveTo(x1, y - 16); ctx.lineTo(x1, y + 16); ctx.stroke();
+  ctx.font = "54px LSerif"; ctx.textAlign = "center"; const lx = (x0 + x1) / 2, tw = ctx.measureText("10 m").width + 30; ctx.fillStyle = K.cream; ctx.fillRect(lx - tw / 2, y - 40, tw, 70); ctx.strokeStyle = K.ink; ctx.lineWidth = 2; ctx.strokeRect(lx - tw / 2, y - 40, tw, 70); ctx.fillStyle = K.red; ctx.fillText("10 m", lx, y + 18); ctx.restore(); }
 ctx.restore();
-const rl = p.rule || 0; if (rl > 0 && !isHook()) { const x1 = mx + 40 + sl * 330, x0 = x1 - 10 * PXM * eout(rl), y = 760; ctx.save(); ctx.strokeStyle = K.red; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(Math.min(x1, mx), y); ctx.moveTo(x0, y - 16); ctx.lineTo(x0, y + 16); ctx.stroke();
-  ctx.font = "54px LSerif"; ctx.textAlign = "center"; const lx = Math.max(140, (x0 + Math.min(x1, mx)) / 2), tw = ctx.measureText("10 m").width + 30; ctx.fillStyle = K.cream; ctx.fillRect(lx - tw / 2, y - 40, tw, 70); ctx.fillStyle = K.red; ctx.fillText("10 m", lx, y + 18); ctx.restore(); }
 plaque(ctx, 540, 130, [{ t: "SPERM WHALE", s: 68, sp: 6 }, { t: "A THROAT WIDE ENOUGH FOR YOU", s: 26, sp: 5, c: K.red }], p.labk || 0);
 if ((p.lab2k || 0) > 0) plaque(ctx, 540, 1500, [{ t: "SQUID, SWALLOWED WHOLE", s: 40, sp: 4 }, { t: "AZORES · 1955", s: 26, sp: 6 }], p.lab2k);
 finish(ctx);

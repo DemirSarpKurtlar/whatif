@@ -51,11 +51,11 @@ vec2 map(vec3 p){
   vec3 b = p - gBoat;
   b.xy = rot(-gBoatG.x*0.8)*b.xy; b.zy = rot(-gBoatG.y*0.8)*b.zy;
   b.xz = rot(0.5)*b.xz;
-  float hull = sdRoundBox(b - vec3(0.0, 0.5, 0.0), vec3(4.2, 0.8, 1.5), 0.5);
-  hull = max(hull, -(b.y - 1.6));
+  float hull = sdRoundBox(b - vec3(0.0, 0.8, 0.0), vec3(6.0, 1.2, 2.2), 0.6);
+  hull = max(hull, -(b.y - 2.3));
   r = opU(r, vec2(hull, 5.0));
-  r = opU(r, vec2(sdRoundBox(b - vec3(-1.0, 2.2, 0.0), vec3(1.3, 0.9, 1.1), 0.15), 6.0));
-  r = opU(r, vec2(sdCapsule(b, vec3(1.0, 1.5, 0.0), vec3(1.0, 6.0, 0.0), 0.12), 4.0));
+  r = opU(r, vec2(sdRoundBox(b - vec3(-1.5, 3.3, 0.0), vec3(1.9, 1.2, 1.6), 0.2), 6.0));
+  r = opU(r, vec2(sdCapsule(b, vec3(1.6, 2.2, 0.0), vec3(1.6, 8.5, 0.0), 0.16), 4.0));
   return r;
 }
 vec3 skyCol(vec3 rd){
@@ -111,15 +111,15 @@ vec4 pixel(vec2 uv){
     else if (id < 2.5) alb = lin(mod(floor((pos.y - 6.0)/3.2), 2.0) < 0.5 ? vec3(0.95,0.95,0.93) : vec3(214.0,64.0,54.0)/255.0);
     else if (id < 3.5) alb = lin(vec3(1.0, 0.92, 0.6))*2.0;
     else if (id < 4.5) alb = lin(vec3(48.0,54.0,66.0)/255.0);
-    else if (id < 5.5) alb = lin(vec3(230.0, 200.0, 70.0)/255.0);
+    else if (id < 5.5) alb = lin(vec3(214.0, 64.0, 54.0)/255.0);
     else alb = lin(vec3(0.95));
     col = shade(pos, n, rd, alb, L, key, skyF, bnc, 0.1);
-    col = grade(col, hazeC, m.x, 60.0, 0.35, 0.02);
+    col = grade(col, hazeC, m.x, 110.0, 0.3, 0.02);
   } else if (tw > 0.0) {
     vec3 pos = ro + rd*tw;
     vec3 n; float h = Hf(pos.xz, n);
     float rel = (h/gS + 1.2)/5.0;                      // 0 trough .. 1 crest (in today's units)
-    vec3 deep = vec3(28.0, 78.0, 150.0)/255.0, mid = vec3(52.0, 118.0, 190.0)/255.0, crest = vec3(96.0, 170.0, 214.0)/255.0;
+    vec3 deep = vec3(22.0, 70.0, 150.0)/255.0, mid = vec3(40.0, 110.0, 196.0)/255.0, crest = vec3(84.0, 168.0, 222.0)/255.0;
     vec3 base = mix(deep, mid, smoothstep(0.1, 0.5, rel));
     base = mix(base, crest, smoothstep(0.55, 0.85, rel));
     base = mix(base, base*vec3(0.78,0.82,0.9), u_dark*0.6);
@@ -128,12 +128,12 @@ vec4 pixel(vec2 uv){
     c *= 0.62 + 0.55*dif;
     // foam on facets near crests
     vec2 cid = floor(pos.xz/(CELL*gS));
-    float fo = step(0.78, rel + 0.25*(hash2(cid) - 0.5)) ;
-    c = mix(c, lin(vec3(0.93,0.96,1.0))*(0.75+0.35*dif), fo*0.9);
-    float fr = pow(clamp(1.0 + dot(rd, n), 0.0, 1.0), 4.0);
-    c = mix(c, lin(skyCol(reflect(rd, n))), 0.15 + 0.5*fr);
-    c += key*pow(clamp(dot(reflect(rd, n), L), 0.0, 1.0), 40.0)*0.35;
-    col = grade(c, hazeC, tw, 50.0, 0.45, 0.02);
+    float fo = step(0.9, rel + 0.2*(hash2(cid) - 0.5));
+    c = mix(c, lin(vec3(0.93,0.96,1.0))*(0.75+0.35*dif), fo*0.85);
+    float fr = pow(clamp(1.0 + dot(rd, n), 0.0, 1.0), 5.0);
+    c = mix(c, lin(skyCol(reflect(rd, n))), 0.06 + 0.4*fr);
+    c += key*pow(clamp(dot(reflect(rd, n), L), 0.0, 1.0), 40.0)*0.3;
+    col = grade(c, hazeC, tw, 110.0, 0.3, 0.02);
   }
   // spray streaks
   for (int k = 0; k < 2; k++) {

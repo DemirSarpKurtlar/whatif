@@ -142,7 +142,7 @@ vec3 albedo(float id, vec3 pos){
   if (id < 7.5) return lin(vec3(0.96));
   if (id < 8.5) return lin(vec3(40.0,30.0,26.0)/255.0);
   if (id < 9.5) { // phone: dark glass front with a lit screen
-    return lin(vec3(32.0,40.0,58.0)/255.0);
+    return lin(vec3(236.0,72.0,120.0)/255.0);
   }
   if (id < 10.5) return lin(vec3(240.0,104.0,40.0)/255.0);
   if (id < 11.5) return lin(vec3(0.97));
@@ -179,7 +179,7 @@ vec4 pixel(vec2 uv){
     if (id > 3.5 && id < 8.5) n = facet(n, 3.0);
     float gl = id > 9.5 ? 0.4 : (id > 8.5 ? 0.9 : 0.08);
     col = shade(pos, n, rd, alb, L, key, skyF, bnc, gl);
-    if (id > 8.5 && id < 9.5 && n.z > 0.5) col += lin(vec3(0.35,0.62,0.95))*0.5; // screen glow
+    
     col = grade(col, hazeC, m.x, 30.0, 0.25, 0.02);
   } else if (te < 1e8) {
     vec3 pos = ro + rd*te;

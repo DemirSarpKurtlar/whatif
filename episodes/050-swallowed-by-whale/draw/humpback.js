@@ -379,7 +379,7 @@ function spermWhale(g, x, y, s = 1, gape = 0, o = {}) {
 // humpback facing left; (x,y) = snout tip; rot radians; o: gape 0..1, pouch 0..1, xray 0..1 (dashed window with a diver in the mouth)
 function humpback(g, x, y, s = 1, rot = 0, o = {}) {
   const gp = eout(o.gape || 0), pu = o.pouch || 0, tl = Math.sin(t * 1.2) * 20;
-  g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s); g.lineJoin = "round"; const lw = (o.lw || 3.5) / s;
+  g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s * 1.3); g.lineJoin = "round"; const lw = (o.lw || 3.5) / s;
   const chin = 22 + gp * 110, belly = (xx) => xx <= 560 ? chin + (110 + pu * 70 - chin) * Math.sin(Math.min(1, xx / 420) * Math.PI / 2) - (xx > 420 ? (xx - 420) * 0.25 : 0) : lerp(110 + pu * 70 - 35, 18, (xx - 560) / 300);
   const path = () => { g.beginPath(); g.moveTo(0, 0); g.bezierCurveTo(60, -16, 160, -44, 260, -62); g.bezierCurveTo(400, -88, 560, -92, 650, -82); g.lineTo(690, -110); g.lineTo(712, -80);
     g.bezierCurveTo(780, -64, 830, -34, 860, -12 + tl * 0.4); flukes(g, 870, tl, 1.25); for (let xx = 860; xx >= 0; xx -= 20) g.lineTo(xx, belly(xx)); g.closePath(); };
@@ -403,8 +403,10 @@ function humpback(g, x, y, s = 1, rot = 0, o = {}) {
     g.save(); g.translate(140, 46); g.rotate(-Math.PI / 2 + 0.1 + Math.sin(t * 4) * 0.06); diver(g, 0, 0, 0.42, K.cream, "#0B1222"); g.restore(); g.restore(); }
   // long cream pectoral fin (near side)
   g.fillStyle = K.cream; g.strokeStyle = K.ink; g.lineWidth = lw * 0.9; const fw = Math.sin(t * 1.4) * 10;
-  g.beginPath(); g.moveTo(300, 80); g.bezierCurveTo(380, 120, 500, 190 + fw, 600, 236 + fw); g.lineTo(588, 254 + fw);
-  for (let i = 6; i >= 0; i--) { const u = i / 6; g.quadraticCurveTo(lerp(588, 300, u) + 8, lerp(254, 112, u) + 14 + fw * u, lerp(588, 300, u + 1 / 12), lerp(254, 112, u + 1 / 12) + fw * u); }
+  g.beginPath(); g.moveTo(290, 70); g.bezierCurveTo(400, 96, 540, 170 + fw, 650, 250 + fw); g.bezierCurveTo(640, 268 + fw, 600, 262 + fw, 560, 240 + fw);
+  for (let i = 1; i <= 6; i++) { const u = i / 6, ex = lerp(560, 300, u), ey = lerp(240 + fw, 118, u); g.quadraticCurveTo(ex + 22, ey + 22, ex, ey); }
+  g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = K.ink; for (let i = 0; i < 7; i++) { const u = 0.15 + i * 0.11; g.beginPath(); g.arc(lerp(300, 640, u), lerp(74, 246, u * u * 0.6 + u * 0.4) + fw * u - 2, 4, 0, TAU); g.fill(); }
   g.closePath(); g.fill(); g.stroke();
   g.restore();
 }
