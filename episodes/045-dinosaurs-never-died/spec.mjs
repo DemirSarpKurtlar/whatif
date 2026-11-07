@@ -61,6 +61,6 @@ export default {
   bigs: [
     { at: 26.55, dur: 1.2, text: "Birds = dinosaurs", size: 118, color: GL },
   ],
-  flashes: [{ at: 6.9, dur: 0.45, color: GL }, { at: 23.5, dur: 0.25, color: "#141312" }, { at: 31.05, dur: 0.25, color: GL }],
+  flashes: [{ at: 0.0, dur: 0.35, color: GL }, { at: 6.9, dur: 0.45, color: GL }, { at: 23.5, dur: 0.25, color: "#141312" }, { at: 31.05, dur: 0.25, color: GL }],
   endCard: { at: 36.45, title: "What if the asteroid had missed the dinosaurs?", small: ["SPECULATIVE · NOBODY KNOWS WHAT WOULD HAVE EVOLVED", "BIRDS ARE LIVING DINOSAURS (~11,000 SPECIES)"], cta: "WHO WOULD BE WATCHING THIS RIGHT NOW?" },
 };

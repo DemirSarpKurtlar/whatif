@@ -293,7 +293,7 @@ ctx.drawImage(bg, -200, -200);
 const P0 = [1260, -180], P1 = [300, 1130], ax = lerp(P0[0], P1[0], k), ay = lerp(P0[1], P1[1], k);
 const dx = P1[0] - P0[0], dy = P1[1] - P0[1], dl = Math.hypot(dx, dy), ux = dx / dl, uy = dy / dl;
 if (hit < 1 && k > 0) {
-  const fade = 1 - cl(hit * 4);
+  const fade = 1 - cl(hit * 14);
   ctx.save(); ctx.globalAlpha = fade;
   glow(ctx, ax, ay, 520, 0.55);
   // ink smoke trail behind the gold
@@ -311,7 +311,7 @@ if (hit > 0) {
   const [ix, iy] = P1, e = E["ease-out"](cl(hit));
   glow(ctx, ix, iy, 300 + 1300 * e, 0.85 * (1 - 0.4 * e));
   ctx.save(); ctx.beginPath(); ctx.rect(-400, -400, W + 800, iy + 400); ctx.clip();
-  const R = 40 + 300 * e; goldShape(ctx, (q) => { q.ellipse(ix, iy, R * 1.3, R, 0, Math.PI, 0); }, 60); glow(ctx, ix, iy - R * 0.3, R * 1.1, 0.9 * (1 - e * 0.5), "255,248,226");
+  const R = 40 + 230 * e; goldShape(ctx, (q) => { q.ellipse(ix, iy, R * 1.3, R, 0, Math.PI, 0); }, 60); glow(ctx, ix, iy - R * 0.3, R * 1.1, 0.9 * (1 - e * 0.5), "255,248,226");
   ctx.restore();
   ctx.strokeStyle = `rgba(255,241,200,${0.8 * (1 - e)})`; ctx.lineWidth = 10 * (1 - e) + 2; ctx.beginPath(); ctx.ellipse(ix, iy + 10, 100 + 1400 * e, 30 + 260 * e, 0, 0, TAU); ctx.stroke();
   for (let i = 0; i < 16; i++) { const ph = cl(e * 1.2 - i * 0.03), a = rnd(i * 3.3) * Math.PI - Math.PI; const r = (120 + rnd(i) * 220) * ph;
