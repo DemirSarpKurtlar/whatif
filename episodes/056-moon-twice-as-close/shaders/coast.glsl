@@ -1,6 +1,6 @@
 // 056 — adapted from 015 coastcurve.glsl (Park Skyline beach). Beach + seafront town looking out to sea (-z).
 // params: cam, level (sea level), surge (0..1 wave), night (0..1), moon (0..1), shake, tilt, panx, wet, milky, curve (kept from 015)
-// new: yaw (look left toward the town), camh (camera height), mrad (Moon angular radius, rad), mlight (moonlight multiplier),
+// new: maz (Moon/Sun azimuth shift, -x), yaw (look left toward the town), camh (camera height), mrad (Moon angular radius, rad), mlight (moonlight multiplier),
 //      ecl (0..1 solar eclipse: Moon slides over the Sun, sky goes dark), srad (Sun angular radius)
 float gT = 0.0;
 vec2 gRo = vec2(0.0);
@@ -95,7 +95,7 @@ vec3 skyN(vec3 rd){
     float st2 = hash2(floor(sq2)) > 0.93 ? smoothstep(0.35, 0.0, length(fract(sq2) - 0.5)) : 0.0;
     c += (vec3(0.55,0.55,0.7)*band*dust*0.65 + vec3(st2)*band*0.9)*u_milky*u_night*smoothstep(0.02, 0.15, rd.y);
     // the Moon (angular radius u_mrad)
-    vec3 md = normalize(vec3(0.1, 0.36, -1.0));
+    vec3 md = normalize(vec3(0.1 - u_maz, 0.36, -1.0));
     float cosA = dot(rd, md);
     float ang = acos(clamp(cosA, -1.0, 1.0));
     float disc = smoothstep(u_mrad*1.02, u_mrad*0.98, ang);
@@ -109,7 +109,7 @@ vec3 skyN(vec3 rd){
     c += vec3(0.2,0.25,0.4)*pow(max(cosA, 0.0), 20.0)*0.05*u_moon*u_night*u_mlight;
   }
   if (u_ecl > 0.0) {
-    vec3 sd = normalize(vec3(0.1, 0.36, -1.0));
+    vec3 sd = normalize(vec3(0.1 - u_maz, 0.36, -1.0));
     float dark = smoothstep(0.82, 1.0, u_ecl);
     // sky dims to a deep twilight with a 360° sunset glow on the horizon
     vec3 tw = mix(vec3(0.05,0.07,0.16), vec3(0.01,0.015,0.05), pow(clamp(rd.y,0.0,1.0),0.5));
@@ -160,7 +160,7 @@ vec4 pixel(vec2 uv){
     hit = b; vec3 q = ro + rd*b; kind = seaH(q.xz) > groundH(q.xz) ? 1.0 : 0.0;
   }
   vec3 mo = march(ro, rd, hit > 0.0 ? hit : 80.0, 0.0);
-  vec3 L = normalize(mix(vec3(0.5, 0.8, -0.4), vec3(0.1, 0.36, -1.0), max(u_night, u_ecl)));
+  vec3 L = normalize(mix(vec3(0.5, 0.8, -0.4), vec3(0.1 - u_maz, 0.36, -1.0), max(u_night, u_ecl)));
   float edk = smoothstep(0.82, 1.0, u_ecl);
   vec3 key = mix(vec3(1.3,1.15,1.0)*(1.0 - 0.96*edk - 0.25*u_ecl), vec3(0.22,0.24,0.32)*(0.25 + 0.75*u_moon)*u_mlight, u_night);
   vec3 skyF = mix(lin(vec3(0.6,0.72,0.88))*0.6*(1.0 - 0.9*edk), lin(vec3(0.12,0.15,0.25))*0.25*(0.6 + 0.4*u_mlight), u_night);

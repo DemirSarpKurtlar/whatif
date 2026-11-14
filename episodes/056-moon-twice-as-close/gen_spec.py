@@ -63,7 +63,7 @@ ENDC = r2(LAST + 0.45)
 END = r2(ENDC + 3.6)
 
 PL = 'const PL = { dist: 14.0, orb: 0.3, camy: 1.0, tx: 0.0, ty: 3.3, md: 3.6, ma: 0.0, pl: 0.9, ring: 0, ghost: 0, gr: 7.2, bulge: 0, ecl: 0, umb: 0.137, spin: 0, brake: 0 };'
-CO = 'const CO = { cam: 0, level: 0, surge: 0, night: 0, moon: 0, shake: 0, tilt: 0, panx: 0, wet: 0, milky: 0, curve: 0, yaw: 0, camh: 0, mrad: 0.025, mlight: 1, ecl: 0, srad: 0.013 };'
+CO = 'const CO = { cam: 0, level: 0, surge: 0, night: 0, moon: 0, shake: 0, tilt: 0, panx: 0, wet: 0, milky: 0, curve: 0, yaw: 0, camh: 0, mrad: 0.025, mlight: 1, ecl: 0, srad: 0.013, maz: 0 };'
 
 def d(a, b): return r2(T[b] - T[a]) if isinstance(a, str) else None
 sc = []
@@ -84,7 +84,7 @@ scene(T["b1"], T["b2"], "coast",
 # 2 · tidal bulge grows (Moon on the side)
 D = T["b3"] - T["b2"]
 scene(T["b2"], T["b3"], "planets",
-  f'{{ ...PL, md: 3.0, ma: [0.62, 0.7], pl: 1.87, dist: [10.5, 9.0], ty: 1.5, camy: 0.4, bulge: [[0, 0.1], [{r2(s(iEight)-T["b2"])}, 0.2], [{r2(s(iEight)-T["b2"]+1.2)}, 1.0]], spin: [0.3, 0.8] }}',
+  f'{{ ...PL, md: 3.0, ma: [0.42, 0.5], pl: 1.87, dist: [10.5, 9.5], ty: 1.5, camy: 0.4, bulge: [[0, 0.1], [{r2(s(iEight)-T["b2"])}, 0.2], [{r2(s(iEight)-T["b2"]+1.2)}, 1.0]], spin: [0.3, 0.8] }}',
   f'{{ cat: "TIDAL FORCE ∝ 1 / DISTANCE³", label: "TIDAL PULL", value: "", sub: "HALF THE DISTANCE · 2³ = 8", vcol: "#FF6B5E", counter: {{ at: {r2(s(iEight)-T["b2"]-0.1)}, dur: 1.1, from: 1, to: 8, prefix: "×", easing: "ease-out" }} }}', ", cut: true")
 # 3 · a 2 m tide becomes 16 m (beach, water climbs)
 D = T["b4"] - T["b3"]
@@ -96,7 +96,7 @@ D = T["b4b"] = None
 D = T["b5"] - T["b4"]
 pk = s(iFloods) - T["b4"] + 0.6; dr = s(iDrains) - T["b4"]
 scene(T["b4"], T["b5"], "coast",
-  f'{{ ...CO, yaw: [0.5, 0.62], cam: [0.0, 0.3], night: [0.15, 0.55], moon: 1, mrad: 0.05, level: [[0, 0.6], [{r2(pk)}, 2.7], [{r2(dr)}, 2.6], [{r2(D)}, 0.4]], camh: [[0, 0.6], [{r2(pk)}, 1.6], [{r2(D)}, 0.8]], shake: [[0, 0], [{r2(pk-0.8)}, 0.25], [{r2(pk+0.4)}, 0]], surge: 0 }}',
+  f'{{ ...CO, yaw: [0.5, 0.62], cam: [0.0, 0.3], night: [0.45, 0.7], moon: 1, mrad: 0.05, maz: 0.56, tilt: 0.0, level: [[0, 0.6], [{r2(pk)}, 2.7], [{r2(dr)}, 2.6], [{r2(D)}, 0.4]], camh: [[0, 0.6], [{r2(pk)}, 1.6], [{r2(D)}, 0.8]], shake: [[0, 0], [{r2(pk-0.8)}, 0.25], [{r2(pk+0.4)}, 0]], surge: 0 }}',
   '{ cat: "TWICE PER 26.7-HOUR LUNAR DAY", label: "HIGH TIDE EVERY", value: "13 hours", sub: "THEN THE SEA PULLS BACK", dot: "#5CB8F0" }')
 # 5 · the Moon whips around a smaller orbit (view from above)
 D = T["b6"] - T["b5"]
@@ -116,17 +116,17 @@ scene(T["b7"], T["b8"], "coast",
 # 8 · full moon 4x brighter
 D = T["b9"] - T["b8"]
 scene(T["b8"], T["b9"], "coast",
-  f'{{ ...CO, night: 1, moon: 1, mrad: 0.05, yaw: [0.35, 0.15], cam: [0.3, 0.6], tilt: [0.04, 0.07], mlight: [[0, 1.0], [{r2(min(1.4, D*0.6))}, 2.6]] }}',
+  f'{{ ...CO, night: 1, moon: 1, mrad: 0.05, yaw: [-0.02, 0.06], cam: [0.3, 0.6], tilt: [0.05, 0.08], panx: [0.5, 0.2], mlight: [[0, 1.0], [{r2(min(1.4, D*0.6))}, 2.6]] }}',
   '{ cat: "MOONLIGHT ∝ 1 / DISTANCE²", label: "FULL MOON", value: "4× brighter", sub: "READ A BOOK BY IT", dot: "#F2C14E" }', ", cut: true")
 # 9 · Earth's spin brakes 64x harder
 D = T["b10"] - T["b9"]
 scene(T["b9"], T["b10"], "planets",
-  f'{{ ...PL, md: 3.0, ma: 0.66, pl: 1.87, dist: [8.5, 7.8], ty: 1.4, camy: 0.4, bulge: 1, brake: [0, 1], spin: [[0, 1.0, "linear"], [{r2(D)}, {r2(1.0 + D*0.9)}, "linear"]] }}',
+  f'{{ ...PL, md: 3.0, ma: 0.42, pl: 1.87, dist: [9.5, 9.0], ty: 1.4, camy: 0.4, bulge: 1, brake: [0, 1], spin: [[0, 1.0, "linear"], [{r2(D)}, {r2(1.0 + D*0.9)}, "linear"]] }}',
   f'{{ cat: "TIDAL TORQUE ∝ 1 / DISTANCE⁶", label: "EARTH\'S SPIN BRAKES", value: "", sub: "+25 MIN TO THE DAY PER MILLION YEARS", vcol: "#FF6B5E", counter: {{ at: 0.3, dur: {r2(max(0.8, e(iHarder)-T["b9"]-0.4))}, from: 1, to: 64, prefix: "×", easing: "ease-out" }} }}')
 # 10 · the question: flooded town under a giant moon
 D = END - T["b10"]
 scene(T["b10"], END, "coast",
-  f'{{ ...CO, yaw: [0.45, 0.6], cam: [0.1, 0.35], night: 0.85, moon: 1, mrad: 0.05, mlight: 2.2, level: [2.0, 2.4], camh: 1.3 }}')
+  f'{{ ...CO, yaw: [0.42, 0.52], cam: [0.1, 0.35], night: 0.9, moon: 1, mrad: 0.05, mlight: 2.2, maz: 0.52, tilt: [0.12, 0.2], level: [2.0, 2.4], camh: 1.3 }}')
 
 iWide = find("wide", iAt); iAnd1 = iWide + 1
 iHarder1 = find("harder", iBut); iBecause = iHarder1 + 1
