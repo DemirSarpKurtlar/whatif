@@ -41,7 +41,7 @@ for (let i = 0; i < 3; i++) { const x = wrapX(200 + i * 560, 1680); lamp(x, 1335
 for (let i = 0; i < 2; i++) { const x = wrapX(520 + i * 840, 1680); tree(x, 1335, 0.95); }
 // the neighbor's picket fence with a broken gap (only in the opening shot)
 const fk = cl(p.fence || 0);
-if (fk > 0) { const fx = 120 - off; ctx.save(); ctx.globalAlpha = fk;
+if (fk > 0) { const fx = (p.fx0 ?? 120) - off; ctx.save(); ctx.globalAlpha = fk;
   rr(fx - 420, 820, 420, 515, 8, "#5A5FB0"); poly([fx - 440, 830, fx - 210, 640, fx + 20, 830], "#3A3584"); rr(fx - 330, 900, 100, 110, 6, "#FFD45C");
   for (let i = 0; i < 14; i++) { if (i === 9) continue; const x = fx - 120 + i * 52, h = i === 10 ? 120 : 190; rr(x, 1335 - h, 30, h, 6, "#E9E6F5"); poly([x, 1335 - h, x + 15, 1335 - h - 22, x + 30, 1335 - h], "#E9E6F5"); }
   rr(fx - 130, 1205, 740, 16, 4, "#E9E6F5"); rr(fx - 130, 1280, 740, 16, 4, "#E9E6F5");
