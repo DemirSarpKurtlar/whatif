@@ -16,20 +16,21 @@ const sy = lerp(1180, 620, E["ease-out"](SUN));
 circ(820, sy, 115, "#FFE6A6");
 // --- parallax skylines
 function scrollLayer(f, fn) { const o = ((off * f) % W + W) % W; ctx.save(); ctx.translate(-o, 0); fn(); ctx.translate(W, 0); fn(); ctx.restore(); }
+scrollLayer(0.12, () => skyline(1300, 0, 4, 0.8, mixc("#6B4E93", "#7C77B8", SUN)));
+scrollLayer(0.3, () => skyline(1330, 0, 9, 1.0, mixc("#4D3F86", "#5B5AA6", SUN)));
 // stadium on the horizon (does not scroll: it is where you are going)
 const st = cl(p.stad || 0);
 if (st > 0) {
-  const sx = 830, syb = 1240, s = lerp(0.55, 1.05, st);
+  const sx = 700, syb = 1330, s = lerp(0.45, 0.8, st);
   ctx.save(); ctx.globalAlpha = cl(st * 3);
   for (const fx of [-300, 300]) { rr(sx + fx * s - 8 * s, syb - 560 * s, 16 * s, 560 * s, 4, "#5A4C8E"); rr(sx + fx * s - 70 * s, syb - 600 * s, 140 * s, 60 * s, 8, "#5A4C8E");
     for (let i = 0; i < 4; i++) circ(sx + fx * s - 48 * s + i * 32 * s, syb - 570 * s, 11 * s, "#FFF4C8"); }
   ctx.fillStyle = "#6A5AA2"; ctx.beginPath(); ctx.ellipse(sx, syb - 40 * s, 360 * s, 190 * s, 0, Math.PI, 0); ctx.fill();
   rr(sx - 360 * s, syb - 60 * s, 720 * s, 60 * s, 4, "#6A5AA2");
   for (let i = 0; i < 9; i++) rr(sx - 300 * s + i * 72 * s, syb - 150 * s, 40 * s, 90 * s, 6, "#4E4086");
+  rr(sx - 170 * s, syb - 260 * s, 340 * s, 80 * s, 14, PAL.red); ctx.font = `${Math.round(50 * s)}px LHeavy`; ctx.fillStyle = "#FFFFFF"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("STADIUM", sx, syb - 218 * s);
   ctx.restore();
 }
-scrollLayer(0.12, () => skyline(1300, 0, 4, 0.8, mixc("#6B4E93", "#7C77B8", SUN)));
-scrollLayer(0.3, () => skyline(1330, 0, 9, 1.0, mixc("#4D3F86", "#5B5AA6", SUN)));
 // --- sidewalk + road
 ground(1330, mixc("#3D3B7E", "#4A4A92", SUN), mixc("#4C4A93", "#5C5CA6", SUN));
 rr(-W, 1420, W * 3, 230, 0, PAL.road);
