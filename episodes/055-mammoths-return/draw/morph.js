@@ -188,7 +188,7 @@ function goldQ(g, x, y, k, size = 330) { if (k <= 0) return; g.save(); g.globalA
   g.font = `${size}px LSerif`; g.textAlign = "center"; g.fillStyle = goldPat(g); g.shadowColor = "rgba(242,214,138,0.8)"; g.shadowBlur = 30; g.fillText("?", 0, size / 3); g.restore(); }
 // small serif label in scene space
 function label(g, s, x, y, size = 34, col = "#F2D68A", align = "center", a = 1) { if (a <= 0) return; g.save(); g.globalAlpha = a; g.font = `${size}px LSerif`; g.textAlign = align; g.textBaseline = "alphabetic";
-  g.lineWidth = size * 0.18; g.strokeStyle = "rgba(20,19,18,0.75)"; g.lineJoin = "round"; g.strokeText(s, x, y); g.fillStyle = col; g.fillText(s, x, y); g.restore(); }
+  g.shadowColor = "rgba(20,19,18,0.85)"; g.shadowBlur = 10; g.fillStyle = col; g.fillText(s, x, y); g.shadowBlur = 0; g.fillText(s, x, y); g.restore(); }
 // snowy tundra ground band (cached by caller)
 function tundra(g, y, seed, col = "236,231,218", a = 0.9) {
   g.fillStyle = `rgba(${col},${a})`; g.beginPath(); g.moveTo(-300, H + 300); g.lineTo(-300, y);
@@ -239,8 +239,8 @@ const lab = (a, ax, ay, lx, ly, txt1) => { if (a <= 0) return; const e = E["ease
   ctx.save(); ctx.globalAlpha = cl(a * 1.5); ctx.strokeStyle = "#E9C877"; ctx.lineWidth = 3; ctx.shadowColor = "rgba(242,214,138,0.8)"; ctx.shadowBlur = 8;
   ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(lerp(ax, lx, e), lerp(ay, ly, e)); ctx.stroke(); ctx.restore(); circ2(ctx, ax, ay, 7, "#F2D68A");
   label(ctx, txt1, lx, ly + (ly < ay ? -14 : 44), 44, "#F2D68A", "center", cl(a * 1.5 - 0.3)); };
-lab(p.l1 ?? 0, X - 285 * S, Y - 290 * S, 190, 640, "THICK HAIR");
-lab(p.l2 ?? 0, X + 212 * S, Y - 440 * S, 760, 470, "SMALL EARS");
-lab(p.l3 ?? 0, X + 90 * S, Y - 500 * S, 420, 420, "EXTRA FAT");
+lab(p.l1 ?? 0, X - 285 * S, Y - 290 * S, 190, 700, "THICK HAIR");
+lab(p.l2 ?? 0, X + 212 * S, Y - 440 * S, 840, 560, "SMALL EARS");
+lab(p.l3 ?? 0, X + 90 * S, Y - 500 * S, 430, 540, "EXTRA FAT");
 goldDust(ctx, 20, 0, 420, W, 760, 31, 0.5, 12);
 finish(ctx);

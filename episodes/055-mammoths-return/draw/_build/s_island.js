@@ -23,7 +23,7 @@ const isl = cached("isl_mid", W + 400, H + 400, (g) => { g.translate(200, 200);
   g.closePath(); g.fill();
   brush(g, [-40, 1046, 500, 1052, 1120, 1044], 10, "#D9D2C2", 0.4, 4, 0.5);
   // ice floes
-  for (let i = 0; i < 16; i++) { const x = rnd(i * 3.3) * 1300 - 100, y = 1090 + rnd(i * 7.1) * 120, w = 40 + rnd(i * 1.9) * 120; g.fillStyle = `rgba(222,216,202,${0.35 + rnd(i) * 0.4})`; g.beginPath(); g.ellipse(x, y, w, w * 0.14, 0, 0, TAU); g.fill(); }
+  for (let i = 0; i < 16; i++) { const x = rnd(i * 3.3) * 1300 - 100, y = 1090 + rnd(i * 7.1) * 120, w = 40 + rnd(i * 1.9) * 120; g.fillStyle = `rgba(222,216,202,${0.15 + rnd(i) * 0.25})`; g.beginPath(); g.ellipse(x, y, w, w * 0.14, 0, 0, TAU); g.fill(); }
 });
 ctx.drawImage(isl, -200, -200);
 // the last herd on the island's back

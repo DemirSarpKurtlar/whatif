@@ -188,7 +188,7 @@ function goldQ(g, x, y, k, size = 330) { if (k <= 0) return; g.save(); g.globalA
   g.font = `${size}px LSerif`; g.textAlign = "center"; g.fillStyle = goldPat(g); g.shadowColor = "rgba(242,214,138,0.8)"; g.shadowBlur = 30; g.fillText("?", 0, size / 3); g.restore(); }
 // small serif label in scene space
 function label(g, s, x, y, size = 34, col = "#F2D68A", align = "center", a = 1) { if (a <= 0) return; g.save(); g.globalAlpha = a; g.font = `${size}px LSerif`; g.textAlign = align; g.textBaseline = "alphabetic";
-  g.lineWidth = size * 0.18; g.strokeStyle = "rgba(20,19,18,0.75)"; g.lineJoin = "round"; g.strokeText(s, x, y); g.fillStyle = col; g.fillText(s, x, y); g.restore(); }
+  g.shadowColor = "rgba(20,19,18,0.85)"; g.shadowBlur = 10; g.fillStyle = col; g.fillText(s, x, y); g.shadowBlur = 0; g.fillText(s, x, y); g.restore(); }
 // snowy tundra ground band (cached by caller)
 function tundra(g, y, seed, col = "236,231,218", a = 0.9) {
   g.fillStyle = `rgba(${col},${a})`; g.beginPath(); g.moveTo(-300, H + 300); g.lineTo(-300, y);
