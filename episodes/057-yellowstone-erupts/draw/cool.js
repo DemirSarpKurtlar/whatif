@@ -184,7 +184,7 @@ function capPlaque(g) {
 }
 // indigo plaque behind the engine's cold-open title (only on the hook scene while the title is up)
 function titlePlaque(g) {
-  if (typeof SPEC === "undefined" || !SPEC.title) return; let T = realTime(); if (T === undefined) T = isHook() ? 0.3 : t;
+  if (typeof SPEC === "undefined" || !SPEC.title) return; const T = realTime(); if (T === undefined) return; // first frame of a page: real time unknown -> skip
   if (T >= SPEC.title.end || !isHook()) return;
   const a = Math.min(1, (SPEC.title.end - T) / 0.25, T / 0.3); if (a <= 0) return;
   g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.font = "92px LSerif"; const sp = g.measureText(" ").width; const toks = SPEC.title.text.split(" ");
