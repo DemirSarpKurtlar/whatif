@@ -1,0 +1,30 @@
+// "the first calf ... early 2030s": a mammoth-like calf takes its first steps beside its (elephant) mother at dawn on snow; a gold sun rises. p: sun (0..1 rise), walk, zoom, cx, cy
+frameIn(p);
+const sun = p.sun ?? 1, wk = p.walk ?? 0.6;
+const bg = cached("calf_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
+  vwash(g, -200, 620, "26,25,23", 0.95, 0);
+  streak(g, 300, 380, 860, 90, "24,23,21", 0.4, 14); streak(g, 820, 560, 620, 60, "30,29,27", 0.35, 12);
+  blob(g, 600, 900, 760, 380, "246,240,224", 0.55);
+});
+ctx.drawImage(bg, -200, -200);
+goldDisc(ctx, 720, lerp(1080, 880, E["ease-out"](cl(sun))), 200, 1);
+ctx.drawImage(cached("calf_mid", W + 400, H + 400, (g) => { g.translate(200, 200);
+  streak(g, 640, 900, 900, 34, "30,29,27", 0.4, 10);
+  ridge(g, 1010, 150, 0.7, "110,106,98", 0.75, 7, 110, 0.9);
+  streak(g, 540, 1020, 1500, 50, "225,219,204", 0.55, 12);
+  tundra(g, 1070, 0.4, "232,227,214", 0.88);
+}), -200, -200);
+ctx.drawImage(cached("calf_near", W + 400, H + 400, (g) => { g.translate(200, 200);
+  vwash(g, 1110, 1190, "20,19,18", 0, 0.8); vwash(g, 1190, H + 200, "20,19,18", 0.8, 1);
+  g.fillStyle = "rgba(20,19,18,0.95)"; g.beginPath(); g.moveTo(-200, 1236); g.quadraticCurveTo(500, 1186, 1300, 1220); g.lineTo(1300, H + 200); g.lineTo(-200, H + 200); g.fill();
+  brush(g, [-80, 1222, 420, 1204, 1160, 1214], 12, "#D9D2C2", 0.35, 6, 0.5);
+}), -200, -200);
+// mother (surrogate Asian elephant) and the woolly calf
+mammoth(ctx, 250 + lt * 16, 1222, 0.8, 1, INK.ink, { m: 0, walk: wk, ph: 0.3, eye: 1, tusk: 0.5 });
+const cx = 640 + lt * 18;
+glow(ctx, cx + 60, 1100, 220, 0.35);
+mammoth(ctx, cx, 1226, 0.34, 1, INK.ink, { m: 0.85, hair: 1.1, walk: wk * 1.2, ph: 2.1, eye: 1, tusk: 0, tr: 0.25 + 0.1 * Math.sin(t * 2) });
+sparkle(ctx, cx + 140, 1000 + Math.sin(t * 2) * 8, 26, 0.6 + 0.4 * Math.sin(t * 3));
+snow(ctx, 40, 8, 0.6, 30, 70);
+goldDust(ctx, 16, 0, 500, W, 600, 17, 0.5, 10);
+finish(ctx);
