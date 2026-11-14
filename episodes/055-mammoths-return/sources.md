@@ -26,8 +26,8 @@
   https://www.dexerto.com/entertainment/scientists-are-using-ai-to-bring-back-the-woolly-mammoth-but-itll-take-longer-than-planned-3412814/
   · https://www.ibtimes.sg/A000OXZ · https://bioethics.com/?p=103879 · https://charter97.org/en/news/2026/9/27/699872/
   (A Jan-2026 "Manny" calf claim on one Japanese blog was NOT corroborated by any primary source and is not used.)
-- Script: "editing Asian elephant cells, aiming for over a hundred and fifty gene changes: thick hair, small ears, extra fat" (the traits Colossal lists:
-  dense hair, small ears, fat/cold tolerance) and "the first calf is expected in the early twenty-thirties".
+- Script: "editing Asian elephant cells, aiming for over a hundred and fifty gene changes: shaggy fur, small ears, extra fat" (the traits Colossal lists:
+  dense hair ("shaggy fur"), small ears, fat/cold tolerance) and "the first calf is expected in the early twenty-thirties".
 
 ## Elephant pregnancy
 - Asian elephant gestation 18-22 months; African elephants ~22 months: the longest of any land mammal (a 2023 paper suggests bowhead whales may be longer).
