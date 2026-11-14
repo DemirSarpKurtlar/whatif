@@ -1,5 +1,5 @@
 // ---- Ink & Gold helpers (copied from episodes 038/045; inlined into every draw file by _build/build.sh) ----
-const C8 = window.__c055 || (window.__c045 = {});
+const C8 = window.__c055 || (window.__c055 = {});
 const INK = { paper: "#CFC8B9", mid: "#9C978E", dark: "#55524D", ink: "#141312", g0: "#7E5E19", g1: "#C9A64B", g2: "#F2D68A", seal: "#B8322A" };
 function prng(seed) { let a = seed >>> 0; return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t2 = Math.imul(a ^ (a >>> 15), 1 | a); t2 = (t2 + Math.imul(t2 ^ (t2 >>> 7), 61 | t2)) ^ t2; return ((t2 ^ (t2 >>> 14)) >>> 0) / 4294967296; }; }
 function mkC(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
