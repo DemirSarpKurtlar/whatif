@@ -413,20 +413,20 @@ function sFreezer() {
   const fx = 26, fy = 116, fw = 86, fh = 134;
   R(fx - 1, fy - 1, fw + 2, fh + 2, K.ink); R(fx, fy, fw, fh, "#D8DCEC"); R(fx + fw - 4, fy, 4, fh, "#AEB4CC");
   R(fx + 5, fy + 5, fw - 10, fh - 14, "#4A6A9A"); R(fx + 5, fy + 5, fw - 10, 3, "#3A5A8A");
-  for (const sy of [fy + 44, fy + 88]) R(fx + 5, sy, fw - 10, 2, "#C8D8F0");
+  for (const sy of [fy + 42, fy + 84]) R(fx + 5, sy, fw - 10, 2, "#C8D8F0");
   // frost (fades as it thaws)
   for (let i = 0; i < 160; i++) if (rnd(i * 3.3) > th) { const side = i % 4; const x = side < 2 ? fx + 5 + (side ? fw - 12 : 0) + Math.floor(rnd(i) * 2) : fx + 5 + rnd(i * 2) * (fw - 10), y = side < 2 ? fy + 5 + rnd(i * 2) * (fh - 14) : fy + 5 + Math.floor(rnd(i) * 3); P(x, y, "#E8F6FF"); }
   // food
-  R(fx + 10, fy + 26, 22, 18, "#FF8AB8"); R(fx + 10, fy + 26, 22, 3, "#FFFFFF"); R(fx + 14, fy + 32, 14, 6, "#FFD0E0");
-  R(fx + 38, fy + 30, 34, 14, "#7CFF6B"); R(fx + 38, fy + 30, 34, 2, "#4ACB3A"); for (let i = 0; i < 6; i++) disc(fx + 42 + i * 5, fy + 38, 1, "#2E8A2A");
-  R(fx + 12, fy + 74, 48, 12, "#8AA0C8"); R(fx + 56, fy + 72, 10, 16, "#8AA0C8"); P(fx + 18, fy + 78, K.ink); R(fx + 22, fy + 80, 24, 1, "#6A80A8");
-  R(fx + 12, fy + 116, 30, 14, "#C84A4A"); R(fx + 12, fy + 116, 30, 2, "#FF8A8A"); R(fx + 48, fy + 120, 28, 10, "#E8E0D0"); for (let i = 0; i < 4; i++) R(fx + 50 + i * 7, fy + 122, 5, 6, th > 0.5 ? "#9AC8E8" : "#FFFFFF");
+  R(fx + 10, fy + 24, 22, 18, "#FF8AB8"); R(fx + 10, fy + 24, 22, 3, "#FFFFFF"); R(fx + 14, fy + 30, 14, 6, "#FFD0E0");
+  R(fx + 38, fy + 28, 34, 14, "#7CFF6B"); R(fx + 38, fy + 28, 34, 2, "#4ACB3A"); for (let i = 0; i < 6; i++) disc(fx + 42 + i * 5, fy + 36, 1, "#2E8A2A");
+  R(fx + 12, fy + 70, 48, 12, "#8AA0C8"); R(fx + 56, fy + 68, 10, 16, "#8AA0C8"); P(fx + 18, fy + 74, K.ink); R(fx + 22, fy + 76, 24, 1, "#6A80A8");
+  R(fx + 12, fy + 104, 30, 14, "#C84A4A"); R(fx + 12, fy + 104, 30, 2, "#FF8A8A"); R(fx + 48, fy + 108, 28, 10, "#E8E0D0"); for (let i = 0; i < 4; i++) R(fx + 50 + i * 7, fy + 110, 5, 6, th > 0.5 ? "#9AC8E8" : "#FFFFFF");
   // door
-  R(fx + fw, fy, 30, fh, "#C8CCDC"); R(fx + fw, fy, 2, fh, "#9AA0B8"); for (const sy of [fy + 30, fy + 70, fy + 110]) R(fx + fw + 4, sy, 24, 3, "#E8ECF8"); R(fx + fw + 24, fy + 50, 3, 40, "#8A8FB8");
+  R(fx + fw, fy, 30, fh, "#C8CCDC"); R(fx + fw, fy, 2, fh, "#9AA0B8"); for (const sy of [fy + 28, fy + 64, fy + 100]) R(fx + fw + 4, sy, 24, 3, "#E8ECF8"); R(fx + fw + 24, fy + 44, 3, 40, "#8A8FB8");
   // vapour while cold, drips + puddle as it thaws
   if (th < 0.5) for (let i = 0; i < 10; i++) { const l = (lt * 0.6 + i * 0.1) % 1; g.globalAlpha = (1 - l) * 0.4 * (1 - th * 2); disc(fx + 20 + i * 6 + Math.sin(l * 6 + i) * 3, fy + fh - 10 + l * 30, 3 + l * 4, "#E8F6FF"); }
   g.globalAlpha = 1;
-  if (th > 0.15) for (let i = 0; i < 8; i++) { const k = (lt * 1.3 + rnd(i) ) % 1, x = fx + 10 + i * 9, y0 = i % 2 ? fy + 46 : fy + 90; if (rnd(i * 5) < th) R(x, y0 + k * (250 - y0), 1, 2, "#8FD8FF"); }
+  if (th > 0.15) for (let i = 0; i < 8; i++) { const k = (lt * 1.3 + rnd(i) ) % 1, x = fx + 10 + i * 9, y0 = i % 2 ? fy + 44 : fy + 86; if (rnd(i * 5) < th) R(x, y0 + k * (250 - y0), 1, 2, "#8FD8FF"); }
   const pw = Math.round(th * 120); if (pw > 1) { g.globalAlpha = 0.7; R(fx + 10 - pw * 0.2, 251, pw, 2, "#3DA0E0"); R(fx + 14 - pw * 0.2, 253, pw - 8, 1, "#3DA0E0"); g.globalAlpha = 1; }
   blit();
   dayHud(3, "FREEZER");
