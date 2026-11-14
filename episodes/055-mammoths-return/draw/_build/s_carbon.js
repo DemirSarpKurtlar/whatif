@@ -27,8 +27,8 @@ const col = (x, units, k, kind) => {
 };
 col(300, 1, E["ease-out"](cl(f * 1.6)), 0);
 col(760, 2, E["ease-out"](cl(f)), 1);
-label(ctx, "ATMOSPHERE", 300, BASE - U * 2 - 60, 38, "#F2EAD6", "center", 1);
-label(ctx, "PERMAFROST", 760, BASE - U * 2 - 60, 38, "#F2D68A", "center", 1);
+label(ctx, "ATMOSPHERE", 300, BASE - U * 2 - 60, 38, INK.ink, "center", 1);
+label(ctx, "PERMAFROST", 760, BASE - U * 2 - 60, 38, INK.ink, "center", 1);
 if (x2 > 0) { ctx.save(); ctx.globalAlpha = cl(x2 * 2); const sc = 0.7 + 0.3 * E["back"](cl(x2)); ctx.translate(530, 760); ctx.scale(sc, sc); ctx.font = "150px LSerif"; ctx.textAlign = "center"; ctx.fillStyle = goldPat(ctx); ctx.shadowColor = "rgba(242,214,138,0.8)"; ctx.shadowBlur = 26; ctx.fillText("×2", 0, 50); ctx.restore(); }
 goldDust(ctx, 20, 0, 420, W, 760, 61, 0.5, 14);
 finish(ctx);

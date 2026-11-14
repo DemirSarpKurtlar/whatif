@@ -32,7 +32,7 @@ export default {
     { a: 20.45, b: 22.95, draw: "herd", p: { bull: [[0, 0.3], [1.8, 1]], walk: 1, tr: [[0, 0], [1.6, 0], [2.4, 0.8]], zoom: [1.0, 1.07], cy: [960, 940] },
       hud: { at: 0.15, cat: "SPECULATION", label: "A BULL WOOLLY MAMMOTH", value: "~6 tonnes", sub: "UP TO ~3.4 M AT THE SHOULDER", dot: G, vcol: GL } },
     // 7 Pleistocene Park: trampled snow, colder soil
-    { a: 22.95, b: 27.3, draw: "soil", p: { tr: [[0, 0.12], [3.0, 0.8], [4.35, 0.95]], cool: [[0, 0], [3.0, 0], [4.0, 1]], zoom: [1.04, 1.0] },
+    { a: 22.95, b: 27.3, draw: "soil", p: { tr: [[0, 0.4], [4.35, 0.88]], cool: [[0, 0], [3.0, 0], [4.0, 1]], zoom: [1.04, 1.0] },
       hud: { at: 0.1, cat: "PLEISTOCENE PARK · SIBERIA", label: "AVERAGE YEARLY SOIL TEMPERATURE", value: "0.0 °C", sub: "HORSES, BISON, REINDEER · SNOW DEPTH HALVED", dot: G, vcol: GL, counter: { at: 3.0, dur: 1.0, from: 0, to: -1.9, dec: 1, suffix: " °C", easing: "ease-out" } } },
     // 8 permafrost holds twice the carbon in the air
     { a: 27.3, b: 30.45, draw: "carbon", p: { f: [[0, 0], [0.3, 0], [1.9, 1]], x2: [[0, 0], [1.6, 0], [2.1, 1]], zoom: [1.05, 1.0] },

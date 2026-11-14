@@ -34,9 +34,9 @@ ctx.drawImage(cached("pyr_near", W + 400, H + 400, (g) => { g.translate(200, 200
   vwash(g, 1070, 1160, "20,19,18", 0, 0.85); vwash(g, 1160, H + 200, "20,19,18", 0.85, 1); }), -200, -200);
 // divider brush stroke
 brush(ctx, [dv(300), 300, dv(760), 760, dv(1180), 1180], 22, INK.ink, 0.95, 9, 0.35, E["ease-out"](cl(k * 1.4)));
-label(ctx, "GIZA", 250, 520, 46, "#F2D68A", "center", cl(k * 2 - 0.3));
-label(ctx, "c. 2560 BC", 250, 570, 34, "#F2EAD6", "center", cl(k * 2 - 0.3));
-label(ctx, "WRANGEL", 830, 520, 46, "#F2D68A", "center", cl(k * 2 - 0.8));
-label(ctx, "c. 2000 BC", 830, 570, 34, "#F2EAD6", "center", cl(k * 2 - 0.8));
+label(ctx, "GIZA", 250, 520, 46, INK.ink, "center", cl(k * 2 - 0.3));
+label(ctx, "c. 2560 BC", 250, 570, 34, INK.ink, "center", cl(k * 2 - 0.3));
+label(ctx, "WRANGEL", 830, 520, 46, INK.ink, "center", cl(k * 2 - 0.8));
+label(ctx, "c. 2000 BC", 830, 570, 34, INK.ink, "center", cl(k * 2 - 0.8));
 goldDust(ctx, 14, 0, 500, W, 600, 9, 0.5, 10);
 finish(ctx);

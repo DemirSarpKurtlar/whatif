@@ -188,7 +188,7 @@ function goldQ(g, x, y, k, size = 330) { if (k <= 0) return; g.save(); g.globalA
   g.font = `${size}px LSerif`; g.textAlign = "center"; g.fillStyle = goldPat(g); g.shadowColor = "rgba(242,214,138,0.8)"; g.shadowBlur = 30; g.fillText("?", 0, size / 3); g.restore(); }
 // small serif label in scene space
 function label(g, s, x, y, size = 34, col = "#F2D68A", align = "center", a = 1) { if (a <= 0) return; g.save(); g.globalAlpha = a; g.font = `${size}px LSerif`; g.textAlign = align; g.textBaseline = "alphabetic";
-  g.shadowColor = "rgba(20,19,18,0.85)"; g.shadowBlur = 10; g.fillStyle = col; g.fillText(s, x, y); g.shadowBlur = 0; g.fillText(s, x, y); g.restore(); }
+  const dark = col === INK.ink; g.shadowColor = dark ? "rgba(246,240,224,0.9)" : "rgba(20,19,18,0.9)"; g.shadowBlur = 6; g.fillStyle = col; g.fillText(s, x, y); g.shadowBlur = 0; g.fillText(s, x, y); g.restore(); }
 // snowy tundra ground band (cached by caller)
 function tundra(g, y, seed, col = "236,231,218", a = 0.9) {
   g.fillStyle = `rgba(${col},${a})`; g.beginPath(); g.moveTo(-300, H + 300); g.lineTo(-300, y);
@@ -247,8 +247,8 @@ const col = (x, units, k, kind) => {
 };
 col(300, 1, E["ease-out"](cl(f * 1.6)), 0);
 col(760, 2, E["ease-out"](cl(f)), 1);
-label(ctx, "ATMOSPHERE", 300, BASE - U * 2 - 60, 38, "#F2EAD6", "center", 1);
-label(ctx, "PERMAFROST", 760, BASE - U * 2 - 60, 38, "#F2D68A", "center", 1);
+label(ctx, "ATMOSPHERE", 300, BASE - U * 2 - 60, 38, INK.ink, "center", 1);
+label(ctx, "PERMAFROST", 760, BASE - U * 2 - 60, 38, INK.ink, "center", 1);
 if (x2 > 0) { ctx.save(); ctx.globalAlpha = cl(x2 * 2); const sc = 0.7 + 0.3 * E["back"](cl(x2)); ctx.translate(530, 760); ctx.scale(sc, sc); ctx.font = "150px LSerif"; ctx.textAlign = "center"; ctx.fillStyle = goldPat(ctx); ctx.shadowColor = "rgba(242,214,138,0.8)"; ctx.shadowBlur = 26; ctx.fillText("×2", 0, 50); ctx.restore(); }
 goldDust(ctx, 20, 0, 420, W, 760, 61, 0.5, 14);
 finish(ctx);

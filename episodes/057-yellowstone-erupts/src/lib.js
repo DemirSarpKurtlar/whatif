@@ -182,3 +182,71 @@ function capPlaque(g) {
   g.restore();
 }
 function finish(g) { printOver(g, 0.8); capPlaque(g); }
+
+// ================= 057 Yellowstone additions =================
+Object.assign(K, { sage: "#9AA57A", sageD: "#6F7C55", ochre: "#C8A25A", rust: "#A8582F", sinter: "#E9E1CF", bison: "#4A3426", bisonD: "#2E2018",
+  pine: "#2F5240", pineD: "#1F3A2E", lava: "#E07A3A", lavaD: "#B5302A", hot: "#2D6F95", hot2: "#6FB3C8" });
+// lodgepole pine: tall narrow spire, layered short branches (woodblock silhouette with a lighter side)
+function lpine(g, x, yb, h, col = K.pineD, col2 = K.pine, snowy = 0) {
+  g.fillStyle = "#3B2C22"; g.fillRect(x - h * 0.018, yb - h * 0.25, h * 0.036, h * 0.25);
+  const n = 7; g.fillStyle = col; g.beginPath(); g.moveTo(x, yb - h);
+  for (let i = 1; i <= n; i++) { const u = i / n, y = yb - h + h * 0.82 * u, w = h * (0.05 + 0.09 * u); g.lineTo(x + w, y); g.lineTo(x + w * 0.45, y - h * 0.02); }
+  for (let i = n; i >= 1; i--) { const u = i / n, y = yb - h + h * 0.82 * u, w = h * (0.05 + 0.09 * u); g.lineTo(x - w * 0.45, y - h * 0.02); g.lineTo(x - w, y); }
+  g.closePath(); g.fill();
+  if (col2) { g.fillStyle = col2; g.beginPath(); g.moveTo(x, yb - h); for (let i = 1; i <= n; i++) { const u = i / n, y = yb - h + h * 0.82 * u, w = h * (0.05 + 0.09 * u); g.lineTo(x + w, y); g.lineTo(x + w * 0.45, y - h * 0.02); } g.lineTo(x, yb - h * 0.2); g.closePath(); g.fill(); }
+  if (snowy) { g.fillStyle = K.snow; for (let i = 1; i <= n; i++) { const u = i / n, y = yb - h + h * 0.82 * u, w = h * (0.05 + 0.09 * u); g.beginPath(); g.moveTo(x - w * 0.9, y - h * 0.012); g.quadraticCurveTo(x, y - h * 0.06, x + w * 0.9, y - h * 0.012); g.lineTo(x, y - h * 0.025); g.closePath(); g.fill(); } }
+}
+function pineBand(g, y, n, h0, h1, seed, col = K.pineD, col2 = K.pine, x0 = -120, x1 = W + 120, snowy = 0) {
+  for (let i = 0; i < n; i++) { const x = lerp(x0, x1, (i + rnd(i * 3.7 + seed) * 0.8) / n), h = lerp(h0, h1, rnd(i * 5.3 + seed)); lpine(g, x, y + rnd(i * 2.1 + seed) * h0 * 0.25, h, col, col2, snowy); }
+}
+// bison, ground at (x,yb), size s (body ~125 px at s=1), dir 1 faces right
+function bison(g, x, yb, s = 1, dir = 1, ph = 0, snowy = 0) {
+  const bob = Math.sin(t * 1.3 + ph) * 1.5, hd = Math.max(0, Math.sin(t * 0.6 + ph)) * 5;
+  g.save(); g.translate(x, yb); g.scale(s * dir, s); g.lineJoin = "round";
+  g.fillStyle = K.bisonD; [[-50, 9], [-36, 9], [16, 10], [31, 10]].forEach(([lx, w], i) => g.fillRect(lx, -18, w, 18 + (i % 2 ? 0 : 0)));
+  g.translate(0, bob);
+  g.beginPath(); g.moveTo(-58, -22); g.bezierCurveTo(-58, -45, -35, -52, -10, -55); g.bezierCurveTo(0, -80, 25, -85, 40, -70); g.bezierCurveTo(52, -60, 58, -45, 62, -30 + hd);
+  g.lineTo(66, -14 + hd); g.lineTo(58, -8 + hd); g.lineTo(48, -12 + hd); g.lineTo(44, 2 + hd); g.lineTo(36, -6); g.lineTo(30, -16); g.lineTo(-50, -16); g.bezierCurveTo(-58, -16, -60, -18, -58, -22); g.closePath();
+  g.fillStyle = K.bison; g.fill(); g.strokeStyle = K.ink; g.lineWidth = 2.2 / s; g.stroke();
+  g.beginPath(); g.moveTo(-5, -56); g.bezierCurveTo(5, -82, 28, -86, 40, -70); g.bezierCurveTo(52, -60, 58, -45, 62, -30 + hd); g.lineTo(66, -14 + hd); g.lineTo(58, -8 + hd); g.lineTo(48, -12 + hd); g.lineTo(44, 2 + hd); g.lineTo(36, -6); g.lineTo(30, -16); g.lineTo(8, -16); g.bezierCurveTo(0, -30, -5, -45, -5, -56); g.closePath();
+  g.fillStyle = K.bisonD; g.fill();
+  g.strokeStyle = "rgba(241,230,204,0.55)"; g.lineWidth = 2 / s; g.beginPath(); g.moveTo(-48, -44); g.quadraticCurveTo(-25, -54, -6, -55); g.stroke();
+  g.strokeStyle = K.cream; g.lineWidth = 3 / s; g.beginPath(); g.moveTo(50, -50 + hd); g.quadraticCurveTo(46, -62 + hd, 52, -66 + hd); g.stroke();
+  g.fillStyle = K.cream; g.beginPath(); g.arc(55, -38 + hd, 2.2, 0, TAU); g.fill();
+  g.strokeStyle = K.bisonD; g.lineWidth = 3 / s; g.beginPath(); g.moveTo(-58, -30); g.quadraticCurveTo(-66, -20, -63, -8); g.stroke();
+  if (snowy) { g.fillStyle = K.snow; g.beginPath(); g.moveTo(-50, -48); g.bezierCurveTo(-30, -56, 0, -62, 10, -78); g.bezierCurveTo(25, -88, 38, -76, 40, -70); g.bezierCurveTo(20, -76, 0, -58, -50, -48); g.fill(); }
+  g.restore();
+}
+// cream steam puff (two-tone billow, light)
+function steam(g, x, y, r, a = 1) { g.save(); g.globalAlpha *= a; g.strokeStyle = "rgba(27,34,51,0.55)"; g.lineWidth = 2;
+  g.fillStyle = "#CFD6DA"; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.stroke(); g.fillStyle = "#F3EEE2"; g.beginPath(); g.arc(x - r * 0.15, y - r * 0.18, r * 0.76, 0, TAU); g.fill(); g.restore(); }
+// geyser column: base (x,yb), full height h, k 0..1 (eruption strength), wind drift right
+function geyser(g, x, yb, h, k = 1, seed = 1) {
+  // thin rising vent wisps always
+  for (let i = 0; i < 4; i++) { const ph = (t * 0.35 + rnd(i + seed)) % 1; steam(g, x + ph * 60 + Math.sin(t + i) * 6, yb - 20 - ph * 160, 16 + ph * 30, (1 - ph) * 0.8); }
+  if (k <= 0) return; const hh = h * k, n = 18;
+  for (let i = n - 1; i >= 0; i--) { const u = i / (n - 1); const y = yb - hh * u, w = (14 + 46 * u) * (0.9 + 0.2 * rnd(i * 2 + seed));
+    const dx = u * u * 70 * k + Math.sin(t * 3 + i * 1.3) * 5 * u; const pul = 1 + 0.08 * Math.sin(t * 9 + i * 2.1);
+    steam(g, x + dx + w * 0.35, y + w * 0.1, w * 0.62 * pul); steam(g, x + dx - w * 0.35, y + w * 0.15, w * 0.58 * pul); steam(g, x + dx, y, w * 0.72 * pul); }
+  // drifting top puffs
+  for (let i = 0; i < 6; i++) { const ph = (t * 0.25 + i / 6) % 1; steam(g, x + 70 * k + ph * 260, yb - hh - 20 - ph * 120 + Math.sin(i) * 20, (40 + ph * 50) * k, (1 - ph) * k); }
+  // splash droplets
+  g.fillStyle = K.cream; g.strokeStyle = "rgba(27,34,51,0.5)"; g.lineWidth = 1.2;
+  for (let i = 0; i < 14; i++) { const ph = (t * 0.8 + rnd(i * 3 + seed)) % 1, side = rnd(i * 7) - 0.5; const px = x + side * 260 * ph, py = yb - hh * 0.85 * Math.sin(ph * Math.PI) * (0.5 + 0.5 * rnd(i)); g.beginPath(); g.arc(px, py, 4 + 3 * rnd(i), 0, TAU); g.fill(); g.stroke(); }
+}
+// hot spring rings (Grand Prismatic style), ellipse centre
+function spring(g, x, y, rx, ry) { const cols = [K.rust, K.ochre, "#E3C77A", K.sinter, K.hot2, K.hot]; g.save(); g.strokeStyle = K.ink; g.lineWidth = 2;
+  cols.forEach((c, i) => { const k = 1 - i * 0.15; g.fillStyle = c; g.beginPath(); g.ellipse(x, y, rx * k, ry * k, 0, 0, TAU); g.fill(); if (!i) g.stroke(); });
+  g.strokeStyle = "rgba(241,230,204,0.6)"; g.lineWidth = 2; for (let i = 0; i < 10; i++) { const a = i / 10 * TAU; g.beginPath(); g.moveTo(x + Math.cos(a) * rx * 0.9, y + Math.sin(a) * ry * 0.9); g.lineTo(x + Math.cos(a) * rx * 1.05, y + Math.sin(a) * ry * 1.05); g.stroke(); }
+  g.restore(); }
+// snowy ridge (ridge + cream snow drips on peaks)
+function snowRidge(g, yb, amp, seed, fill, freq = 1) {
+  ridge(g, yb, amp, seed, fill, K.ink, 0, freq);
+  g.save(); g.beginPath(); g.moveTo(-300, H + 400);
+  const P = []; for (let x = -300; x <= W + 300; x += 16) { const u = x / W * freq; const y = yb - amp * (0.55 * Math.abs(Math.sin(u * 2.1 + seed)) + 0.3 * Math.sin(u * 4.7 + seed * 2) ** 2 + 0.15 * Math.sin(u * 11 + seed * 3)); P.push([x, y]); g.lineTo(x, y); }
+  g.lineTo(W + 300, H + 400); g.closePath(); g.clip();
+  g.fillStyle = K.snow; g.beginPath(); P.forEach(([x, y], i) => i ? g.lineTo(x, y - 2) : g.moveTo(x, y - 2));
+  for (let i = P.length - 1; i >= 0; i--) { const [x, y] = P[i]; const hgt = Math.max(0, (yb - amp * 0.45) - y); g.lineTo(x, y + hgt * (0.5 + 0.5 * rnd(i * 1.7 + seed)) * 0.9 + (i % 2 ? 6 : 0)); }
+  g.closePath(); g.fill(); g.restore();
+  g.beginPath(); P.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.strokeStyle = K.ink; g.lineWidth = 2.2; g.stroke();
+}

@@ -188,7 +188,7 @@ function goldQ(g, x, y, k, size = 330) { if (k <= 0) return; g.save(); g.globalA
   g.font = `${size}px LSerif`; g.textAlign = "center"; g.fillStyle = goldPat(g); g.shadowColor = "rgba(242,214,138,0.8)"; g.shadowBlur = 30; g.fillText("?", 0, size / 3); g.restore(); }
 // small serif label in scene space
 function label(g, s, x, y, size = 34, col = "#F2D68A", align = "center", a = 1) { if (a <= 0) return; g.save(); g.globalAlpha = a; g.font = `${size}px LSerif`; g.textAlign = align; g.textBaseline = "alphabetic";
-  g.shadowColor = "rgba(20,19,18,0.85)"; g.shadowBlur = 10; g.fillStyle = col; g.fillText(s, x, y); g.shadowBlur = 0; g.fillText(s, x, y); g.restore(); }
+  const dark = col === INK.ink; g.shadowColor = dark ? "rgba(246,240,224,0.9)" : "rgba(20,19,18,0.9)"; g.shadowBlur = 6; g.fillStyle = col; g.fillText(s, x, y); g.shadowBlur = 0; g.fillText(s, x, y); g.restore(); }
 // snowy tundra ground band (cached by caller)
 function tundra(g, y, seed, col = "236,231,218", a = 0.9) {
   g.fillStyle = `rgba(${col},${a})`; g.beginPath(); g.moveTo(-300, H + 300); g.lineTo(-300, y);
@@ -254,9 +254,9 @@ ctx.drawImage(cached("pyr_near", W + 400, H + 400, (g) => { g.translate(200, 200
   vwash(g, 1070, 1160, "20,19,18", 0, 0.85); vwash(g, 1160, H + 200, "20,19,18", 0.85, 1); }), -200, -200);
 // divider brush stroke
 brush(ctx, [dv(300), 300, dv(760), 760, dv(1180), 1180], 22, INK.ink, 0.95, 9, 0.35, E["ease-out"](cl(k * 1.4)));
-label(ctx, "GIZA", 250, 520, 46, "#F2D68A", "center", cl(k * 2 - 0.3));
-label(ctx, "c. 2560 BC", 250, 570, 34, "#F2EAD6", "center", cl(k * 2 - 0.3));
-label(ctx, "WRANGEL", 830, 520, 46, "#F2D68A", "center", cl(k * 2 - 0.8));
-label(ctx, "c. 2000 BC", 830, 570, 34, "#F2EAD6", "center", cl(k * 2 - 0.8));
+label(ctx, "GIZA", 250, 520, 46, INK.ink, "center", cl(k * 2 - 0.3));
+label(ctx, "c. 2560 BC", 250, 570, 34, INK.ink, "center", cl(k * 2 - 0.3));
+label(ctx, "WRANGEL", 830, 520, 46, INK.ink, "center", cl(k * 2 - 0.8));
+label(ctx, "c. 2000 BC", 830, 570, 34, INK.ink, "center", cl(k * 2 - 0.8));
 goldDust(ctx, 14, 0, 500, W, 600, 9, 0.5, 10);
 finish(ctx);
