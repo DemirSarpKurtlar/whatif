@@ -49,3 +49,5 @@
 017-earth-stops-orbiting
 048-all-satellites-fall
 049-rome-never-fell
+051-gravity-halved
+050-swallowed-by-whale
