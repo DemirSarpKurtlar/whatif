@@ -302,14 +302,15 @@ function topHud(label, tag, hrs, en, col) {
   ctx.restore();
 }
 const TEENMAP = { h: "#4A2E1E", p: "#4A2E1E", s: K.skin, e: K.ink, m: K.brick2, t: "#3D6BE0", w: K.white, j: "#2A3A6A" };
-function teen(x, y, o = {}) {
-  spr(KID, x, y, TEENMAP);
-  if (o.bags) { P(x + 3, y + 5, "#9A6AB8"); P(x + 6, y + 5, "#9A6AB8"); }
-  if (o.mad) { P(x + 2, y + 3, K.ink); P(x + 3, y + 4, K.ink); P(x + 7, y + 3, K.ink); P(x + 6, y + 4, K.ink); }
-  if (o.closed) { R(x + 2, y + 4, 2, 1, K.skin2); R(x + 6, y + 4, 2, 1, K.skin2); P(x + 3, y + 4, K.skin2); P(x + 6, y + 4, K.skin2); }
+function teen(x, y, o = {}) { // KID sprite at 3x (u = low-res pixels per sprite pixel); (x, y) = top-left
+  const u = o.u || 3, Q = (cx, cy, w, h, col) => R(x + cx * u, y + cy * u, w * u, h * u, col);
+  for (let r = 0; r < KID.length; r++) for (let c = 0; c < KID[r].length; c++) { const col = TEENMAP[KID[r][c]]; if (col) Q(c, r, 1, 1, col); }
+  if (o.bags) { Q(3, 5, 1, 1, "#9A6AB8"); Q(6, 5, 1, 1, "#9A6AB8"); }
+  if (o.mad) { Q(2, 3, 1, 1, K.ink); Q(3, 3.6, 1, 0.5, K.ink); Q(7, 3, 1, 1, K.ink); Q(6, 3.6, 1, 0.5, K.ink); }
+  if (o.closed) { Q(3, 4, 1, 1, K.skin); Q(6, 4, 1, 1, K.skin); Q(2.6, 4.6, 1.6, 0.4, K.ink); Q(5.8, 4.6, 1.6, 0.4, K.ink); }
   if (o.helmet) {
-    R(x - 1, y - 2, 12, 5, "#C8343F"); R(x - 1, y + 3, 2, 4, "#C8343F"); R(x + 9, y + 3, 2, 4, "#C8343F"); R(x + 4, y - 2, 2, 5, "#FFFFFF");
-    R(x + 1, y + 6, 8, 1, "#C8CCE0"); P(x + 2, y + 5, "#C8CCE0"); P(x + 7, y + 5, "#C8CCE0"); R(x + 3, y + 11, 4, 3, "#FFFFFF");
+    Q(-1, -2, 12, 5, "#C8343F"); Q(-1, 3, 2, 4, "#C8343F"); Q(9, 3, 2, 4, "#C8343F"); Q(4, -2, 2, 5, "#FFFFFF");
+    Q(1, 6, 8, 0.6, "#C8CCE0"); Q(2, 5, 0.6, 2, "#C8CCE0"); Q(7.4, 5, 0.6, 2, "#C8CCE0"); Q(3, 10.5, 4, 3, "#FFFFFF"); Q(3.5, 11, 3, 2, "#C8343F");
   }
 }
 // bedroom: clock hour drives the window sky
@@ -327,8 +328,8 @@ function room(o = {}) {
   // floor
   R(0, 250, LW, 70, "#2A2450"); for (let y = 250; y < LH; y += 8) for (let x = ((y / 8) % 2) * 9; x < LW; x += 18) R(x, y, 9, 8, "#30295A");
   // bed (right)
-  R(104, 214, 76, 36, "#3A3486"); R(104, 210, 76, 8, o.sheet || "#5D4FC0"); R(170, 186, 10, 64, "#5A3A2A"); R(154, 202, 18, 9, K.cream);
-  R(106, 250, 4, 6, "#5A3A2A");
+  R(112, 214, 68, 36, "#3A3486"); R(112, 210, 68, 8, o.sheet || "#5D4FC0"); R(170, 186, 10, 64, "#5A3A2A"); R(154, 202, 18, 9, K.cream);
+  R(114, 250, 4, 6, "#5A3A2A");
   // desk (left) + lamp + clock
   R(4, 206, 74, 5, "#8A5A3A"); R(4, 211, 74, 2, "#5A3A2A"); R(8, 213, 4, 37, "#5A3A2A"); R(70, 213, 4, 37, "#5A3A2A");
   R(12, 182, 2, 24, "#8A8FB8"); R(8, 178, 12, 5, "#FFB13B"); g.globalAlpha = o.lamp ?? 0.14; disc(14, 196, 22, K.win); g.globalAlpha = 1;
@@ -338,7 +339,7 @@ function room(o = {}) {
 }
 function clockText(ck, cx, cy) { // digits drawn hi-res on the clock face (low-res coords cx,cy = centre)
   if (!UI) return; const hh = Math.floor(ck), mm = Math.floor((ck - hh) * 60);
-  TXT(ctx, pad2(hh) + (blink(1) ? ":" : " ") + pad2(mm), hx(cx), hy(cy) - hu(2) * 3, hu(2), K.red, { align: "center" });
+  TXT(ctx, pad2(hh) + (blink(1) ? ":" : " ") + pad2(mm), hx(cx), hy(cy) - Math.round(hu(4) * 3.5), hu(4), K.red, { align: "center" });
 }
 function zzz(x, y, k = 1) {
   for (let i = 0; i < 3; i++) { const l = (lt * 0.5 + i / 3) % 1; g.globalAlpha = (1 - l) * k; TXT(g, "Z", x + l * 14 + Math.sin(l * 6 + i) * 2, y - l * 34, 1 + (l > 0.5 ? 1 : 0), "#FFFFFF"); }
@@ -347,7 +348,7 @@ function zzz(x, y, k = 1) {
 function sRoom() { // 0: intro bedroom (hook: energy crash)
   const hk = p.hp !== undefined, en = hk ? clamp(p.hp) : 1;
   const ck = room({ hrs: hk ? 18 : HRS });
-  teen(84, 228, { bags: hk && en < 0.6 });
+  teen(76, 184, { bags: hk && en < 0.6 });
   if (hk && en < 0.5) { GLX = (rnd(Math.floor(t * 8)) < 0.4 ? 0.5 : 0.1) * (1 - en); }
   blit();
   clockText(ck, 64, 200);
@@ -369,10 +370,10 @@ function sRoom() { // 0: intro bedroom (hook: energy crash)
 }
 function sBac() { // 1: hour 17 = 0.05% blood alcohol
   const ck = room({ hrs: HRS, lamp: 0.22 }), b = clamp(p.bac ?? 0);
-  teen(84, 228, { bags: true });
+  teen(76, 184, { bags: true });
   // reaction-time test: a light on the desk the teen is slow to hit
   // giant BAC meter on the wall (glass filling)
-  const gx = 98, gy = 162, gh = 40;
+  const gx = 146, gy = 196, gh = 40;
   R(gx - 1, gy - gh - 1, 18, gh + 2, K.ink); R(gx, gy - gh, 16, gh, "#2A2A4A");
   const fh = Math.round(gh * b); R(gx + 1, gy - fh, 14, fh, "#FFB13B"); if (fh > 2) R(gx + 1, gy - fh, 14, 2, "#FFF3B0");
   for (let i = 0; i < 4; i++) { const l = (lt * 0.8 + i / 4) % 1; if (fh > 6) P(gx + 3 + i * 3, gy - 2 - l * (fh - 4), "#FFF3B0"); }
@@ -380,7 +381,7 @@ function sBac() { // 1: hour 17 = 0.05% blood alcohol
   clockText(ck, 64, 200);
   topHud("HOUR " + Math.floor(HRS), "AWAKE", HRS, energyOf(HRS), K.yellow);
   if (!UI) return;
-  TXT(ctx, "BAC", hx(gx + 8), hy(gy - gh - 9), hu(2), "#FFFFFF", { align: "center", out: K.ink, ow: 2 });
+  TXT(ctx, "BAC", hx(gx + 8), hy(gy - gh - 9), hu(4), "#FFFFFF", { align: "center", out: K.ink, ow: 2 });
   big("YOUR REACTIONS =", 410, 5, "#FFFFFF", p.tA ?? 0.2);
   if (lt >= (p.tB ?? 99)) { big("0.05%", 490, 13, K.orange, p.tB, { panel: K.orange }); big("BLOOD ALCOHOL", 640, 5, K.orange, p.tB + 0.2); }
 }
@@ -406,7 +407,7 @@ function sMicro() { // 2: microsleep — eyes wide open, brain off
   if (bo) {
     ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, W, H);
     // only the open eyes remain — the brain is off
-    ctx.globalAlpha = 0.5; for (const s of [-1, 1]) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(hx(cx + s * 21 - 11), hy(cy - 2), hu(22) * 1, hu(13)); ctx.fillStyle = "#000"; ctx.fillRect(hx(cx + s * 21 - 3), hy(cy), hu(7), hu(9)); } ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.85; for (const s of [-1, 1]) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(hx(cx + s * 21 - 11), hy(cy - 2), 22 * CAM.s, 13 * CAM.s); ctx.fillStyle = "#000"; ctx.fillRect(hx(cx + s * 21 - 3), hy(cy), 7 * CAM.s, 9 * CAM.s); } ctx.globalAlpha = 1;
     if (UI) {
       const ms = Math.max(0, lt - (p.boAt ?? 0));
       TXT(ctx, "BRAIN: OFF", 540, 520, 10, K.red, { align: "center" });
@@ -420,13 +421,13 @@ function sMicro() { // 2: microsleep — eyes wide open, brain off
 }
 function sDesk() { // 3: moody, clumsy, forgetful
   const ck = room({ hrs: HRS, lamp: 0.2 });
-  teen(84, 228, { bags: true, mad: true });
+  teen(76, 184, { bags: true, mad: true });
   // knocked-over cup + spill
   const sp = clamp((lt - (p.tC ?? 99)) / 0.6);
   if (sp <= 0) { R(40, 199, 6, 7, "#F4F1FF"); R(46, 201, 2, 3, "#F4F1FF"); }
   else { R(38, 203, 8, 3, "#F4F1FF"); R(40, 204, 4, 1, "#7A4A2A"); R(30 - sp * 20, 205, sp * 30, 1, "#7A4A2A"); R(28 - sp * 16, 206, sp * 4, Math.round(sp * 30), "#7A4A2A"); }
   // angry steam over the head
-  if (lt > (p.tA ?? 0)) for (let i = 0; i < 3; i++) { const l = (lt * 1.2 + i / 3) % 1; g.globalAlpha = 1 - l; R(86 + i * 3, 200 - l * 14, 2, 2, K.red); } g.globalAlpha = 1;
+  if (lt > (p.tA ?? 0)) for (let i = 0; i < 3; i++) { const l = (lt * 1.2 + i / 3) % 1; g.globalAlpha = 1 - l; R(84 + i * 6, 178 - l * 18, 3, 3, K.red); } g.globalAlpha = 1;
   SHK = sp > 0 && sp < 0.6 ? 0.6 : 0;
   blit();
   clockText(ck, 64, 200);
@@ -439,7 +440,8 @@ function sDesk() { // 3: moody, clumsy, forgetful
     const s = "WHAT WAS I SAYING?", k = clamp((lt - p.tF - 0.5) / 1.2);
     let out = ""; for (let i = 0; i < s.length; i++) out += rnd(i * 7.3) < k && s[i] !== " " ? " " : s[i];
     big("FORGETFUL", 610, 9, K.yellow, p.tF);
-    TXT(ctx, out, 540, 740, 4, "#FFFFFF", { align: "center", out: K.ink, ow: 3 });
+    ctx.fillStyle = "rgba(11,10,30,0.85)"; ctx.fillRect(170, 712, 740, 82);
+    TXT(ctx, out, 540, 736, 5, "#FFFFFF", { align: "center" });
   }
 }
 function sHallu() { // 4: hallucinations + paranoia
@@ -451,9 +453,9 @@ function sHallu() { // 4: hallucinations + paranoia
     R(28, 130, 12, 32, "#07061A"); disc(34, 126, 6, "#07061A");
     for (const [ex, ey, ph] of [[8, 236, 0], [156, 176, 1.3], [94, 300, 2.1], [168, 290, 0.6]]) if (blink(0.7, ph)) { R(ex, ey, 3, 2, K.red); R(ex + 6, ey, 3, 2, K.red); }
   }
-  teen(84, 228, { bags: true, helmet: lt >= (p.tH ?? 99) });
+  teen(76, 184, { bags: true, helmet: lt >= (p.tH ?? 99) });
   // floating football
-  if (lt >= (p.tH ?? 99)) { const fx = 90 + Math.sin(lt * 2) * 30, fy = 182 + Math.cos(lt * 3) * 6; disc(fx, fy, 4, "#8A4A2A"); R(fx - 6, fy - 1, 3, 3, "#8A4A2A"); R(fx + 4, fy - 1, 3, 3, "#8A4A2A"); R(fx - 2, fy, 5, 1, "#FFFFFF"); }
+  if (lt >= (p.tH ?? 99)) { const fx = 92 + Math.sin(lt * 2) * 34, fy = 170 + Math.cos(lt * 3) * 6; disc(fx, fy, 4, "#8A4A2A"); R(fx - 6, fy - 1, 3, 3, "#8A4A2A"); R(fx + 4, fy - 1, 3, 3, "#8A4A2A"); R(fx - 2, fy, 5, 1, "#FFFFFF"); }
   p.gl = 0.12 + (rnd(Math.floor(t * 6)) < 0.25 ? 0.5 : 0) + 0.3 * Math.max(0, 1 - Math.abs(lt - (p.tP ?? 99)) / 0.3);
   blit();
   // RGB split ghost
@@ -468,7 +470,7 @@ function sHallu() { // 4: hallucinations + paranoia
 }
 function sRecord() { // 5: day 11, 264 hours, world record
   const ck = room({ hrs: HRS, lamp: 0.25 });
-  teen(84, 228, { bags: true });
+  teen(76, 184, { bags: true });
   // trophy on the desk
   const tk = E.back(clamp((lt - (p.tR ?? 99)) / 0.35));
   if (tk > 0) { const ty = 206 - Math.round(16 * tk); R(30, ty, 12, 8, K.yellow); R(28, ty, 2, 5, K.yellow); R(42, ty, 2, 5, K.yellow); R(34, ty + 8, 4, 4, K.win2); R(31, ty + 12, 10, 3, K.win2); P(33, ty + 2, "#FFFFFF");
@@ -486,7 +488,7 @@ function sSleep() { // 6: slept 14 hours straight, energy refills
   const sl = clamp(p.sl ?? 0), ck = room({ hrs: 6 + 18 + sl * 14 - 6, sheet: "#7A6AD8" });
   // teen lying in bed: head on pillow, blanket
   R(150, 198, 12, 11, "#4A2E1E"); R(151, 202, 9, 8, K.skin); R(152, 205, 3, 1, K.skin2); R(156, 205, 3, 1, K.skin2);
-  R(108, 204, 44, 10, "#7A6AD8"); R(108, 204, 44, 2, "#9A8AF0");
+  R(116, 204, 36, 10, "#7A6AD8"); R(116, 204, 36, 2, "#9A8AF0");
   zzz(150, 192, 1);
   blit();
   clockText(ck, 64, 200);
@@ -501,8 +503,8 @@ function sWarn() { // 7: Guinness stopped tracking it — don't try this
   // record book with a red X
   R(26, 186, 30, 20, K.ink); R(27, 187, 28, 18, "#2E8A4A"); R(40, 187, 2, 18, "#1E5A2A"); R(30, 191, 8, 2, K.yellow); R(44, 191, 8, 2, K.yellow);
   if (lt >= (p.tG ?? 0)) redX(41, 196, 9);
-  teen(84, 228, { closed: true });
-  zzz(92, 222, 0.8);
+  teen(76, 184, { closed: true });
+  zzz(100, 180, 0.8);
   blit();
   clockText(ck, 64, 200);
   if (!UI) return;
@@ -513,17 +515,17 @@ function sWarn() { // 7: Guinness stopped tracking it — don't try this
   big("TOO DANGEROUS", 330, 5, K.orange, (p.tG ?? 0.1) + 0.3);
   if (k > 0) {
     ctx.save(); ctx.translate(540, 560); ctx.scale(k, k);
-    ctx.fillStyle = K.ink; ctx.fillRect(-470, -100, 940, 200); ctx.fillStyle = blink(2) ? K.red : "#B8202E"; ctx.fillRect(-462, -92, 924, 184);
-    ctx.fillStyle = K.ink; ctx.fillRect(-450, -80, 900, 160); ctx.fillStyle = "#2A0A12"; ctx.fillRect(-444, -74, 888, 148);
+    ctx.fillStyle = K.ink; ctx.fillRect(-470, -130, 940, 260); ctx.fillStyle = blink(2) ? K.red : "#B8202E"; ctx.fillRect(-462, -122, 924, 244);
+    ctx.fillStyle = K.ink; ctx.fillRect(-450, -110, 900, 220); ctx.fillStyle = "#2A0A12"; ctx.fillRect(-444, -104, 888, 208);
     icon("warn", -420, -55, 10, K.red);
-    TXT(ctx, "DON'T", 60, -64, 9, "#FFFFFF", { align: "center", sh: "#000000" });
-    TXT(ctx, "TRY THIS", 60, 6, 9, K.red, { align: "center", sh: "#000000" });
+    TXT(ctx, "DON'T", 70, -88, 10, "#FFFFFF", { align: "center", sh: "#000000" });
+    TXT(ctx, "TRY THIS", 70, 12, 10, K.red, { align: "center", sh: "#000000" });
     ctx.restore();
   }
 }
 function sAsk() { // 8: closing question — awake at 3 am
   const ck = room({ hrs: 21, lamp: 0 });
-  R(150, 198, 12, 11, "#4A2E1E"); R(151, 202, 9, 8, K.skin); P(153, 205, K.ink); P(157, 205, K.ink); R(108, 204, 44, 10, "#5D4FC0"); R(108, 204, 44, 2, "#7A6AD8");
+  R(150, 198, 12, 11, "#4A2E1E"); R(151, 202, 9, 8, K.skin); P(153, 205, K.ink); P(157, 205, K.ink); R(116, 204, 36, 10, "#5D4FC0"); R(116, 204, 36, 2, "#7A6AD8");
   g.globalAlpha = 0.25 + 0.05 * Math.sin(lt * 5); disc(140, 200, 14, "#8FD8FF"); g.globalAlpha = 1; R(138, 196, 5, 8, "#8FD8FF"); R(139, 197, 3, 6, "#FFFFFF");
   blit();
   clockText(ck, 64, 200);

@@ -226,7 +226,7 @@ function geyser(g, x, yb, h, k = 1, seed = 1) {
   for (let i = 0; i < 4; i++) { const ph = (t * 0.35 + rnd(i + seed)) % 1; steam(g, x + ph * 60 + Math.sin(t + i) * 6, yb - 20 - ph * 160, 16 + ph * 30, (1 - ph) * 0.8); }
   if (k <= 0) return; const hh = h * k, n = 18;
   for (let i = n - 1; i >= 0; i--) { const u = i / (n - 1); const y = yb - hh * u, w = (14 + 46 * u) * (0.9 + 0.2 * rnd(i * 2 + seed));
-    const dx = u * u * 70 * k + Math.sin(t * 3 + i * 1.3) * 5 * u; const pul = 1 + 0.08 * Math.sin(t * 9 + i * 2.1);
+    const dx = u * u * 40 * k + Math.sin(t * 3 + i * 1.3) * 5 * u; const pul = 1 + 0.08 * Math.sin(t * 9 + i * 2.1);
     steam(g, x + dx + w * 0.35, y + w * 0.1, w * 0.62 * pul); steam(g, x + dx - w * 0.35, y + w * 0.15, w * 0.58 * pul); steam(g, x + dx, y, w * 0.72 * pul); }
   // drifting top puffs
   for (let i = 0; i < 6; i++) { const ph = (t * 0.25 + i / 6) % 1; steam(g, x + 70 * k + ph * 260, yb - hh - 20 - ph * 120 + Math.sin(i) * 20, (40 + ph * 50) * k, (1 - ph) * k); }

@@ -3,7 +3,7 @@
 // Format = our best-watched countdowns (035 hour-by-hour, 054 day-by-day): giant HOUR/DAY counter + HOURS AWAKE ticker +
 // a PLAYER ENERGY bar (topHud) that flips with a flash on every "Hour/Day N". Engine sans huds/bigs stay empty on purpose.
 // s: 0 bedroom intro · 1 hour 17 BAC · 2 microsleep · 3 day 3 desk · 4 hallucination · 5 day 11 record · 6 14 h sleep
-//    7 don't try this · 8 question   (scene index 9 = hook only, off-timeline)
+//    7 don't try this · 8 question   (scene index 10 = hook only, off-timeline)
 const sc = (s, a, b, p = {}) => ({ a, b, draw: "px", p: { s, ...p } });
 // scene boundaries (s) from words.json
 const T = { intro: 2.3, h17: 6.2, d2: 11.0, d3: 16.0, d4: 19.8, d11: 25.5, slept: 29.0, guin: 31.0, ask: 35.0, end: 38.0, END: 39.6 };
@@ -18,7 +18,7 @@ export default {
   hot: ["randy", "gardner", "seventeen", "alcohol", "microsleeps", "seconds", "open", "moody", "clumsy", "forgetting", "hallucinations", "paranoia", "football", "record", "fourteen", "straight", "guinness", "dangerous", "don't", "awake"],
   title: { text: "What if you didn't sleep for 11 days?", end: T.intro, tag: "11 DAYS AWAKE", hot: ["sleep", "11"], y: 1400 },
   // cold open: "PLAYER: YOU / ENERGY" bar crashes to 0% while the bedroom glitches
-  hook: { scene: 9, at: 0 },
+  hook: { scene: 10, at: 0 },
   cover: 1.2,
   scenes: [
     sc(0, 0, T.intro, { ui: 0, hrs: 0 }),                                                                                  // 0 bedroom under the hook
@@ -30,7 +30,7 @@ export default {
     sc(5, T.d11, T.slept, { hrs: [[0, 240], [2.5, 264]], cnt: [[0, 0], [2.5, 1]], tA: 0.1, tR: 2.6 }),                      // 6 DAY 11 record
     sc(6, T.slept, T.guin, { sl: [[0, 0], [1.8, 1]], tA: 0.1 }),                                                           // 7 slept 14 h
     sc(7, T.guin, T.ask, { tG: 0.1, tD: 2.6 }),                                                                            // 8 Guinness + don't try this
-    sc(8, T.ask, T.END, { z: [1.15, 1.25], fx: 120, fy: 200 }),                                                            // 9 question
+    sc(8, T.ask, T.END, { z: [1.15, 1.25], fx: 105, fy: 188 }),                                                            // 9 question
     sc(0, 100, 106, { hp: [[0, 1], [0.3, 0.95], [1.9, 0]], tEnd: 1.95 }),                                                   // 10 hook only (off-timeline)
   ],
   captions: [],
