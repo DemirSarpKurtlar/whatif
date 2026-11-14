@@ -51,3 +51,5 @@
 049-rome-never-fell
 051-gravity-halved
 050-swallowed-by-whale
+054-electricity-gone-week
+052-stand-on-the-sun
