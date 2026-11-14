@@ -30,7 +30,7 @@ if (hh > 1) {
 // Mount St Helens 1980: a 1 km cube (tiny)
 const sm = p.small || 0;
 if (sm > 0) { const sx = 170, s1 = S * eback(sm); cube(sx, GY, s1, s1, ["#A35B3A", "#C77A4E", "#E3A57B"]);
-  ctx.save(); ctx.globalAlpha = cl(sm * 2); ctx.strokeStyle = K.red; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(sx + 22, GY - 52); ctx.lineTo(sx + 22, GY - 150); ctx.stroke();
+  ctx.save(); ctx.globalAlpha = cl(sm * 2); ctx.strokeStyle = K.red; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(sx + 22, GY - 52); ctx.lineTo(sx + 22, 780); ctx.stroke();
   ctx.restore(); }
 if (sm > 0) { ctx.restore(); plaque(ctx, 170 + 20, 640, [{ t: "ST HELENS 1980", s: 28, sp: 2 }, { t: "1 km³", s: 44, c: K.red }], sm); ctx.save(); cam(540, cy, z, 0); }
 ashFall(ctx, p.ash || 0, -300, -300, 1700, 2500, 19, 110, "rgba(60,56,50,0.7)");
