@@ -1,5 +1,7 @@
-// Beach looking out to sea (-z). params: cam, level (sea level m), surge (0..1 giant wave), night (0..1),
-// moon (0..1 moon visible), shake, tilt, panx, wet (0..1 shows old high-tide line)
+// 056 — adapted from 015 coastcurve.glsl (Park Skyline beach). Beach + seafront town looking out to sea (-z).
+// params: cam, level (sea level), surge (0..1 wave), night (0..1), moon (0..1), shake, tilt, panx, wet, milky, curve (kept from 015)
+// new: yaw (look left toward the town), camh (camera height), mrad (Moon angular radius, rad), mlight (moonlight multiplier),
+//      ecl (0..1 solar eclipse: Moon slides over the Sun, sky goes dark), srad (Sun angular radius)
 float gT = 0.0;
 vec2 gRo = vec2(0.0);
 float curv(vec2 xz){ float R = mix(1e7, 110.0, u_curve); vec2 d = xz - gRo; return dot(d,d)/(2.0*R); }
@@ -17,6 +19,21 @@ vec2 map(vec3 p){
     float roof = sdRoundBox(rf, vec3(1.7, 0.18, 1.9), 0.05);
     r = opU(r, vec2(hut, 2.0 + 0.01*(cz+2.0)));
     r = opU(r, vec2(roof, 3.0));
+  }
+  // seafront town on the left: rows of pastel blocks with window bands
+  {
+    vec3 tq = p - vec3(-11.0, 0.0, 0.0);
+    float tz = floor((tq.z + 3.0)/6.0);
+    if (tz > -3.0 && tz < 2.0) {
+      for (int k = 0; k < 2; k++) {
+        float fk = float(k);
+        vec3 bq = tq - vec3(-fk*5.5, 0.0, 0.0); bq.z = mod(bq.z + 3.0, 6.0) - 3.0;
+        float hb = 3.5 + 4.5*hash2(vec2(tz, fk*7.0 + 1.0)) + fk*2.5;
+        float gz = 0.9 + 0.055*(tz*6.0 - 8.0);
+        float bx = sdRoundBox(bq - vec3(0.0, gz - 1.0 + hb*0.5 + 0.5, 0.0), vec3(2.0, hb*0.5 + 0.5, 2.4), 0.04);
+        r = opU(r, vec2(bx, 7.0 + 0.01*mod(tz + 3.0 + fk*2.0, 4.0)));
+      }
+    }
   }
   // palms on the right
   for (int i = 0; i < 3; i++) {
@@ -76,15 +93,44 @@ vec3 skyN(vec3 rd){
     vec2 sq2 = vec2(atan(rd.z, rd.x), asin(clamp(rd.y, -1.0, 1.0)))*420.0;
     float st2 = hash2(floor(sq2)) > 0.93 ? smoothstep(0.35, 0.0, length(fract(sq2) - 0.5)) : 0.0;
     c += (vec3(0.55,0.55,0.7)*band*dust*0.65 + vec3(st2)*band*0.9)*u_milky*u_night*smoothstep(0.02, 0.15, rd.y);
-    // the Moon
+    // the Moon (angular radius u_mrad)
     vec3 md = normalize(vec3(0.1, 0.36, -1.0));
     float cosA = dot(rd, md);
-    float disc = smoothstep(0.99955, 0.99965, cosA);
-    vec2 mp = vec2(dot(rd, normalize(cross(md, vec3(0,1,0)))), rd.y - md.y);
-    float mare = 0.75 + 0.25*noise2(mp*900.0);
-    c = mix(c, vec3(0.93,0.92,0.86)*mare, disc*u_moon*u_night);
-    c += vec3(0.6,0.65,0.8)*pow(max(cosA, 0.0), 300.0)*0.35*u_moon*u_night;
-    c += vec3(0.2,0.25,0.4)*pow(max(cosA, 0.0), 20.0)*0.12*u_moon*u_night;
+    float ang = acos(clamp(cosA, -1.0, 1.0));
+    float disc = smoothstep(u_mrad*1.02, u_mrad*0.98, ang);
+    vec3 mu = normalize(cross(md, vec3(0,1,0))), mv = cross(mu, md);
+    vec2 mp = vec2(dot(rd, mu), dot(rd, mv))/u_mrad;
+    float mare = 1.0 - 0.28*smoothstep(0.45, 0.6, noise2(mp*2.2 + 3.0)) - 0.1*noise2(mp*9.0);
+    float bright = min(1.0, 0.75 + 0.12*u_mlight);
+    c = mix(c, vec3(0.97,0.96,0.9)*mare*bright, disc*u_moon*u_night);
+    float halo = u_mrad/0.025;
+    c += vec3(0.6,0.65,0.8)*pow(max(cosA, 0.0), 300.0/halo)*0.12*u_moon*u_night*u_mlight;
+    c += vec3(0.2,0.25,0.4)*pow(max(cosA, 0.0), 20.0)*0.05*u_moon*u_night*u_mlight;
+  }
+  if (u_ecl > 0.0) {
+    vec3 sd = normalize(vec3(0.1, 0.36, -1.0));
+    float dark = smoothstep(0.82, 1.0, u_ecl);
+    // sky dims to a deep twilight with a 360° sunset glow on the horizon
+    vec3 tw = mix(vec3(0.05,0.07,0.16), vec3(0.01,0.015,0.05), pow(clamp(rd.y,0.0,1.0),0.5));
+    tw += vec3(1.0,0.5,0.22)*exp(-max(rd.y,0.0)*14.0)*0.55;
+    c = mix(c, tw, dark*0.92 + 0.08*u_ecl);
+    float sa = acos(clamp(dot(rd, sd), -1.0, 1.0));
+    // the Sun
+    c = mix(c, vec3(1.0,0.97,0.88)*1.4, smoothstep(u_srad*1.05, u_srad*0.95, sa));
+    c += vec3(1.0,0.9,0.7)*exp(-sa/u_srad*1.2)*0.5*(1.0 - dark);
+    // corona once totality starts
+    vec3 su = normalize(cross(sd, vec3(0,1,0))), sv = cross(su, sd);
+    float pa = atan(dot(rd, sv), dot(rd, su));
+    float streak = 0.6 + 0.4*noise2(vec2(pa*5.0, 1.0));
+    c += vec3(0.85,0.9,1.0)*exp(-(sa - u_mrad)/(u_srad*0.9))*step(u_mrad*0.97, sa)*dark*streak*0.9;
+    // the Moon slides across, offset along -su
+    vec3 mdir = normalize(sd - su*(1.0 - u_ecl)*u_mrad*2.4 + sv*(1.0 - u_ecl)*u_mrad*0.5);
+    float ma = acos(clamp(dot(rd, mdir), -1.0, 1.0));
+    c = mix(c, vec3(0.015,0.015,0.02), smoothstep(u_mrad*1.02, u_mrad*0.98, ma));
+    // stars and planets peek out
+    vec2 sq = vec2(atan(rd.z, rd.x), asin(clamp(rd.y, -1.0, 1.0)))*90.0;
+    float st = hash2(floor(sq)) > 0.992 ? smoothstep(0.3, 0.0, length(fract(sq) - 0.5)) : 0.0;
+    c += vec3(st)*dark*0.6*smoothstep(0.05, 0.2, rd.y);
   }
   return c;
 }
@@ -92,8 +138,9 @@ vec4 pixel(vec2 uv){
   gT = u_time;
   vec2 p = screenP(uv, 0.0);
   vec2 jit = u_shake*vec2(noise2(vec2(u_time*23.0,1.0))-0.5, noise2(vec2(u_time*19.0,7.0))-0.5)*0.14;
-  vec3 ro = vec3(0.0 + u_panx + jit.x, 2.4 + jit.y, 10.0 - 4.0*u_cam);
-  vec3 ta = vec3(u_panx*0.6, 2.2 + u_tilt*8.0, -30.0);
+  vec3 ro = vec3(0.0 + u_panx + jit.x, 2.4 + u_camh + jit.y, 10.0 - 4.0*u_cam);
+  vec3 fw = vec3(u_panx*0.6 - ro.x, 0.0, -30.0 - ro.z); fw.xz = rot(u_yaw)*fw.xz;
+  vec3 ta = ro + fw; ta.y = 2.2 + u_camh*0.6 + u_tilt*8.0;
   vec3 rd = camRay(p, ro, ta, 1.15);
   gRo = ro.xz;
   vec3 col = skyN(rd);
@@ -112,10 +159,11 @@ vec4 pixel(vec2 uv){
     hit = b; vec3 q = ro + rd*b; kind = seaH(q.xz) > groundH(q.xz) ? 1.0 : 0.0;
   }
   vec3 mo = march(ro, rd, hit > 0.0 ? hit : 80.0, 0.0);
-  vec3 L = normalize(mix(vec3(0.5, 0.8, -0.4), vec3(0.1, 0.36, -1.0), u_night));
-  vec3 key = mix(vec3(1.3,1.15,1.0), vec3(0.22,0.24,0.32)*(0.25 + 0.75*u_moon), u_night);
-  vec3 skyF = mix(lin(vec3(0.6,0.72,0.88))*0.6, lin(vec3(0.12,0.15,0.25))*0.25, u_night);
-  vec3 hazeD = mix(vec3(173.0,198.0,226.0)/255.0, vec3(24.0,30.0,52.0)/255.0, u_night);
+  vec3 L = normalize(mix(vec3(0.5, 0.8, -0.4), vec3(0.1, 0.36, -1.0), max(u_night, u_ecl)));
+  float edk = smoothstep(0.82, 1.0, u_ecl);
+  vec3 key = mix(vec3(1.3,1.15,1.0)*(1.0 - 0.96*edk - 0.25*u_ecl), vec3(0.22,0.24,0.32)*(0.25 + 0.75*u_moon)*u_mlight, u_night);
+  vec3 skyF = mix(lin(vec3(0.6,0.72,0.88))*0.6*(1.0 - 0.9*edk), lin(vec3(0.12,0.15,0.25))*0.25*(0.6 + 0.4*u_mlight), u_night);
+  vec3 hazeD = mix(mix(vec3(173.0,198.0,226.0)/255.0, vec3(0.08,0.08,0.14), edk), vec3(24.0,30.0,52.0)/255.0*(0.7 + 0.3*u_mlight), u_night);
   if (mo.x > 0.0) {
     vec3 pos = ro + rd*mo.x; vec3 n = calcNormal(pos);
     float id = mo.y; vec3 alb;
@@ -123,7 +171,12 @@ vec4 pixel(vec2 uv){
     else if (id < 3.5) alb = vec3(0.92,0.9,0.86);
     else if (id < 4.5) alb = vec3(0.45,0.34,0.24);
     else if (id < 5.5) alb = vec3(0.25,0.5,0.22);
-    else { float k = floor((id-6.0)*100.0+0.5); alb = k < 0.5 ? vec3(0.9,0.25,0.25) : k < 1.5 ? vec3(0.95,0.85,0.3) : vec3(0.25,0.55,0.85); }
+    else if (id < 6.9) { float k = floor((id-6.0)*100.0+0.5); alb = k < 0.5 ? vec3(0.9,0.25,0.25) : k < 1.5 ? vec3(0.95,0.85,0.3) : vec3(0.25,0.55,0.85); }
+    else { float k = floor((id-7.0)*100.0+0.5);
+      alb = k < 0.5 ? vec3(0.91,0.86,0.76) : k < 1.5 ? vec3(0.85,0.55,0.45) : k < 2.5 ? vec3(0.62,0.74,0.82) : vec3(0.8,0.78,0.62);
+      float wy = fract(pos.y*0.7), wz = fract((pos.z + pos.x)*0.9);
+      float win = step(0.35, wy)*step(wy, 0.75)*step(0.3, wz)*step(wz, 0.7)*step(abs(n.y), 0.5);
+      alb = mix(alb, mix(vec3(0.18,0.22,0.3), vec3(1.0,0.82,0.45), u_night*0.85), win*0.85); }
     vec3 c = shade(pos, n, rd, lin(alb), L, key, skyF, skyF, 0.1);
     col = grade(c, lin(hazeD), mo.x, 30.0, 0.5, 0.02);
   } else if (hit > 0.0) {
