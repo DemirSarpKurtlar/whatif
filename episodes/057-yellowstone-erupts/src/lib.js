@@ -181,7 +181,20 @@ function capPlaque(g) {
   g.strokeStyle = K.cream; g.lineWidth = 3.5; g.strokeRect(W / 2 - wid / 2 + 2, y1 + 2, wid - 4, y2 - y1 - 4); g.lineWidth = 1.4; g.strokeRect(W / 2 - wid / 2 + 10, y1 + 10, wid - 20, y2 - y1 - 20);
   g.restore();
 }
-function finish(g) { printOver(g, 0.8); capPlaque(g); }
+// indigo plaque behind the engine's cold-open title (only on the hook scene while the title is up)
+function titlePlaque(g) {
+  if (typeof SPEC === "undefined" || !SPEC.title) return; let T = realTime(); if (T === undefined) T = isHook() ? 0.3 : t;
+  if (T >= SPEC.title.end || !isHook()) return;
+  const a = Math.min(1, (SPEC.title.end - T) / 0.25, T / 0.3); if (a <= 0) return;
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.font = "92px LSerif"; const sp = g.measureText(" ").width; const toks = SPEC.title.text.split(" ");
+  const lines = []; let w = 0, n = 0; toks.forEach((tk) => { const tw = g.measureText(tk).width; if (n && w + sp + tw > 960) { lines.push(w); w = 0; n = 0; } w += (n ? sp : 0) + tw; n++; }); lines.push(w);
+  const wid = Math.max(...lines) + 90, y1 = 290, y2 = 320 + (lines.length - 1) * 104 + 130;
+  g.globalAlpha = a * 0.92; g.fillStyle = "rgba(10,14,28,0.45)"; g.fillRect(W / 2 - wid / 2 + 9, y1 + 10, wid, y2 - y1);
+  g.fillStyle = "#1A2A4C"; g.fillRect(W / 2 - wid / 2, y1, wid, y2 - y1);
+  g.strokeStyle = K.cream; g.lineWidth = 4; g.strokeRect(W / 2 - wid / 2 + 2, y1 + 2, wid - 4, y2 - y1 - 4); g.lineWidth = 1.5; g.strokeRect(W / 2 - wid / 2 + 11, y1 + 11, wid - 22, y2 - y1 - 22);
+  g.restore();
+}
+function finish(g) { printOver(g, 0.8); capPlaque(g); titlePlaque(g); }
 
 // ================= 057 Yellowstone additions =================
 Object.assign(K, { sage: "#9AA57A", sageD: "#6F7C55", ochre: "#C8A25A", rust: "#A8582F", sinter: "#E9E1CF", bison: "#4A3426", bisonD: "#2E2018",
