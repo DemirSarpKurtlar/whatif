@@ -9,7 +9,7 @@ export default {
     { a: 0, b: 2, draw: "ride", p: { fence: 1, sun: 0.1, hud: 1, km: 2, min: 35, inf: 64, spd: 500 } },
     { a: 2, b: 4, draw: "ride", p: { sun: 0.3, hud: 1, km: 1.6, min: 36, inf: 64, rings: 1, click: 1, nz: 4, turn: [0, 1] } },
     { a: 4, b: 6, draw: "ride", p: { sun: 0.8, hud: 1, km: 1.0, min: 39, inf: 64, chase: 1, gap: 300, zsp: 6, stad: 0.3 } },
-    { a: 6, b: 8, draw: "grab", p: { grab: [[0, 0], [1, 1]], rip: [[0, 0, "hold"], [1.2, 0], [1.8, 1]], shake: 0.4 } },
+    { a: 6, b: 8, draw: "ride", p: { sun: 0.9, hud: 1, km: 1.0, min: 39, inf: 64, zg: [[0, 500], [0.5, 170], [1.3, 150], [2, -300]], grab: [[0.2, 0], [0.7, 1]], rip: [[0, 0, "hold"], [1.2, 0], [1.6, 1]], shake: [[0, 0], [0.7, 0.6], [1.2, 0.6], [1.5, 0]], zoom: 1.5, cy: 1350 } },
     { a: 8, b: 10, draw: "double", p: { dbl: [[0, 0], [0.4, 0], [1.6, 1]] } },
     { a: 10, b: 12, draw: "ride", p: { sun: 1, hud: 1, km: 0.3, min: 42, inf: 128, stad: 1 } },
     { a: 12, b: 14, draw: "gate", p: { you: 1, beam: 1, sign: [0, 1] } },

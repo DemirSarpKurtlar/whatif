@@ -43,7 +43,7 @@ function soldier(x, y, s, flip, beam) {
   limb2(x - 62 * s, y - 255 * s, x - 95 * s, y - 185 * s, x - 82 * s, y - 128 * s, 34 * s, OL); circ(x - 82 * s, y - 128 * s, 17 * s, PAL.skin);
   limb2(x + 62 * s, y - 255 * s, x + 110 * s, y - 220 * s, x + 170 * s, y - 250 * s, 34 * s, OL); circ(x + 170 * s, y - 250 * s, 17 * s, PAL.skin);
   rr(x + 170 * s, y - 266 * s, 60 * s, 30 * s, 8, "#2A2E3E"); // flashlight
-  if (beam > 0) { const g = ctx.createLinearGradient(x + 230 * s, 0, x + 700 * s, 0); g.addColorStop(0, `rgba(255,250,210,${0.6 * beam})`); g.addColorStop(1, "rgba(255,250,210,0)"); poly([x + 230 * s, y - 262 * s, x + 760 * s, y - 380 * s, x + 760 * s, y + 20 * s, x + 230 * s, y - 238 * s], g); }
+  if (beam > 0) { const g = ctx.createLinearGradient(x + 230 * s, 0, x + 560 * s, 0); g.addColorStop(0, `rgba(255,250,210,${0.6 * beam})`); g.addColorStop(1, "rgba(255,250,210,0)"); poly([x + 230 * s, y - 262 * s, x + 520 * s, y - 120 * s, x + 520 * s, y + 230 * s, x + 230 * s, y - 238 * s], g); }
   rr(x - 16 * s, hy + 40 * s, 32 * s, 30 * s, 8 * s, PAL.skin2); circ(x, hy, 66 * s, PAL.skin);
   ctx.fillStyle = OL; ctx.beginPath(); ctx.arc(x, hy - 8 * s, 82 * s, Math.PI, 0); ctx.fill(); rr(x - 92 * s, hy - 16 * s, 184 * s, 22 * s, 10 * s, OL2);
   circ(x + 6 * s, hy + 18 * s, 9 * s, "#1B1F52"); circ(x + 42 * s, hy + 18 * s, 9 * s, "#1B1F52"); limb(x + 4 * s, hy + 46 * s, x + 36 * s, hy + 46 * s, 6 * s, "#7A2333");
@@ -54,8 +54,8 @@ soldier(900, 1640, 0.85, true, 0);
 // you, rolling up on the bike (small, front)
 const yk = cl(p.you ?? 0);
 if (yk > 0) { const x = p.rx ?? 560; ctx.save(); ctx.globalAlpha = yk;
-  const BY = 1820, s = 0.5, wr = 120 * s;
+  const BY = 1730, s = 0.6, wr = 120 * s;
   for (const wx of [x - 170 * s, x + 170 * s]) { ctx.lineWidth = 10; ctx.strokeStyle = "#1B1F52"; ctx.beginPath(); ctx.arc(wx, BY - wr, wr, 0, TAU); ctx.stroke(); }
   limb2(x - 170 * s, BY - wr, x - 30 * s, BY - wr, x - 80 * s, BY - 330 * s, 10, "#FF3B4E"); limb2(x - 80 * s, BY - 330 * s, x + 110 * s, BY - 320 * s, x - 30 * s, BY - wr, 10, "#FF3B4E"); limb(x + 110 * s, BY - 320 * s, x + 170 * s, BY - wr, 10, "#FF3B4E");
-  person(x - 40, BY - 40, 0.55, { pose: "idle", look: -0.4, mouth: "o", sweat: 1 });
+  person(x - 48, BY - 48, 0.62, { pose: "idle", look: -0.4, mouth: "o", sweat: 1 });
   ctx.restore(); }

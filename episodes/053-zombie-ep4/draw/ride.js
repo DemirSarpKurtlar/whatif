@@ -3,8 +3,9 @@
 //    fence 0..1 (neighbor's picket fence + gap you squeeze through, scrolls away), nz (zombies on the sidewalk),
 //    turn 0..1 (their heads turn toward you), chase 0..1 (zombies chasing behind), gap (px behind you), zsp (their stride speed),
 //    rings 0..1 (sound rings from the chain), click 0..1 ("CLICK" pops), stad 0..1 (stadium ahead on the horizon),
-//    hud 0..1, km, min (minutes after 6:00), inf (infected), infPop 0..1 (counter flash)
-cam(p.cx || W / 2, p.cy || 960, p.zoom || 1, p.shake || 0);
+//    hud 0..1, km, min (minutes after 6:00), inf (infected), infPop 0..1 (counter flash),
+//    zg (x of a zombie lunging from the sidewalk, relative to you), grab 0..1 (its hand reaches your sleeve), rip 0..1 (you tear free)
+cam(p.cx || W / 2, p.cy || 1240, p.zoom || 1.45, p.shake || 0);
 const SUN = cl(p.sun ?? 0), off = lt * (p.spd ?? 820);
 function hx2(c) { return [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)]; }
 function mixc(a, b, k) { const A = hx2(a), B = hx2(b); return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * k)).join(",")})`; }
@@ -100,6 +101,7 @@ function rider(BX, BY, s) {
   return C;
 }
 const BYr = 1600;
+if (p.zg !== undefined) zombie(RX + p.zg, 1470, 0.6, { flip: true, speed: 4, phase: 0.7, skin: "#8DB967", cloth: "#6A4E66" });
 const crank = rider(RX, BYr + Math.sin(t * 18) * 2, 0.6);
 // wind streaks around you
 for (let i = 0; i < 5; i++) { const y = 1000 + i * 110, x = RX - 260 - ((lt * 900 + i * 170) % 500); rr(x, y, 120, 8, 4, "rgba(255,255,255,0.4)"); }
@@ -107,9 +109,29 @@ for (let i = 0; i < 5; i++) { const y = 1000 + i * 110, x = RX - 260 - ((lt * 90
 const rg = cl(p.rings || 0), cx0 = RX + (crank[0] - RX) * 0.6, cy0 = BYr + (crank[1] - BYr) * 0.6;
 if (rg > 0) for (let i = 0; i < 3; i++) { const k = (lt * 1.2 + i / 3) % 1; ctx.strokeStyle = `rgba(255,210,63,${(1 - k) * 0.9 * rg})`; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(cx0, cy0, 40 + k * 520, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke(); }
 const ck = cl(p.click || 0);
-if (ck > 0) for (let i = 0; i < 3; i++) { const ph2 = (lt * 1.6 + i / 3) % 1, a = ck * (1 - ph2), sc = 0.7 + 0.5 * E.back(cl(ph2 * 4));
-  ctx.save(); ctx.globalAlpha = a; ctx.translate(cx0 - 120 + i * 140, cy0 - 330 - ph2 * 140); ctx.rotate(-0.12 + i * 0.12); ctx.scale(sc, sc);
-  ctx.font = "64px LHeavy"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 12; ctx.strokeStyle = "#151A45"; ctx.strokeText("CLICK", 0, 0); ctx.fillStyle = "#FFD23F"; ctx.fillText("CLICK", 0, 0); ctx.restore(); }
+if (ck > 0) { const n = Math.floor(lt * 2.6), ph2 = (lt * 2.6) % 1, a = ck * cl((1 - ph2) * 2), sc = 0.6 + 0.4 * E.back(cl(ph2 * 3));
+  ctx.save(); ctx.globalAlpha = a; ctx.translate(cx0 + (n % 2 ? 150 : -170), cy0 + 40 - ph2 * 60); ctx.rotate(n % 2 ? 0.12 : -0.12); ctx.scale(sc, sc);
+  ctx.font = "62px LHeavy"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 12; ctx.strokeStyle = "#151A45"; ctx.strokeText("CLICK", 0, 0); ctx.fillStyle = "#FFD23F"; ctx.fillText("CLICK", 0, 0); ctx.restore(); }
+// --- a zombie lunges from the sidewalk and grabs your sleeve; you rip free
+if (p.zg !== undefined) {
+  const zx = RX + p.zg, zy = 1470, zs = 0.6, gk = cl(p.grab || 0), rip = cl(p.rip || 0);
+  const EL = [RX + 0.6 * 70, BYr - 0.6 * 470], SH0 = [zx - 30 * zs, zy - 250 * zs];
+  const rest = [zx - 175 * zs, zy - 265 * zs];
+  let HX = lerp(rest[0], EL[0], E["ease-out"](gk)), HY = lerp(rest[1], EL[1], E["ease-out"](gk));
+  if (rip > 0) { HX = lerp(EL[0], zx - 40, E["ease-out"](rip)); HY = lerp(EL[1], zy - 120, E["ease-out"](rip)); }
+  limb(SH0[0], SH0[1], HX, HY, 30 * zs * 1.6, "#6A4E66");
+  circ(HX, HY, 20, PAL.zskin); for (let i = 0; i < 4; i++) { const a = Math.PI * (0.7 + i * 0.17); limb(HX, HY, HX + Math.cos(a) * 34, HY + Math.sin(a) * 34, 11, PAL.zskin); }
+  if (rip > 0) { poly([HX - 30, HY - 20, HX + 26, HY - 34, HX + 34, HY + 10, HX - 10, HY + 30, HX - 36, HY + 8], PAL.hoodie); // torn scrap of your hoodie
+    for (let i = 0; i < 4; i++) limb(EL[0] - 10 + i * 8, EL[1] + 10, EL[0] - 20 + i * 12, EL[1] + 40 + rnd(i) * 20, 4, PAL.hoodie2); }
+  // impact bursts
+  function burst(x, y, k, col) { if (k <= 0 || k >= 1) return; ctx.save(); ctx.globalAlpha = 1 - k; for (let i = 0; i < 10; i++) { const a = i / 10 * TAU; limb(x + Math.cos(a) * 30 * (1 + k * 2), y + Math.sin(a) * 30 * (1 + k * 2), x + Math.cos(a) * 70 * (1 + k * 2), y + Math.sin(a) * 70 * (1 + k * 2), 8, col); } ctx.restore(); }
+  burst(EL[0], EL[1], cl((gk - 0.85) * 4), "#FFD23F"); burst(EL[0], EL[1], cl(rip * 2.2), "#FFFFFF");
+  if (rip > 0.03) { const k = E.back(cl(rip * 4)); ctx.save(); ctx.globalAlpha = cl(2.4 - rip * 2.4); ctx.translate(EL[0] + 40, EL[1] - 260); ctx.rotate(-0.1); ctx.scale(k, k);
+    ctx.font = "96px LHeavy"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 16; ctx.strokeStyle = "#151A45"; ctx.strokeText("RIIIP!", 0, 0); ctx.fillStyle = "#FFFFFF"; ctx.fillText("RIIIP!", 0, 0); ctx.restore(); }
+  // red danger vignette while it holds you (screen space)
+  const vk = cl((gk - 0.5) * 2) * (1 - rip);
+  if (vk > 0) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); const g = ctx.createRadialGradient(540, 960, 350, 540, 960, 1150); g.addColorStop(0, "rgba(255,59,78,0)"); g.addColorStop(1, `rgba(255,59,78,${0.5 * vk})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+}
 // --- HUD (screen space): distance left · clock · infected
 const hk = cl(p.hud || 0);
 if (hk > 0) {

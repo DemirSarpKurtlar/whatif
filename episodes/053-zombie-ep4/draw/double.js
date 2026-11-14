@@ -14,7 +14,7 @@ for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
   const i = r * cols + c, wave = (c + (rows - 1 - r) * 0.5) / (cols + 3.5);
   const inf = i < 64 || dk > wave + 0.02;
   const pop = i >= 64 && inf ? 1 + 0.5 * Math.max(0, 1 - (dk - wave) * 8) : 1;
-  ctx.save(); ctx.translate(gx + c * sp + 6, gy + r * 76 + 40); ctx.scale(pop, pop); icon(0, 0, 0.95, inf); ctx.restore();
+  ctx.save(); ctx.translate(gx + c * sp + 6, gy + r * 76 + 40); ctx.scale(pop, pop); icon(0, 0, 0.72, inf); ctx.restore();
 }
 // counter: 64 -> 128
 const n = Math.round(lerp(64, 128, E["ease-in"](dk))), nk = 1 + 0.18 * Math.max(0, 1 - Math.abs(dk - 1) * 10) * (dk >= 1 ? 1 : 0);
