@@ -411,7 +411,8 @@ function sMicro() { // 2: microsleep — eyes wide open, brain off
     if (UI) {
       const ms = Math.max(0, lt - (p.boAt ?? 0));
       TXT(ctx, "BRAIN: OFF", 540, 520, 10, K.red, { align: "center" });
-      TXT(ctx, "00:0" + Math.min(9, Math.floor(ms * 2 + 1)), 540, 680, 6, "#FFFFFF", { align: "center" });
+      TXT(ctx, "MICROSLEEP 00:0" + Math.min(9, Math.floor(ms * 2 + 1)), 540, 640, 5, "#FFFFFF", { align: "center" });
+      if (lt >= (p.tE ?? 99)) TXT(ctx, "EYES: WIDE OPEN", 540, hy(cy + 24), 5, K.cyan, { align: "center" });
     }
   }
   topHud("DAY 2", "MICROSLEEPS", HRS, energyOf(HRS), K.yellow);
