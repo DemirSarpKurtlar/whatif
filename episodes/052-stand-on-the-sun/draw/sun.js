@@ -262,7 +262,7 @@ else if (S === 6) { // 5,500 C thermometer
   g.beginPath(); g.arc(tx, bot + 60, 76, 0, TAU); g.fill();
   g.strokeStyle = K.ink; g.lineWidth = 8; g.beginPath(); g.roundRect(tx - 46, top - 40, 92, bot - top + 60, 46); g.stroke(); g.beginPath(); g.arc(tx, bot + 60, 84, 0, TAU); g.stroke();
   const marks = [[100, "WATER BOILS · 100 °C"], [1200, "LAVA · UP TO 1,200 °C"], [5500, "SUN'S SURFACE"]];
-  marks.forEach(([v, s], i) => { const y = bot - (bot - top) * (v - 20) / 5480; const a = cl((k * 5480 + 20 - v + 300) / 300); g.globalAlpha = a; g.fillStyle = K.ink; g.fillRect(tx + 50, y - 3, 60, 6); mono(s, tx + 125, y + 11, 30, i === 2 ? K.coral : K.cobalt, "left"); g.globalAlpha = 1; });
+  marks.forEach(([v, s], i) => { const y = bot - (bot - top) * (v - 20) / 5480; const a = cl((k * 5480 + 20 - v + 300) / 300); g.globalAlpha = a; g.fillStyle = K.ink; g.fillRect(tx + 50, y - 3, 60, 6); g.font = `700 30px ${MONO}`; g.letterSpacing = "2px"; g.fillStyle = K.cream; g.fillRect(tx + 115, y - 22, g.measureText(s).width + 20, 44); g.letterSpacing = "0px"; mono(s, tx + 125, y + 11, 30, i === 2 ? K.coral : K.cobalt, "left"); g.globalAlpha = 1; });
   bigNum(temp.toLocaleString("en-US") + " °C", 470, 180, k01(0, 0.25));
 }
 else if (S === 7) { // 63 MW per square metre
@@ -293,8 +293,9 @@ else if (S === 8) { // 60,000 microwave ovens
   mono("MICROWAVE OVENS · FULL POWER", W / 2, 520, 28, K.cobalt, "center", cl((lt - 0.3) / 0.3));
 }
 else if (S === 9) { // skin boils away in 0.1 s: figure dissolves into dots
-  const k = eio((lt - 0.25) / Math.max(1.2, D - 0.6)); const pts = figDots(); const s = 1.55, ox = 540, oy = 1250;
+  const k = eio((lt - 0.6) / Math.max(1.0, D - 1.0)); const pts = figDots(); const s = 1.55, ox = 540, oy = 1250;
   halo(ox, 880, 160, 560, K.coral, 15, 6, 0.8);
+  if (k < 0.5) person(ox, oy - 8, s, { a: 1 - k * 2 });
   g.save(); g.globalCompositeOperation = "multiply";
   for (const [col, dx, dy] of [[K.coral, 7, 5], [K.cobalt, 0, 0]]) { g.fillStyle = col; g.beginPath();
     for (const [x, y, r0] of pts) { const lift = cl((k * 1.4 - (1 - (y + 500) / 520) * 0.25 - r0 * 0.45)); const px = ox + x * s + dx + Math.sin(r0 * 40 + t * 3) * 90 * lift, py = oy + y * s + dy - lift * (160 + 240 * r0);
@@ -305,7 +306,7 @@ else if (S === 9) { // skin boils away in 0.1 s: figure dissolves into dots
     for (let j = 0; j < 8; j++) { const yy = 900 - ph * 400 - j * 26; const xx = x + Math.sin(j * 0.9 + t * 4 + i) * 16; j ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
   g.globalAlpha = 1;
   bigNum("0.1 s", 450, 230, k01(0, 0.25));
-  mono("SKIN: VAPORISED", W / 2, 515, 30, K.coral, "center", cl((lt - (p.tGone ?? 1.2)) / 0.3));
+  { const a = cl((lt - (p.tGone ?? 1.2)) / 0.3); if (a > 0) { g.save(); g.globalAlpha = a; g.fillStyle = K.cream; g.fillRect(W / 2 - 170, 484, 340, 46); g.restore(); } mono("SKIN: VAPORISED", W / 2, 517, 30, K.coral, "center", a); }
 }
 else if (S === 10) { // the light's 100,000-year escape
   const cx = 540, cy = 1300, R = 660; const k = eio((lt - 0.2) / Math.max(1, D - 1.0));
@@ -316,7 +317,7 @@ else if (S === 10) { // the light's 100,000-year escape
   g.save(); g.globalCompositeOperation = "multiply"; g.fillStyle = K.cobalt; g.globalAlpha = 0.85; g.beginPath(); g.arc(cx, cy, R * 0.25, 0, TAU); g.fill(); g.restore();
   g.restore();
   g.strokeStyle = K.ink; g.lineWidth = 3; g.setLineDash([10, 10]); for (const f of [0.25, 0.68]) { g.beginPath(); g.arc(cx, cy, R * f, Math.PI, TAU); g.stroke(); } g.setLineDash([]);
-  mono("CORE", cx, cy + 12, 32, K.cream, "center");
+  mono("CORE", cx, cy + 75, 32, K.cream, "center");
   // random-walk photon path from the core to the surface
   if (!FC.walk) { const P = [[0, 0]]; let x = 0, y = 0, i = 0; while (Math.hypot(x, y) < R * 0.97 && i < 4000) { const a = rnd(i * 2.71 + 0.3) * TAU - (i % 3 === 0 ? 0 : 0); x += Math.cos(a) * 34; y += Math.sin(a) * 34 - 6.5; if (y > R * 0.2) y = R * 0.2; P.push([x, y]); i++; } FC.walk = P; }
   const P = FC.walk, nShow = Math.floor(P.length * k);
