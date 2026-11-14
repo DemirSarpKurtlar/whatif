@@ -1,0 +1,20 @@
+export default {
+  END: 30,
+  style: "flat",
+  bg: "#11153D",
+  xf: 0.25,
+  capY: 1420,
+  hot: [],
+  scenes: [
+    { a: 0, b: 2, draw: "ride", p: { fence: 1, sun: 0.1, hud: 1, km: 2, min: 35, inf: 64, spd: 500 } },
+    { a: 2, b: 4, draw: "ride", p: { sun: 0.3, hud: 1, km: 1.6, min: 36, inf: 64, rings: 1, click: 1, nz: 4, turn: [0, 1] } },
+    { a: 4, b: 6, draw: "ride", p: { sun: 0.8, hud: 1, km: 1.0, min: 39, inf: 64, chase: 1, gap: 300, zsp: 6, stad: 0.3 } },
+    { a: 6, b: 8, draw: "grab", p: { grab: [[0, 0], [1, 1]], rip: [[0, 0, "hold"], [1.2, 0], [1.8, 1]], shake: 0.4 } },
+    { a: 8, b: 10, draw: "double", p: { dbl: [[0, 0], [0.4, 0], [1.6, 1]] } },
+    { a: 10, b: 12, draw: "ride", p: { sun: 1, hud: 1, km: 0.3, min: 42, inf: 128, stad: 1 } },
+    { a: 12, b: 14, draw: "gate", p: { you: 1, beam: 1, sign: [0, 1] } },
+    { a: 14, b: 16, draw: "wrist", p: { scr: [0, 1], q: [[0, 0], [1, 0], [2, 1]], glow: 1 } },
+    { a: 16, b: 18, draw: "choice", p: { bAt: 1 } },
+  ],
+  captions: [],
+};
