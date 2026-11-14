@@ -79,7 +79,6 @@ vec4 pixel(vec2 uv){
     col = mix(c, vec3(0.55,0.75,1.0)*(0.3+0.9*dif), rim*0.6);
     // friction glow where the bulges are dragged ahead of the Moon by Earth's spin
     col += vec3(1.0,0.35,0.2)*u_brake*smoothstep(0.55, 0.95, bul)*(0.35 + 0.25*sin(u_time*5.0));
-    if (u_ecl > 0.6) col = mix(col, vec3(0.02), 0.0);
   }
   // ghost Moon at the old distance
   if (tg > 0.0 && tg < tHit) {
@@ -90,13 +89,12 @@ vec4 pixel(vec2 uv){
   float b = dot(ro, rd); vec3 cp = ro + rd*max(-b, 0.0); float hgt = length(cp) - 1.0;
   if (hgt > 0.0 && (tm < 0.0 || length(cp - ro) < tm)) {
     vec3 mdir = normalize(MC); float c2 = dot(normalize(cp), mdir);
-    float bh = u_bulge*0.13*clamp(1.5*c2*c2 - 0.5, 0.0, 1.0);
+    float bh = u_bulge*0.2*clamp(1.5*c2*c2 - 0.5, 0.0, 1.0);
     col += vec3(0.45,0.7,1.0)*exp(-hgt*28.0)*0.85;
     col += vec3(0.30,0.62,1.0)*smoothstep(bh, bh*0.6, hgt)*step(0.001, bh)*0.75;
   }
   // orbit rings
-  col = mix(col, vec3(1.0,0.85,0.45), ring(ro, rd, u_md, tHit, 0.0035)*u_ring*0.85);
-  col = mix(col, vec3(0.75,0.8,0.95), ring(ro, rd, u_gr, tHit, 0.0025)*u_ghost*0.55);
-  // sunlight glare during the eclipse beat
+  col = mix(col, vec3(1.0,0.85,0.45), ring(ro, rd, u_md, tHit, 0.005)*u_ring*0.85);
+  col = mix(col, vec3(0.75,0.8,0.95), ring(ro, rd, u_gr, tHit, 0.004)*u_ghost*0.7);
   return vec4(col, 1.0);
 }

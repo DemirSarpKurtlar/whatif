@@ -31,6 +31,7 @@ vec2 map(vec3 p){
         float hb = 3.5 + 4.5*hash2(vec2(tz, fk*7.0 + 1.0)) + fk*2.5;
         float gz = 0.9 + 0.055*(tz*6.0 - 8.0);
         float bx = sdRoundBox(bq - vec3(0.0, gz - 1.0 + hb*0.5 + 0.5, 0.0), vec3(2.0, hb*0.5 + 0.5, 2.4), 0.04);
+        bx = min(bx, 3.0 - abs(bq.z) + 0.15);   // never step across a cell boundary (heights differ per cell)
         r = opU(r, vec2(bx, 7.0 + 0.01*mod(tz + 3.0 + fk*2.0, 4.0)));
       }
     }
