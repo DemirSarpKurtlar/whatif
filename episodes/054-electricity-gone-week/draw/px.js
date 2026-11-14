@@ -350,8 +350,8 @@ function sPhone() {
   if (!dead) { for (let i = 0; i < 3; i++) { const r = (lt * 24 + i * 12) % 36; g.globalAlpha = (1 - r / 36) * (0.3 + 0.7 * bat); ring(tx, top + 6, 8 + r, K.cyan, -0.8, 0.8); ring(tx, top + 6, 8 + r, K.cyan, Math.PI - 0.8, Math.PI + 0.8); } g.globalAlpha = 1; }
   if (blink(1, 1) && !dead) P(tx, top - 3, K.red);
   // battery cabinet
-  R(tx + 12, 216, 22, 34, "#3A3E6A"); R(tx + 14, 220, 18, 26, K.ink); R(tx + 19, 213, 8, 3, "#3A3E6A");
-  const bh = Math.round(24 * bat); R(tx + 15, 245 - bh, 16, bh, bat > 0.5 ? K.lime : bat > 0.2 ? K.orange : K.red);
+  R(tx + 12, 176, 22, 34, "#3A3E6A"); R(tx + 14, 180, 18, 26, K.ink); R(tx + 19, 173, 8, 3, "#3A3E6A"); R(tx + 8, 190, 4, 3, "#3A3E6A");
+  const bh = Math.round(24 * bat); R(tx + 15, 205 - bh, 16, bh, bat > 0.5 ? K.lime : bat > 0.2 ? K.orange : K.red);
   // phone in hand
   const X = 100, Y = 120, Wp = 60, Hp = 108;
   R(X, Y, Wp, Hp, K.ink); R(X + 2, Y + 2, Wp - 4, Hp - 4, "#2A2860"); R(X + 5, Y + 9, Wp - 10, Hp - 18, dead ? "#1A0A16" : "#14123A"); R(X + 24, Y + 4, 12, 2, K.ink);
@@ -366,7 +366,7 @@ function sPhone() {
   dayHud(1, "SIGNAL");
   if (!UI) return;
   TXT(ctx, dead ? "NO SERVICE" : bat < 0.35 ? "SEARCHING..." : "5G", hx(X + 30), hy(Y + 92), hu(3), dead ? K.red : "#FFFFFF", { align: "center" });
-  TXT(ctx, "BATTERY " + Math.round(bat * 100) + "%", hx(tx + 23), hy(206), hu(3), bat > 0.2 ? K.lime : K.red, { align: "center", out: K.ink, ow: 2 });
+  TXT(ctx, "BATTERY " + Math.round(bat * 100) + "%", hx(tx + 23), hy(166), hu(3), bat > 0.2 ? K.lime : K.red, { align: "center", out: K.ink, ow: 2 });
   if (!dead) { big("CELL TOWER BATTERIES", 410, 4, "#FFFFFF", tF); big("4-8 HOURS", 480, 11, K.yellow, tF + 0.1, { panel: K.yellow }); }
   else big("NO SIGNAL", 470, 11, K.red, p.tDead ?? 0, { panel: K.red });
 }
@@ -410,7 +410,7 @@ function sFreezer() {
   R(0, 0, LW, 250, "#1E2550"); for (let x = 0; x < LW; x += 30) R(x, 0, 1, 250, "#1A2048");
   R(0, 250, LW, 70, "#2A2450"); for (let y = 250; y < LH; y += 10) for (let x = ((y / 10) % 2) * 10; x < LW; x += 20) R(x, y, 10, 10, "#352E62");
   // freezer body + open door
-  const fx = 26, fy = 100, fw = 86, fh = 150;
+  const fx = 26, fy = 116, fw = 86, fh = 134;
   R(fx - 1, fy - 1, fw + 2, fh + 2, K.ink); R(fx, fy, fw, fh, "#D8DCEC"); R(fx + fw - 4, fy, 4, fh, "#AEB4CC");
   R(fx + 5, fy + 5, fw - 10, fh - 14, "#4A6A9A"); R(fx + 5, fy + 5, fw - 10, 3, "#3A5A8A");
   for (const sy of [fy + 44, fy + 88]) R(fx + 5, sy, fw - 10, 2, "#C8D8F0");
@@ -436,7 +436,7 @@ function sFreezer() {
   const left = 48 * (1 - tm), hh = Math.floor(left + 1e-6), mm = Math.min(59, Math.floor((left - hh) * 60 + 1e-6));
   big("FULL FREEZER STAYS COLD", 400, 4, "#FFFFFF", 0.1);
   big(pad2(hh) + ":" + pad2(mm), 460, 11, tm >= 0.999 ? K.red : K.cyan, 0.15, { panel: tm >= 0.999 ? K.red : K.cyan });
-  if (lt >= tN && blink(2.5)) big("THAWING!", 620, 8, K.red, tN);
+  if (lt >= tN) big("THAWING!", 580, 8, blink(2.5) ? K.red : "#FFFFFF", tN, { panel: K.red });
 }
 function sHosp() {
   const fuel = clamp(p.fuel ?? 1), tB = p.tBig ?? 0.3;
