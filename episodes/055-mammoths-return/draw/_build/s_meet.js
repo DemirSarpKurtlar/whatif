@@ -1,0 +1,23 @@
+// "Would you meet one?": a small person in a parka faces a huge mammoth before a gold sun on the snow; the mammoth lifts its trunk, the person raises a hand; a gold "?" appears. p: tr (trunk), arm, q (question mark), zoom, cx, cy
+frameIn(p);
+const tr = p.tr ?? 0, arm = p.arm ?? 0, q = p.q ?? 0;
+const bg = cached("meet_bg", W + 400, H + 400, (g) => { g.translate(200, 200); drawPaper(g);
+  vwash(g, -200, 620, "26,25,23", 0.95, 0);
+  streak(g, 260, 360, 860, 90, "24,23,21", 0.4, 14);
+  blob(g, 600, 880, 760, 400, "246,240,224", 0.55);
+});
+ctx.drawImage(bg, -200, -200);
+goldDisc(ctx, 560, 820, 260, 1);
+ctx.drawImage(cached("meet_mid", W + 400, H + 400, (g) => { g.translate(200, 200);
+  streak(g, 540, 900, 900, 34, "30,29,27", 0.4, 10);
+  ridge(g, 1030, 110, 5.5, "110,106,98", 0.7, 7, 110, 0.9);
+  tundra(g, 1090, 3.1, "232,227,214", 0.88);
+  vwash(g, 1130, 1200, "20,19,18", 0, 0.8); vwash(g, 1200, H + 200, "20,19,18", 0.8, 1);
+  g.fillStyle = "rgba(20,19,18,0.95)"; g.beginPath(); g.moveTo(-200, 1232); g.quadraticCurveTo(500, 1196, 1300, 1222); g.lineTo(1300, H + 200); g.lineTo(-200, H + 200); g.fill();
+}), -200, -200);
+mammoth(ctx, 760, 1226, 0.95, -1, INK.ink, { m: 1, walk: 0, eye: 1, tr });
+person(ctx, 200, 1224, 0.85, 1, INK.ink, arm);
+goldQ(ctx, 860, 330, q, 300);
+snow(ctx, 50, 13, 0.6, 30, 70);
+goldDust(ctx, 20, 0, 500, W, 600, 71, 0.5, 10);
+finish(ctx);
