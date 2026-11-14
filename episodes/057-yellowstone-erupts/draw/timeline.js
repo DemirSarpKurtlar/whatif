@@ -255,7 +255,7 @@ function snowRidge(g, yb, amp, seed, fill, freq = 1) {
 // ---- scene ----
 // Hand-scroll timeline of Yellowstone's three caldera-forming eruptions. p: cx (camera x in world), zoom, pop (markers appeared 0..3), labk, sid
 const z = p.zoom || 1, cx = p.cx || 540, pop = p.pop ?? 3;
-const X = (ma) => 260 + (2.1 - ma) / 2.1 * 2200, AY = 1060;
+const X = (ma) => 260 + (2.1 - ma) / 2.1 * 2200, AY = 930;
 const EV = [{ ma: 2.1, v: 2450, n: "HUCKLEBERRY RIDGE", d: "2.1 MILLION" }, { ma: 1.3, v: 280, n: "MESA FALLS", d: "1.3 MILLION" }, { ma: 0.631, v: 1000, n: "LAVA CREEK", d: "631,000" }];
 const bg = cached("tlBg", 1080, 1920, (g) => { bokashi(g, 0, 1920, [[0, "#16284A"], [0.5, "#2D4F82"], [1, "#16284A"]]); waveLines(g, 1300, 1920, 50, 9, "rgba(240,234,220,0.35)"); });
 const strip = cached("tlStrip", 2800, 900, (g) => {
@@ -267,11 +267,9 @@ const strip = cached("tlStrip", 2800, 900, (g) => {
   // axis
   g.strokeStyle = K.ink; g.lineWidth = 5; g.beginPath(); g.moveTo(140, AY); g.lineTo(2600, AY); g.stroke();
   for (let ma = 2.0; ma >= 0; ma -= 0.1) { const x = X(ma), big = Math.abs(ma * 10 - Math.round(ma * 2) * 5) < 0.01; g.lineWidth = big ? 4 : 2; g.beginPath(); g.moveTo(x, AY - (big ? 22 : 12)); g.lineTo(x, AY + (big ? 22 : 12)); g.stroke(); }
-  g.fillStyle = K.ink; g.font = "34px LSerif"; g.textAlign = "center"; g.fillText("TODAY", X(0), AY + 70);
-  // landscape strip along the top of the scroll (tiny pines)
-  for (let i = 0; i < 70; i++) lpine(g, 120 + i * 37 + rnd(i) * 20, 1230, 30 + rnd(i * 3) * 26, K.pineD, K.pine);
+  g.fillStyle = K.ink; g.font = "34px LSerif"; g.textAlign = "center"; g.fillText("TODAY", X(0), AY + 82);
   // today: geyser + bison icon
-  bison(g, X(0) - 40, 1200, 0.55, 1, 0);
+  bison(g, X(0) - 60, AY - 4, 0.6, 1, 0);
 });
 ctx.drawImage(bg, 0, 0);
 ctx.save(); cam(cx, 960, z, 0);
@@ -287,7 +285,7 @@ EV.forEach((e, i) => {
   // red seal + labels
   ctx.save(); ctx.globalAlpha = cl(k * 2); ctx.fillStyle = K.red; ctx.strokeStyle = K.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, AY, 18, 0, TAU); ctx.fill(); ctx.stroke();
   ctx.textAlign = "center"; ctx.fillStyle = K.red; ctx.font = "50px LSerif"; ctx.fillText(e.d, x, AY + 82); ctx.fillStyle = K.ink; ctx.font = "26px LSerif"; ctx.letterSpacing = "5px"; ctx.fillText("YEARS AGO", x, AY + 118); ctx.fillText(e.n, x, AY + 152);
-  ctx.font = "30px LSerif"; ctx.fillText((e.v === 2450 ? "2,450" : e.v === 1000 ? "1,000" : "280") + " km³", x, AY - 60 - (120 + Math.sqrt(e.v) * 6.5) * kk - 40 > 640 ? AY - 60 - (120 + Math.sqrt(e.v) * 6.5) * kk - 40 : 690); ctx.letterSpacing = "0px"; ctx.restore();
+  ctx.fillStyle = K.red; ctx.font = "34px LSerif"; ctx.fillText((e.v === 2450 ? "2,450" : e.v === 1000 ? "1,000" : "280") + " km³", x, AY + 200); ctx.letterSpacing = "0px"; ctx.restore();
 });
 ctx.restore();
 const lk = p.labk || 0;

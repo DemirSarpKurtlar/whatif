@@ -53,8 +53,8 @@ if (lv > 0) {
   for (let i = 0; i <= 16; i++) { const a = i / 16 * Math.PI; const r = (0.8 + 0.2 * Math.sin(i * 2.7)) * k; ctx.lineTo(LX + Math.cos(a) * 190 * r, LY + Math.sin(a) * 60 * r); }
   ctx.closePath(); ctx.fill(); ctx.stroke();
   ctx.fillStyle = K.lava; ctx.beginPath(); ctx.moveTo(LX + 80, 978); ctx.lineTo(LX + 100, 978); for (let i = 0; i <= 16; i++) { const a = i / 16 * Math.PI; const r = (0.6 + 0.15 * Math.sin(i * 2.7 + 1)) * k; ctx.lineTo(LX + 10 + Math.cos(a) * 150 * r, LY + Math.sin(a) * 42 * r); } ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(40,20,15,0.8)"; ctx.lineWidth = 2.5; for (let i = 0; i < 9; i++) { const a = 0.2 + i / 9 * 2.8; ctx.beginPath(); ctx.moveTo(LX + Math.cos(a) * 40 * k, LY + Math.sin(a) * 12 * k); ctx.quadraticCurveTo(LX + Math.cos(a + 0.2) * 100 * k, LY + Math.sin(a + 0.2) * 30 * k, LX + Math.cos(a) * 160 * k, LY + Math.sin(a) * 48 * k); ctx.stroke(); }
-  const rg = ctx.createRadialGradient(LX, LY, 0, LX, LY, 260); rg.addColorStop(0, `rgba(255,170,90,${0.45 * k})`); rg.addColorStop(1, "rgba(255,120,60,0)"); ctx.fillStyle = rg; ctx.globalCompositeOperation = "lighter"; ctx.fillRect(LX - 260, LY - 260, 520, 520); ctx.restore();
+  ctx.strokeStyle = "rgba(40,20,15,0.75)"; ctx.lineWidth = 3; for (let j = 1; j <= 3; j++) { const r = j / 4; ctx.beginPath(); for (let i = 0; i <= 16; i++) { const a = i / 16 * Math.PI; const rr2 = (0.8 + 0.2 * Math.sin(i * 2.7)) * k * r; const x = LX + Math.cos(a) * 190 * rr2, y = LY + Math.sin(a) * 60 * rr2 + Math.sin(i * 3 + j) * 3; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); }
+  const rg = ctx.createRadialGradient(LX, LY, 0, LX, LY, 260); rg.addColorStop(0, `rgba(255,170,90,${0.3 * k})`); rg.addColorStop(1, "rgba(255,120,60,0)"); ctx.fillStyle = rg; ctx.fillRect(LX - 260, LY - 260, 520, 520); ctx.restore();
   for (let i = 0; i < 5; i++) { const ph = (t * 0.35 + i / 5) % 1; steam(ctx, LX - 120 + i * 60 + ph * 20, LY - 10 - ph * 150, 14 + ph * 24, (1 - ph) * 0.75 * k); }
 }
 // Old Faithful + small fumaroles

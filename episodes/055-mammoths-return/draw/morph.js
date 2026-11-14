@@ -239,7 +239,7 @@ const lab = (a, ax, ay, lx, ly, txt1) => { if (a <= 0) return; const e = E["ease
   ctx.save(); ctx.globalAlpha = cl(a * 1.5); ctx.strokeStyle = "#E9C877"; ctx.lineWidth = 3; ctx.shadowColor = "rgba(242,214,138,0.8)"; ctx.shadowBlur = 8;
   ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(lerp(ax, lx, e), lerp(ay, ly, e)); ctx.stroke(); ctx.restore(); circ2(ctx, ax, ay, 7, "#F2D68A");
   label(ctx, txt1, lx, ly + (ly < ay ? -14 : 44), 44, INK.ink, "center", cl(a * 1.5 - 0.3)); };
-lab(p.l1 ?? 0, X - 285 * S, Y - 290 * S, 190, 700, "THICK HAIR");
+lab(p.l1 ?? 0, X - 285 * S, Y - 290 * S, 190, 700, "SHAGGY FUR");
 lab(p.l2 ?? 0, X + 212 * S, Y - 440 * S, 840, 560, "SMALL EARS");
 lab(p.l3 ?? 0, X + 90 * S, Y - 500 * S, 430, 540, "EXTRA FAT");
 goldDust(ctx, 20, 0, 420, W, 760, 31, 0.5, 12);

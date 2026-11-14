@@ -1,7 +1,7 @@
 // 2,450 km³ (Huckleberry Ridge) as one cube (13.5 km a side) vs Mount St Helens 1980 (~1 km³, 1 km cube), same scale.
 // p: zoom, cy, grow (0..1), small (0..1), ash, labk (top plaque), lab2k (number plaque), sid
-const z = p.zoom || 1, cy = p.cy || 960, gw = p.grow || 0, GY = 1170, S = 44; // px per km
-const side = 13.48 * S, cx0 = 360, dx = 70, dy = -60;
+const z = p.zoom || 1, cy = p.cy || 960, gw = p.grow || 0, GY = 1170, S = 40; // px per km
+const side = 13.48 * S, cx0 = 330, dx = 70, dy = -60;
 const bg = cached("volBg", 1400, 2300, (g) => {
   g.translate(160, 190);
   skyDay(g, GY, "#2A3550");
@@ -25,13 +25,14 @@ if (hh > 1) {
   if (gw < 0.98) { ctx.fillStyle = "rgba(141,135,124,0.85)"; for (let i = 0; i < 46; i++) { const x = cx0 + 30 + rnd(i) * (side - 60), y = ((rnd(i * 3) * 600 + t * 520) % 600) - 300 + top - 300; if (y < top) ctx.fillRect(x, y, 6, 14); } }
   // red dimension line
   const lx = cx0 + side + dx + 26; ctx.strokeStyle = K.red; ctx.fillStyle = K.red; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(lx, GY + dy); ctx.lineTo(lx, GY + dy - hh); ctx.moveTo(lx - 12, GY + dy); ctx.lineTo(lx + 12, GY + dy); ctx.moveTo(lx - 12, GY + dy - hh); ctx.lineTo(lx + 12, GY + dy - hh); ctx.stroke();
-  if (gw > 0.9) { ctx.save(); ctx.globalAlpha = cl((gw - 0.9) * 10); ctx.translate(lx + 34, GY + dy - hh / 2); ctx.rotate(Math.PI / 2); ctx.font = "40px LSerif"; ctx.textAlign = "center"; ctx.fillText("13.5 km", 0, 0); ctx.restore(); }
+  if (gw > 0.9) { ctx.save(); ctx.globalAlpha = cl((gw - 0.9) * 10); ctx.translate(lx + 34, GY + dy - hh / 2); ctx.rotate(Math.PI / 2); ctx.font = "36px LSerif"; ctx.textAlign = "center"; ctx.fillText("13.5 km", 0, 0); ctx.restore(); }
 }
 // Mount St Helens 1980: a 1 km cube (tiny)
 const sm = p.small || 0;
 if (sm > 0) { const sx = 170, s1 = S * eback(sm); cube(sx, GY, s1, s1, ["#A35B3A", "#C77A4E", "#E3A57B"]);
   ctx.save(); ctx.globalAlpha = cl(sm * 2); ctx.strokeStyle = K.red; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(sx + 22, GY - 52); ctx.lineTo(sx + 22, GY - 150); ctx.stroke();
-  ctx.font = "30px LSerif"; ctx.textAlign = "center"; ctx.fillStyle = K.ink; ctx.fillText("ST HELENS 1980", sx + 22, GY - 196); ctx.fillStyle = K.red; ctx.fillText("1 km³", sx + 22, GY - 160); ctx.restore(); }
+  ctx.restore(); }
+if (sm > 0) { ctx.restore(); plaque(ctx, 170 + 20, 640, [{ t: "ST HELENS 1980", s: 28, sp: 2 }, { t: "1 km³", s: 44, c: K.red }], sm); ctx.save(); cam(540, cy, z, 0); }
 ashFall(ctx, p.ash || 0, -300, -300, 1700, 2500, 19, 110, "rgba(60,56,50,0.7)");
 ctx.restore();
 plaque(ctx, 540, 120, [{ t: "HUCKLEBERRY RIDGE", s: 60, sp: 4 }, { t: "2.1 MILLION YEARS AGO", s: 30, sp: 8 }], p.labk || 0);
