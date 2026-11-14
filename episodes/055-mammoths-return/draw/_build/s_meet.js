@@ -15,8 +15,8 @@ ctx.drawImage(cached("meet_mid", W + 400, H + 400, (g) => { g.translate(200, 200
   vwash(g, 1130, 1200, "20,19,18", 0, 0.8); vwash(g, 1200, H + 200, "20,19,18", 0.8, 1);
   g.fillStyle = "rgba(20,19,18,0.95)"; g.beginPath(); g.moveTo(-200, 1232); g.quadraticCurveTo(500, 1196, 1300, 1222); g.lineTo(1300, H + 200); g.lineTo(-200, H + 200); g.fill();
 }), -200, -200);
-mammoth(ctx, 760, 1226, 0.95, -1, INK.ink, { m: 1, walk: 0, eye: 1, tr });
-person(ctx, 200, 1224, 0.85, 1, INK.ink, arm);
+mammoth(ctx, 870, 1226, 0.95, -1, INK.ink, { m: 1, walk: 0, eye: 1, tr });
+person(ctx, 170, 1224, 0.85, 1, INK.ink, arm);
 goldQ(ctx, 860, 330, q, 300);
 snow(ctx, 50, 13, 0.6, 30, 70);
 goldDust(ctx, 20, 0, 500, W, 600, 71, 0.5, 10);

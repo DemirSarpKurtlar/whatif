@@ -31,7 +31,6 @@ bison(ctx, hx - 60, GY - 24, 0.6, 1, INK.ink, 1, 0.3);
 horse(ctx, hx + 110, GY - 30, 0.5, 1, INK.ink, 1, 2.4);
 bison(ctx, hx - 520, GY - 24, 0.46, 1, "rgba(60,58,54,0.95)", 1, 3.3);
 // layer labels (left edge)
-label(ctx, "SNOW", 70, GY - 40, 30, "#141312", "left", 0.0);
 label(ctx, "SOIL", 40, GY + 80, 32, "#F2EAD6", "left", 0.9);
 label(ctx, "PERMAFROST", 40, 1060, 32, "#F2EAD6", "left", 0.9);
 // thermometer (gold) in the soil, right side

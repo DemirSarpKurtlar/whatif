@@ -113,7 +113,7 @@ function pw(arr, x) { if (x <= arr[0][0]) return arr[0][1]; for (let i = 1; i < 
 // Proboscidean: m = 0 Asian elephant ... 1 woolly mammoth (hump, domed head, small ears, long hair, big gold tusks).
 // o: { m, walk, ph, eye, tusk (length mult), tr (trunk raise 0..1), hair (mult) }
 function mammoth(g, x, yb, s = 1, dir = 1, col = INK.ink, o = {}) {
-  const m = o.m ?? 1, walk = o.walk ?? 0, ph = o.ph ?? 0, tusk = o.tusk ?? 1, tr = o.tr ?? 0, hair = (o.hair ?? 1) * m, eye = o.eye ?? 1;
+  const m = o.m ?? 1, walk = o.walk ?? 0, ph = o.ph ?? 0, tusk = o.tusk ?? 1, tr = o.tr ?? 0, hair = o.hair ?? m, me = o.ear ?? m, eye = o.eye ?? 1;
   g.save(); g.translate(x, yb); g.scale(s * dir, s); g.fillStyle = col; g.strokeStyle = col; g.lineCap = "round"; g.lineJoin = "round";
   const P = t * 2.6 * walk + ph, bob = walk ? -Math.abs(Math.sin(P)) * 6 : 0; g.translate(0, bob);
   const tl = lerp(0.35, 1, m) * tusk;
@@ -126,7 +126,7 @@ function mammoth(g, x, yb, s = 1, dir = 1, col = INK.ink, o = {}) {
     if (hair > 0.05) { g.lineWidth = 3.5; for (let i = 0; i < 6; i++) { const hx = lx - wdt * 0.5 + i * wdt / 5, hy = -250 + rnd(i + lx) * 40; g.beginPath(); g.moveTo(hx, hy); g.quadraticCurveTo(hx + sw * 6 - 4, hy + 40, hx - 6 + Math.sin(t * 3 + i) * 3, hy + (60 + rnd(i * 3 + lx) * 50) * hair); g.stroke(); } } };
   leg(70, Math.PI, 66, 0.82); leg(-235, 0, 70, 0.82);
   // body
-  const back = [[-262, lerp(-365, -330, m)], [-140, lerp(-428, -392, m)], [0, lerp(-446, -452, m)], [100, lerp(-440, -508, m)], [180, lerp(-445, -478, m)], [250, lerp(-490, -575, m)]];
+  const back = [[-262, lerp(-365, -330, m)], [-140, lerp(-428, -392, m)], [0, lerp(-446, -452, m)], [100, lerp(-440, -508, m)], [180, lerp(-445, -492, m)], [250, lerp(-490, -575, m)]];
   g.beginPath(); g.moveTo(-250, -190);
   g.quadraticCurveTo(-318, -270, back[0][0], back[0][1]);
   g.bezierCurveTo(-200, back[1][1] + 10, -80, back[2][1], 0, back[2][1]);
@@ -139,8 +139,8 @@ function mammoth(g, x, yb, s = 1, dir = 1, col = INK.ink, o = {}) {
   // tail
   g.lineWidth = lerp(10, 14, m); g.beginPath(); g.moveTo(-292, -300); g.quadraticCurveTo(-318 + Math.sin(t * 2 + ph) * 6, -260, -310 + Math.sin(t * 2 + ph) * 10, lerp(-170, -230, m)); g.stroke();
   // ear (outlined so it reads on the silhouette)
-  const erx = lerp(66, 30, m), ery = lerp(92, 38, m); g.beginPath(); g.ellipse(212, lerp(-418, -455, m), erx, ery, 0.15, 0, TAU); g.fill();
-  g.save(); g.strokeStyle = "rgba(207,200,185,0.28)"; g.lineWidth = 3; g.beginPath(); g.ellipse(212, lerp(-418, -455, m), erx, ery, 0.15, -1.4, 2.0); g.stroke(); g.restore();
+  const erx = lerp(70, 30, me), ery = lerp(96, 38, me), ey = lerp(-418, -455, m); g.beginPath(); g.ellipse(212, ey, erx, ery, 0.15, 0, TAU); g.fill();
+  g.save(); g.strokeStyle = "rgba(207,200,185,0.28)"; g.lineWidth = 3; g.beginPath(); g.ellipse(212, ey, erx, ery, 0.15, -1.4, 2.0); g.stroke(); g.restore();
   // trunk: chain of discs along a curve (hanging -> raised)
   { let a = lerp(1.42, -0.55, tr), px = 346, py = -400; const n = 30, L = 340 * lerp(0.9, 1.0, m);
     for (let i = 0; i <= n; i++) { const u = i / n; g.beginPath(); g.arc(px, py, lerp(34, 11, u), 0, TAU); g.fill(); a += (lerp(-0.02, -0.06, tr) - (u > 0.75 ? lerp(0.13, 0.05, tr) : 0)) + Math.sin(t * 1.6 + ph) * 0.004; px += Math.cos(a) * L / n; py += Math.sin(a) * L / n; } }
@@ -193,6 +193,31 @@ function label(g, s, x, y, size = 34, col = "#F2D68A", align = "center", a = 1) 
 function tundra(g, y, seed, col = "236,231,218", a = 0.9) {
   g.fillStyle = `rgba(${col},${a})`; g.beginPath(); g.moveTo(-300, H + 300); g.lineTo(-300, y);
   for (let x = -300; x <= W + 300; x += 20) g.lineTo(x, y - 18 * Math.sin(x / 260 + seed) - 8 * Math.sin(x / 90 + seed * 2)); g.lineTo(W + 300, H + 300); g.closePath(); g.fill();
+}
+// steppe bison (facing right)
+function bison(g, x, yb, s = 1, dir = 1, col = INK.ink, walk = 0, ph = 0) {
+  g.save(); g.translate(x, yb); g.scale(s * dir, s); g.fillStyle = col; g.strokeStyle = col; g.lineCap = "round";
+  const P = t * 3.2 * walk + ph;
+  const leg = (lx, o, w) => { const sw = walk ? Math.sin(P + o) : 0, lift = walk ? Math.max(0, Math.cos(P + o)) * 10 : 0; g.lineWidth = w; g.beginPath(); g.moveTo(lx, -170); g.lineTo(lx + sw * 10, -80); g.lineTo(lx + sw * 22, -lift); g.stroke(); };
+  leg(90, Math.PI, 24); leg(-150, 0, 26);
+  g.beginPath(); g.moveTo(-200, -150); g.quadraticCurveTo(-232, -230, -190, -280); g.quadraticCurveTo(-80, -300, 20, -360); g.quadraticCurveTo(90, -412, 150, -370);
+  g.quadraticCurveTo(210, -320, 236, -250); g.quadraticCurveTo(262, -190, 256, -150); g.lineTo(226, -142); g.quadraticCurveTo(200, -110, 170, -116); g.quadraticCurveTo(150, -150, 120, -140); g.quadraticCurveTo(-20, -120, -200, -150); g.closePath(); g.fill();
+  g.lineWidth = 9; g.beginPath(); g.moveTo(206, -300); g.quadraticCurveTo(236, -330, 222, -350); g.stroke();
+  g.lineWidth = 8; g.beginPath(); g.moveTo(-214, -250); g.quadraticCurveTo(-236, -200, -230, -150); g.stroke();
+  leg(120, 0, 28); leg(-120, Math.PI, 30);
+  g.restore();
+}
+// Yakutian horse (facing right)
+function horse(g, x, yb, s = 1, dir = 1, col = INK.ink, walk = 0, ph = 0) {
+  g.save(); g.translate(x, yb); g.scale(s * dir, s); g.fillStyle = col; g.strokeStyle = col; g.lineCap = "round";
+  const P = t * 3.6 * walk + ph;
+  const leg = (lx, o, w) => { const sw = walk ? Math.sin(P + o) : 0, lift = walk ? Math.max(0, Math.cos(P + o)) * 12 : 0; g.lineWidth = w; g.beginPath(); g.moveTo(lx, -190); g.lineTo(lx + sw * 12, -90); g.lineTo(lx + sw * 26, -lift); g.stroke(); };
+  leg(95, Math.PI, 20); leg(-110, 0, 22);
+  g.beginPath(); g.ellipse(0, -230, 150, 66, 0, 0, TAU); g.fill();
+  g.beginPath(); g.moveTo(90, -280); g.quadraticCurveTo(150, -360, 190, -400); g.quadraticCurveTo(214, -410, 226, -392); g.lineTo(276, -320); g.quadraticCurveTo(282, -300, 260, -296); g.lineTo(210, -320); g.quadraticCurveTo(170, -270, 140, -200); g.closePath(); g.fill();
+  g.lineWidth = 16; g.beginPath(); g.moveTo(-146, -250); g.quadraticCurveTo(-190, -200 + Math.sin(t * 2 + ph) * 6, -186, -130); g.stroke();
+  leg(115, 0, 22); leg(-90, Math.PI, 24);
+  g.restore();
 }
 frameIn(p);
 const wk = p.walk ?? 1, bull = p.bull ?? 1, tr = p.tr ?? 0;
